@@ -1,0 +1,242 @@
+object Frm_ManBal_Loc: TFrm_ManBal_Loc
+  Left = 192
+  Top = 109
+  Width = 544
+  Height = 375
+  ActiveControl = NOME
+  Caption = 'Consulta Balan'#231'o de Mercadorias'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnClose = FormClose
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 536
+    Height = 41
+    Align = alTop
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 8
+      Top = 8
+      Width = 67
+      Height = 13
+      Caption = 'Pesquisar por:'
+    end
+    object CB_TPESQ: TComboBox
+      Left = 94
+      Top = 6
+      Width = 107
+      Height = 21
+      ItemHeight = 13
+      ItemIndex = 0
+      TabOrder = 0
+      Text = 'Chave'
+      Items.Strings = (
+        'Chave'
+        'Data'
+        'Descri'#231#227'o')
+    end
+    object NOME: TEdit
+      Left = 204
+      Top = 6
+      Width = 222
+      Height = 21
+      TabOrder = 1
+      OnExit = NOMEExit
+      OnKeyPress = NOMEKeyPress
+    end
+    object BitBtn1: TBitBtn
+      Left = 428
+      Top = 5
+      Width = 94
+      Height = 22
+      Caption = '&Atualizar'
+      TabOrder = 2
+      OnClick = BitBtn1Click
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+        555555555555555555555555555555555555555555FF55555555555559055555
+        55555555577FF5555555555599905555555555557777F5555555555599905555
+        555555557777FF5555555559999905555555555777777F555555559999990555
+        5555557777777FF5555557990599905555555777757777F55555790555599055
+        55557775555777FF5555555555599905555555555557777F5555555555559905
+        555555555555777FF5555555555559905555555555555777FF55555555555579
+        05555555555555777FF5555555555557905555555555555777FF555555555555
+        5990555555555555577755555555555555555555555555555555}
+      NumGlyphs = 2
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 300
+    Width = 536
+    Height = 41
+    Align = alBottom
+    TabOrder = 1
+    object bbSair: TBitBtn
+      Left = 1
+      Top = 1
+      Width = 160
+      Height = 40
+      Caption = '&Selecionar e Sair'
+      TabOrder = 0
+      OnClick = bbSairClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        3333333333FFFFF3333333333000003333333333F777773FF333333008F88800
+        33333337733333773F33330FFF8F888F033333733333333373F330DEFFF8F8FE
+        D03337F33333333337F330DDEFFFFFEDD0333733333FFF33373F0BBFDE000EDF
+        BB037F33337773F3337F0AABB08880BBAA037F3337F3F7F3337F0EEAA08080AA
+        EE037F3337F737F3337F0AABB08880BBAA037F33373FF733337F0BBFDE000EDB
+        BB0373F333777333337330DDEFFFFFEDD03337F33333333337F330DEF8F8FFFE
+        D033373F333333333733330FFF8F8FFF03333373FF33333F733333300FF8F800
+        3333333773FFFF77333333333000003333333333377777333333}
+      NumGlyphs = 2
+    end
+    object BitBtn3: TBitBtn
+      Left = 375
+      Top = 1
+      Width = 160
+      Height = 40
+      Caption = '&Cancelar e Sair'
+      TabOrder = 1
+      OnClick = BitBtn3Click
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        3333333333FFFFF3333333333999993333333333F77777FFF333333999999999
+        33333337777FF377FF3333993370739993333377FF373F377FF3399993000339
+        993337777F777F3377F3393999707333993337F77737333337FF993399933333
+        399377F3777FF333377F993339903333399377F33737FF33377F993333707333
+        399377F333377FF3377F993333101933399377F333777FFF377F993333000993
+        399377FF3377737FF7733993330009993933373FF3777377F7F3399933000399
+        99333773FF777F777733339993707339933333773FF7FFF77333333999999999
+        3333333777333777333333333999993333333333377777333333}
+      NumGlyphs = 2
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Top = 41
+    Width = 536
+    Height = 259
+    Align = alClient
+    DataSource = Src_Bal01
+    TabOrder = 2
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'MS Sans Serif'
+    TitleFont.Style = []
+    OnDblClick = DBGrid1DblClick
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'B1CHAVE'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'B1DATA'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'B1MOT01'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'B1MOT02'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'B1MOT03'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'B1STATUS'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'B1DATAAJU'
+        Visible = True
+      end>
+  end
+  object Qr_Bal01: TQuery
+    DatabaseName = 'SG_ASSOC'
+    SQL.Strings = (
+      'Select * from CADBAL01 where B1CODEMP is null')
+    Left = 56
+    Top = 16
+    object Qr_Bal01B1CODEMP: TFloatField
+      DisplayLabel = 'Empresa'
+      FieldName = 'B1CODEMP'
+      Origin = 'SG_ASSOC.CADBAL01.B1CODEMP'
+    end
+    object Qr_Bal01B1CHAVE: TFloatField
+      DisplayLabel = 'Chave'
+      FieldName = 'B1CHAVE'
+      Origin = 'SG_ASSOC.CADBAL01.B1CHAVE'
+    end
+    object Qr_Bal01B1DATA: TDateTimeField
+      DisplayLabel = 'Data'
+      FieldName = 'B1DATA'
+      Origin = 'SG_ASSOC.CADBAL01.B1DATA'
+      DisplayFormat = 'dd/mm/yyyy'
+    end
+    object Qr_Bal01B1MOT01: TStringField
+      DisplayLabel = 'Obs.Linha 01'
+      FieldName = 'B1MOT01'
+      Origin = 'SG_ASSOC.CADBAL01.B1MOT01'
+      Size = 60
+    end
+    object Qr_Bal01B1MOT02: TStringField
+      DisplayLabel = 'Obs.Linha 02'
+      FieldName = 'B1MOT02'
+      Origin = 'SG_ASSOC.CADBAL01.B1MOT02'
+      Size = 60
+    end
+    object Qr_Bal01B1MOT03: TStringField
+      DisplayLabel = 'Obs.Linha 03'
+      FieldName = 'B1MOT03'
+      Origin = 'SG_ASSOC.CADBAL01.B1MOT03'
+      Size = 60
+    end
+    object Qr_Bal01B1STATUS: TFloatField
+      DisplayLabel = 'Status'
+      FieldName = 'B1STATUS'
+      Origin = 'SG_ASSOC.CADBAL01.B1STATUS'
+    end
+    object Qr_Bal01B1DATAAJU: TDateTimeField
+      DisplayLabel = 'Data Ajuste'
+      FieldName = 'B1DATAAJU'
+      Origin = 'SG_ASSOC.CADBAL01.B1DATAAJU'
+      DisplayFormat = 'dd/mm/yyyy'
+    end
+  end
+  object Src_Bal01: TDataSource
+    DataSet = Qr_Bal01
+    Left = 88
+    Top = 8
+  end
+end

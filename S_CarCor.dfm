@@ -1,0 +1,814 @@
+object Frm_CarCor: TFrm_CarCor
+  Left = 96
+  Top = 154
+  Width = 785
+  Height = 519
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Carta de Corre'#231#227'o de Documentos Fiscais'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  FormStyle = fsMDIChild
+  OldCreateOrder = False
+  Position = poDefault
+  Visible = True
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 777
+    Height = 37
+    Align = alTop
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 8
+      Top = 12
+      Width = 34
+      Height = 13
+      Caption = 'Chave:'
+    end
+    object CHAVE: TEdit
+      Left = 54
+      Top = 10
+      Width = 85
+      Height = 19
+      Ctl3D = False
+      ParentCtl3D = False
+      TabOrder = 0
+      OnExit = CHAVEExit
+    end
+    object bbIncluir: TBitBtn
+      Left = 161
+      Top = 4
+      Width = 100
+      Height = 25
+      Caption = '&Incluir'
+      TabOrder = 1
+      OnClick = bbIncluirClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33333333FF33333333FF333993333333300033377F3333333777333993333333
+        300033F77FFF3333377739999993333333333777777F3333333F399999933333
+        33003777777333333377333993333333330033377F3333333377333993333333
+        3333333773333333333F333333333333330033333333F33333773333333C3333
+        330033333337FF3333773333333CC333333333FFFFF77FFF3FF33CCCCCCCCCC3
+        993337777777777F77F33CCCCCCCCCC3993337777777777377333333333CC333
+        333333333337733333FF3333333C333330003333333733333777333333333333
+        3000333333333333377733333333333333333333333333333333}
+      NumGlyphs = 2
+    end
+    object bbPesquisar: TBitBtn
+      Left = 263
+      Top = 4
+      Width = 100
+      Height = 25
+      Caption = '&Pesquisar'
+      TabOrder = 2
+      OnClick = bbPesquisarClick
+      Glyph.Data = {
+        36060000424D3606000000000000360400002800000020000000100000000100
+        08000000000000020000C40E0000C40E00000001000000000000000000008080
+        8000000080000080800000800000808000008000000080008000408080004040
+        0000FF80000080400000FF00400000408000FFFFFF00C0C0C0000000FF0000FF
+        FF0000FF0000FFFF0000FF000000FF00FF0080FFFF0080FF0000FFFF8000FF80
+        80008000FF004080FF00C0DCC000F0CAA60004040400080808000C0C0C001111
+        1100161616001C1C1C002222220029292900555555004D4D4D00424242003939
+        3900807CFF005050FF009300D600FFECCC00C6D6EF00D6E7E70090A9AD000000
+        330000006600000099000000CC00003300000033330000336600003399000033
+        CC000033FF00006600000066330000666600006699000066CC000066FF000099
+        00000099330000996600009999000099CC000099FF0000CC000000CC330000CC
+        660000CC990000CCCC0000CCFF0000FF660000FF990000FFCC00330000003300
+        330033006600330099003300CC003300FF003333000033333300333366003333
+        99003333CC003333FF00336600003366330033666600336699003366CC003366
+        FF00339900003399330033996600339999003399CC003399FF0033CC000033CC
+        330033CC660033CC990033CCCC0033CCFF0033FF330033FF660033FF990033FF
+        CC0033FFFF00660000006600330066006600660099006600CC006600FF006633
+        00006633330066336600663399006633CC006633FF0066660000666633006666
+        6600666699006666CC00669900006699330066996600669999006699CC006699
+        FF0066CC000066CC330066CC990066CCCC0066CCFF0066FF000066FF330066FF
+        990066FFCC00CC00FF00FF00CC009999000099339900990099009900CC009900
+        000099333300990066009933CC009900FF009966000099663300993366009966
+        99009966CC009933FF009999330099996600999999009999CC009999FF0099CC
+        000099CC330066CC660099CC990099CCCC0099CCFF0099FF000099FF330099CC
+        660099FF990099FFCC0099FFFF00CC00000099003300CC006600CC009900CC00
+        CC0099330000CC333300CC336600CC339900CC33CC00CC33FF00CC660000CC66
+        330099666600CC669900CC66CC009966FF00CC990000CC993300CC996600CC99
+        9900CC99CC00CC99FF00CCCC0000CCCC3300CCCC6600CCCC9900CCCCCC00CCCC
+        FF00CCFF0000CCFF330099FF6600CCFF9900CCFFCC00CCFFFF00CC003300FF00
+        6600FF009900CC330000FF333300FF336600FF339900FF33CC00FF33FF00FF66
+        0000FF663300CC666600FF669900FF66CC00CC66FF00FF990000FF993300FF99
+        6600FF999900FF99CC00FF99FF00FFCC0000FFCC3300FFCC6600FFCC9900FFCC
+        CC00FFCCFF00FFFF3300CCFF6600FFFF9900FFFFCC006666FF0066FF660066FF
+        FF00FF666600FF66FF00FFFF66002100A5005F5F5F0077777700030303030303
+        0303030303030303030303030303030303030303030303030303030303030303
+        030303030303030303030E0E0E0E0E0E030303030E0E0E0E0E0E000000000003
+        0303030300000000000301010101010E0303030301010101010E000E00000003
+        03030303000E00000003010E0101010E03030303010E0101010E000E00000003
+        03030303000E00000003010E0101010E0E030E0E010E0101010E000000000000
+        00030000000000000003010101010101010E010101010101010E00000E000000
+        0000000E00000000000301010E0101010101010E01010101010E00000E000000
+        0F00000E00000000000301010E0101010F01010E01010101010E00000E000000
+        0F00000E00000000000301010E0101010F01010E01010101010E030000000000
+        0000000000000000030303010101010101010101010101010E030303000E0000
+        0003000E0000000303030303010E0101010E010E0101010E0303030300000000
+        00030000000000030303030301010101010E01010101010E0303030303000000
+        030303000000030303030303030101010E03030101010E030303030303000E00
+        030303000E0003030303030303010E010E0303010E010E030303030303000000
+        030303000000030303030303030101010E03030101010E030303030303030303
+        0303030303030303030303030303030303030303030303030303}
+      NumGlyphs = 2
+    end
+    object bbCancelar: TBitBtn
+      Left = 464
+      Top = 4
+      Width = 100
+      Height = 25
+      Caption = '&Cancelar'
+      TabOrder = 3
+      OnClick = bbCancelarClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        3333333333FFFFF3333333333999993333333333F77777FFF333333999999999
+        33333337777FF377FF3333993370739993333377FF373F377FF3399993000339
+        993337777F777F3377F3393999707333993337F77737333337FF993399933333
+        399377F3777FF333377F993339903333399377F33737FF33377F993333707333
+        399377F333377FF3377F993333101933399377F333777FFF377F993333000993
+        399377FF3377737FF7733993330009993933373FF3777377F7F3399933000399
+        99333773FF777F777733339993707339933333773FF7FFF77333333999999999
+        3333333777333777333333333999993333333333377777333333}
+      NumGlyphs = 2
+    end
+    object bbExcluir: TBitBtn
+      Left = 564
+      Top = 4
+      Width = 100
+      Height = 25
+      Caption = '&Excluir'
+      Enabled = False
+      TabOrder = 4
+      OnClick = bbExcluirClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        333333333333333333333333333333333333333FFF33FF333FFF339993370733
+        999333777FF37FF377733339993000399933333777F777F77733333399970799
+        93333333777F7377733333333999399933333333377737773333333333990993
+        3333333333737F73333333333331013333333333333777FF3333333333910193
+        333333333337773FF3333333399000993333333337377737FF33333399900099
+        93333333773777377FF333399930003999333337773777F777FF339993370733
+        9993337773337333777333333333333333333333333333333333333333333333
+        3333333333333333333333333333333333333333333333333333}
+      NumGlyphs = 2
+    end
+    object bbSair: TBitBtn
+      Left = 665
+      Top = 4
+      Width = 100
+      Height = 25
+      Caption = '&Sair'
+      TabOrder = 5
+      OnClick = bbSairClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00330000000000
+        03333377777777777F333301BBBBBBBB033333773F3333337F3333011BBBBBBB
+        0333337F73F333337F33330111BBBBBB0333337F373F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337FF3337F33330111B0BBBB
+        0333337F337733337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F3F7F33337F333301E10BBBBB0333337F7F7F33337F333301EE0BBBBB
+        0333337F777FFFFF7F3333000000000003333377777777777333}
+      NumGlyphs = 2
+    end
+    object bbAlterar: TBitBtn
+      Left = 364
+      Top = 4
+      Width = 100
+      Height = 25
+      Caption = '&Alterar'
+      Enabled = False
+      TabOrder = 6
+      OnClick = bbAlterarClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333000000
+        000033333377777777773333330FFFFFFFF03FF3FF7FF33F3FF700300000FF0F
+        00F077F777773F737737E00BFBFB0FFFFFF07773333F7F3333F7E0BFBF000FFF
+        F0F077F3337773F3F737E0FBFBFBF0F00FF077F3333FF7F77F37E0BFBF00000B
+        0FF077F3337777737337E0FBFBFBFBF0FFF077F33FFFFFF73337E0BF0000000F
+        FFF077FF777777733FF7000BFB00B0FF00F07773FF77373377373330000B0FFF
+        FFF03337777373333FF7333330B0FFFF00003333373733FF777733330B0FF00F
+        0FF03333737F37737F373330B00FFFFF0F033337F77F33337F733309030FFFFF
+        00333377737FFFFF773333303300000003333337337777777333}
+      NumGlyphs = 2
+    end
+  end
+  object GB_01: TGroupBox
+    Left = 0
+    Top = 37
+    Width = 777
+    Height = 91
+    Align = alTop
+    Caption = 'Dados do destinat'#225'rio:'
+    Ctl3D = False
+    Enabled = False
+    ParentCtl3D = False
+    TabOrder = 1
+    object Label5: TLabel
+      Left = 11
+      Top = 19
+      Width = 66
+      Height = 13
+      Caption = 'Raz'#227'o Social:'
+    end
+    object Label4: TLabel
+      Left = 14
+      Top = 39
+      Width = 49
+      Height = 13
+      Caption = 'Endere'#231'o:'
+    end
+    object Label6: TLabel
+      Left = 14
+      Top = 61
+      Width = 55
+      Height = 13
+      Caption = 'Cidade/UF:'
+    end
+    object Label7: TLabel
+      Left = 442
+      Top = 17
+      Width = 87
+      Height = 13
+      Caption = 'Data da Corre'#231#227'o:'
+    end
+    object Shape20: TShape
+      Left = 436
+      Top = 6
+      Width = 1
+      Height = 85
+    end
+    object Label8: TLabel
+      Left = 442
+      Top = 38
+      Width = 76
+      Height = 13
+      Caption = 'Nota Fiscal No.:'
+    end
+    object Label9: TLabel
+      Left = 579
+      Top = 39
+      Width = 27
+      Height = 13
+      Caption = 'S'#233'rie:'
+    end
+    object Label10: TLabel
+      Left = 612
+      Top = 16
+      Width = 42
+      Height = 13
+      Caption = 'Emiss'#227'o:'
+    end
+    object Label2: TLabel
+      Left = 651
+      Top = 39
+      Width = 44
+      Height = 13
+      Caption = 'Modelo..:'
+    end
+    object lbl_ordem: TLabel
+      Left = 730
+      Top = 14
+      Width = 37
+      Height = 19
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Ordem'
+      Color = 4194304
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Layout = tlCenter
+    end
+    object edt_ordem: TLabel
+      Left = 729
+      Top = 36
+      Width = 37
+      Height = 19
+      Alignment = taCenter
+      AutoSize = False
+      Caption = '01'
+      Color = 4194304
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Layout = tlCenter
+    end
+    object RAZSOC: TEdit
+      Left = 82
+      Top = 13
+      Width = 350
+      Height = 19
+      Ctl3D = False
+      ParentCtl3D = False
+      TabOrder = 0
+      OnExit = RAZSOCExit
+      OnKeyPress = RAZSOCKeyPress
+    end
+    object ENDERECO: TEdit
+      Left = 82
+      Top = 35
+      Width = 350
+      Height = 19
+      Ctl3D = False
+      ParentCtl3D = False
+      TabOrder = 1
+      OnExit = ENDERECOExit
+      OnKeyPress = ENDERECOKeyPress
+    end
+    object CIDADE: TEdit
+      Left = 82
+      Top = 57
+      Width = 350
+      Height = 19
+      Ctl3D = False
+      ParentCtl3D = False
+      TabOrder = 2
+      OnExit = CIDADEExit
+      OnKeyPress = CIDADEKeyPress
+    end
+    object MDATCAR: TMaskEdit
+      Left = 531
+      Top = 14
+      Width = 76
+      Height = 19
+      Ctl3D = False
+      EditMask = '!99/99/9999;1; '
+      MaxLength = 10
+      ParentCtl3D = False
+      TabOrder = 3
+      Text = '  /  /    '
+      OnExit = MDATCARExit
+    end
+    object NUMNF: TEdit
+      Left = 520
+      Top = 36
+      Width = 55
+      Height = 19
+      Ctl3D = False
+      ParentCtl3D = False
+      TabOrder = 4
+      OnExit = NUMNFExit
+      OnKeyPress = NUMNFKeyPress
+    end
+    object SERIENF: TEdit
+      Left = 611
+      Top = 36
+      Width = 31
+      Height = 19
+      Ctl3D = False
+      ParentCtl3D = False
+      TabOrder = 5
+      OnExit = SERIENFExit
+      OnKeyPress = SERIENFKeyPress
+    end
+    object DTEMIS: TMaskEdit
+      Left = 657
+      Top = 14
+      Width = 73
+      Height = 19
+      Ctl3D = False
+      EditMask = '!99/99/9999;1; '
+      MaxLength = 10
+      ParentCtl3D = False
+      TabOrder = 7
+      Text = '  /  /    '
+      OnExit = DTEMISExit
+    end
+    object RG_EMISSAO: TRadioGroup
+      Left = 446
+      Top = 55
+      Width = 318
+      Height = 31
+      Columns = 2
+      ItemIndex = 0
+      Items.Strings = (
+        'DE NOSSA EMISS'#195'O'
+        'DE SUA EMISS'#195'O')
+      TabOrder = 8
+    end
+    object Modelo: TEdit
+      Left = 699
+      Top = 36
+      Width = 31
+      Height = 19
+      Ctl3D = False
+      ParentCtl3D = False
+      TabOrder = 6
+      OnExit = ModeloExit
+    end
+  end
+  object GB_02: TGroupBox
+    Left = 0
+    Top = 341
+    Width = 777
+    Height = 103
+    Align = alClient
+    Caption = 'Correto '#233':'
+    TabOrder = 2
+    object DBCORRETO: TDBMemo
+      Left = 2
+      Top = 15
+      Width = 773
+      Height = 86
+      Align = alClient
+      DataField = 'CC2CORRETO'
+      DataSource = Src_CCOR02
+      ReadOnly = True
+      ScrollBars = ssVertical
+      TabOrder = 0
+      OnEnter = DBCORRETOEnter
+      OnExit = DBCORRETOExit
+    end
+  end
+  object STG1: TStringGrid
+    Left = 0
+    Top = 128
+    Width = 777
+    Height = 213
+    Align = alTop
+    ColCount = 9
+    DefaultRowHeight = 15
+    FixedCols = 0
+    RowCount = 13
+    TabOrder = 3
+    OnClick = STG1Click
+    OnDblClick = STG1DblClick
+    ColWidths = (
+      19
+      25
+      211
+      17
+      25
+      224
+      15
+      22
+      197)
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 444
+    Width = 777
+    Height = 44
+    Align = alBottom
+    TabOrder = 4
+    object bbGravar: TBitBtn
+      Left = 6
+      Top = 4
+      Width = 161
+      Height = 36
+      Caption = '&Gravar'
+      Enabled = False
+      TabOrder = 0
+      OnClick = bbGravarClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        333333FFFFFFFFFFFFF33000077777770033377777777777773F000007888888
+        00037F3337F3FF37F37F00000780088800037F3337F77F37F37F000007800888
+        00037F3337F77FF7F37F00000788888800037F3337777777337F000000000000
+        00037F3FFFFFFFFFFF7F00000000000000037F77777777777F7F000FFFFFFFFF
+        00037F7F333333337F7F000FFFFFFFFF00037F7F333333337F7F000FFFFFFFFF
+        00037F7F333333337F7F000FFFFFFFFF00037F7F333333337F7F000FFFFFFFFF
+        00037F7F333333337F7F000FFFFFFFFF07037F7F33333333777F000FFFFFFFFF
+        0003737FFFFFFFFF7F7330099999999900333777777777777733}
+      NumGlyphs = 2
+    end
+    object bbImprimir: TBitBtn
+      Left = 606
+      Top = 3
+      Width = 161
+      Height = 36
+      Caption = 'Im&primir'
+      Enabled = False
+      TabOrder = 1
+      OnClick = bbImprimirClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
+        00033FFFFFFFFFFFFFFF0888888888888880777777777777777F088888888888
+        8880777777777777777F0000000000000000FFFFFFFFFFFFFFFF0F8F8F8F8F8F
+        8F80777777777777777F08F8F8F8F8F8F9F0777777777777777F0F8F8F8F8F8F
+        8F807777777777777F7F0000000000000000777777777777777F3330FFFFFFFF
+        03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
+        03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
+        33333337F3FF7F3733333330F08F0F0333333337F7737F7333333330FFFF0033
+        33333337FFFF7733333333300000033333333337777773333333}
+      NumGlyphs = 2
+    end
+    object bbEmitir: TBitBtn
+      Left = 310
+      Top = 3
+      Width = 161
+      Height = 36
+      Caption = '&Emitir'
+      Enabled = False
+      TabOrder = 2
+      OnClick = bbEmitirClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
+        00033FFFFFFFFFFFFFFF0888888888888880777777777777777F088888888888
+        8880777777777777777F0000000000000000FFFFFFFFFFFFFFFF0F8F8F8F8F8F
+        8F80777777777777777F08F8F8F8F8F8F9F0777777777777777F0F8F8F8F8F8F
+        8F807777777777777F7F0000000000000000777777777777777F3330FFFFFFFF
+        03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
+        03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
+        33333337F3FF7F3733333330F08F0F0333333337F7737F7333333330FFFF0033
+        33333337FFFF7733333333300000033333333337777773333333}
+      NumGlyphs = 2
+    end
+  end
+  object Tb_CCOR01: TQuery
+    CachedUpdates = True
+    AfterPost = c
+    AfterDelete = c
+    DatabaseName = 'SG_ASSOC'
+    SQL.Strings = (
+      'Select * from CADCCOR01'
+      'where CC1CODEMP like :CODEMP '
+      'and     CC1CHAVE    like :CHAVE')
+    UpdateObject = U_CCOR01
+    Left = 344
+    Top = 200
+    ParamData = <
+      item
+        DataType = ftString
+        Name = 'CODEMP'
+        ParamType = ptUnknown
+        Value = ''
+      end
+      item
+        DataType = ftString
+        Name = 'CHAVE'
+        ParamType = ptUnknown
+        Value = ''
+      end>
+    object Tb_CCOR01CC1CODEMP: TFloatField
+      FieldName = 'CC1CODEMP'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1CODEMP'
+    end
+    object Tb_CCOR01CC1CHAVE: TFloatField
+      FieldName = 'CC1CHAVE'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1CHAVE'
+    end
+    object Tb_CCOR01CC1DATA: TDateTimeField
+      FieldName = 'CC1DATA'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1DATA'
+    end
+    object Tb_CCOR01CC1RAZAO: TStringField
+      FieldName = 'CC1RAZAO'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1RAZAO'
+      Size = 60
+    end
+    object Tb_CCOR01CC1ENDERECO: TStringField
+      DisplayWidth = 120
+      FieldName = 'CC1ENDERECO'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1ENDERECO'
+      Size = 120
+    end
+    object Tb_CCOR01CC1CIDADE: TStringField
+      FieldName = 'CC1CIDADE'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1CIDADE'
+      Size = 60
+    end
+    object Tb_CCOR01CC1NUMNF: TFloatField
+      FieldName = 'CC1NUMNF'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1NUMNF'
+    end
+    object Tb_CCOR01CC1SERIE: TStringField
+      FieldName = 'CC1SERIE'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1SERIE'
+      Size = 6
+    end
+    object Tb_CCOR01CC1DATANF: TDateTimeField
+      FieldName = 'CC1DATANF'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1DATANF'
+    end
+    object Tb_CCOR01CC1EMISSAO: TFloatField
+      FieldName = 'CC1EMISSAO'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1EMISSAO'
+    end
+    object Tb_CCOR01CC1MOTIVO: TMemoField
+      FieldName = 'CC1MOTIVO'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1MOTIVO'
+      BlobType = ftMemo
+      Size = 3000
+    end
+    object Tb_CCOR01CC1ORDEMEVE: TFloatField
+      FieldName = 'CC1ORDEMEVE'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1ORDEMEVE'
+    end
+    object Tb_CCOR01CC1MODELO: TStringField
+      FieldName = 'CC1MODELO'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1MODELO'
+      Size = 3
+    end
+    object Tb_CCOR01CC1NFE_XML_CLIENTE: TMemoField
+      FieldName = 'CC1NFE_XML_CLIENTE'
+      Origin = 'SG_ASSOC.CADCCOR01.CC1NFE_XML_CLIENTE'
+      BlobType = ftMemo
+      Size = 1
+    end
+    object Tb_CCOR01CC1DATHOR_DIG: TDateTimeField
+      FieldName = 'CC1DATHOR_DIG'
+    end
+  end
+  object Tb_CCOR02: TQuery
+    CachedUpdates = True
+    AfterPost = c
+    AfterDelete = c
+    DatabaseName = 'SG_ASSOC'
+    SQL.Strings = (
+      'Select * from CADCCOR02'
+      'where CC2CODEMP like :CODEMP'
+      'and     CC2CHAVE    like :CHAVE'
+      'order by CC2ITEM')
+    UpdateObject = U_CCOR02
+    Left = 343
+    Top = 240
+    ParamData = <
+      item
+        DataType = ftString
+        Name = 'CODEMP'
+        ParamType = ptUnknown
+        Value = ''
+      end
+      item
+        DataType = ftString
+        Name = 'CHAVE'
+        ParamType = ptUnknown
+        Value = ''
+      end>
+    object Tb_CCOR02CC2CODEMP: TFloatField
+      FieldName = 'CC2CODEMP'
+      Origin = 'SG_ASSOC.CADCCOR02.CC2CODEMP'
+    end
+    object Tb_CCOR02CC2CHAVE: TFloatField
+      FieldName = 'CC2CHAVE'
+      Origin = 'SG_ASSOC.CADCCOR02.CC2CHAVE'
+    end
+    object Tb_CCOR02CC2ITEM: TFloatField
+      FieldName = 'CC2ITEM'
+      Origin = 'SG_ASSOC.CADCCOR02.CC2ITEM'
+    end
+    object Tb_CCOR02CC2CORRETO: TMemoField
+      FieldName = 'CC2CORRETO'
+      Origin = 'SG_ASSOC.CADCCOR02.CC2CORRETO'
+      BlobType = ftMemo
+      Size = 2000
+    end
+    object Tb_CCOR02CC2DESCITEM: TStringField
+      FieldName = 'CC2DESCITEM'
+      Origin = 'SG_ASSOC.CADCCOR02.CC2DESCITEM'
+      Size = 200
+    end
+  end
+  object U_CCOR01: TUpdateSQL
+    ModifySQL.Strings = (
+      'update CADCCOR01'
+      'set'
+      '  CC1CODEMP = :CC1CODEMP,'
+      '  CC1CHAVE = :CC1CHAVE,'
+      '  CC1DATA = :CC1DATA,'
+      '  CC1RAZAO = :CC1RAZAO,'
+      '  CC1ENDERECO = :CC1ENDERECO,'
+      '  CC1CIDADE = :CC1CIDADE,'
+      '  CC1NUMNF = :CC1NUMNF,'
+      '  CC1SERIE = :CC1SERIE,'
+      '  CC1DATANF = :CC1DATANF,'
+      '  CC1EMISSAO = :CC1EMISSAO,'
+      '  CC1ORDEMEVE = :CC1ORDEMEVE,'
+      '  CC1MODELO = :CC1MODELO'
+      'where'
+      '  CC1CODEMP = :OLD_CC1CODEMP and'
+      '  CC1CHAVE = :OLD_CC1CHAVE and'
+      '  CC1DATA = :OLD_CC1DATA')
+    InsertSQL.Strings = (
+      'insert into CADCCOR01'
+      
+        '  (CC1CODEMP, CC1CHAVE, CC1DATA, CC1RAZAO, CC1ENDERECO, CC1CIDAD' +
+        'E, CC1NUMNF, '
+      '   CC1SERIE, CC1DATANF, CC1EMISSAO, CC1ORDEMEVE, CC1MODELO)'
+      'values'
+      
+        '  (:CC1CODEMP, :CC1CHAVE, :CC1DATA, :CC1RAZAO, :CC1ENDERECO, :CC' +
+        '1CIDADE, '
+      
+        '   :CC1NUMNF, :CC1SERIE, :CC1DATANF, :CC1EMISSAO, :CC1ORDEMEVE, ' +
+        ':CC1MODELO)')
+    DeleteSQL.Strings = (
+      'delete from CADCCOR01'
+      'where'
+      '  CC1CODEMP = :OLD_CC1CODEMP and'
+      '  CC1CHAVE = :OLD_CC1CHAVE and'
+      '  CC1DATA = :OLD_CC1DATA')
+    Left = 376
+    Top = 200
+  end
+  object U_CCOR02: TUpdateSQL
+    ModifySQL.Strings = (
+      'update CADCCOR02'
+      'set'
+      '  CC2CODEMP = :CC2CODEMP,'
+      '  CC2CHAVE = :CC2CHAVE,'
+      '  CC2ITEM = :CC2ITEM,'
+      '  CC2CORRETO = :CC2CORRETO,'
+      '  CC2DESCITEM = :CC2DESCITEM'
+      'where'
+      '  CC2CODEMP = :OLD_CC2CODEMP and'
+      '  CC2CHAVE = :OLD_CC2CHAVE and'
+      '  CC2ITEM = :OLD_CC2ITEM')
+    InsertSQL.Strings = (
+      'insert into CADCCOR02'
+      '  (CC2CODEMP, CC2CHAVE, CC2ITEM, CC2CORRETO, CC2DESCITEM)'
+      'values'
+      '  (:CC2CODEMP, :CC2CHAVE, :CC2ITEM, :CC2CORRETO, :CC2DESCITEM)')
+    DeleteSQL.Strings = (
+      'delete from CADCCOR02'
+      'where'
+      '  CC2CODEMP = :OLD_CC2CODEMP and'
+      '  CC2CHAVE = :OLD_CC2CHAVE and'
+      '  CC2ITEM = :OLD_CC2ITEM')
+    Left = 376
+    Top = 240
+  end
+  object Src_CCOR02: TDataSource
+    DataSet = Tb_CCOR02
+    Left = 407
+    Top = 241
+  end
+  object Src_CCOR01: TDataSource
+    DataSet = Tb_CCOR01
+    Left = 408
+    Top = 200
+  end
+  object RLPDFFilter1: TRLPDFFilter
+    DocumentInfo.Creator = 'FortesReport v3.23 \251 Copyright '#169' 1999-2004 Fortes Inform'#225'tica'
+    ViewerOptions = []
+    FontEncoding = feNoEncoding
+    DisplayName = 'Documento PDF'
+    Left = 312
+    Top = 357
+  end
+  object RLHTMLFilter1: TRLHTMLFilter
+    DocumentStyle = dsCSS2
+    DisplayName = 'P'#225'gina da Web'
+    Left = 368
+    Top = 365
+  end
+  object RLRichFilter1: TRLRichFilter
+    DisplayName = 'Formato RichText'
+    Left = 392
+    Top = 296
+  end
+  object RLRichFilter2: TRLRichFilter
+    DisplayName = 'Formato RichText'
+    Left = 424
+    Top = 365
+  end
+end

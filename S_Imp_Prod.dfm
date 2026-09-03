@@ -1,0 +1,691 @@
+object Frm_Imp_Prod: TFrm_Imp_Prod
+  Left = 43
+  Top = 105
+  Width = 729
+  Height = 623
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Importar Produtos Atraves de um Arquivo Externo'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = [fsBold]
+  FormStyle = fsMDIChild
+  OldCreateOrder = False
+  Position = poScreenCenter
+  Visible = True
+  OnClose = FormClose
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel3: TPanel
+    Left = 0
+    Top = 158
+    Width = 713
+    Height = 148
+    Align = alBottom
+    ParentColor = True
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 2
+      Top = 30
+      Width = 142
+      Height = 13
+      Caption = 'Arquivo a Ser Importado:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object sb1: TSpeedButton
+      Left = 679
+      Top = 23
+      Width = 23
+      Height = 22
+      Hint = 'Procurar Arquivo a ser importado'
+      Glyph.Data = {
+        36060000424D3606000000000000360400002800000020000000100000000100
+        08000000000000020000C40E0000C40E00000001000000000000000000008080
+        8000000080000080800000800000808000008000000080008000408080004040
+        0000FF80000080400000FF00400000408000FFFFFF00C0C0C0000000FF0000FF
+        FF0000FF0000FFFF0000FF000000FF00FF0080FFFF0080FF0000FFFF8000FF80
+        80008000FF004080FF00C0DCC000F0CAA60004040400080808000C0C0C001111
+        1100161616001C1C1C002222220029292900555555004D4D4D00424242003939
+        3900807CFF005050FF009300D600FFECCC00C6D6EF00D6E7E70090A9AD000000
+        330000006600000099000000CC00003300000033330000336600003399000033
+        CC000033FF00006600000066330000666600006699000066CC000066FF000099
+        00000099330000996600009999000099CC000099FF0000CC000000CC330000CC
+        660000CC990000CCCC0000CCFF0000FF660000FF990000FFCC00330000003300
+        330033006600330099003300CC003300FF003333000033333300333366003333
+        99003333CC003333FF00336600003366330033666600336699003366CC003366
+        FF00339900003399330033996600339999003399CC003399FF0033CC000033CC
+        330033CC660033CC990033CCCC0033CCFF0033FF330033FF660033FF990033FF
+        CC0033FFFF00660000006600330066006600660099006600CC006600FF006633
+        00006633330066336600663399006633CC006633FF0066660000666633006666
+        6600666699006666CC00669900006699330066996600669999006699CC006699
+        FF0066CC000066CC330066CC990066CCCC0066CCFF0066FF000066FF330066FF
+        990066FFCC00CC00FF00FF00CC009999000099339900990099009900CC009900
+        000099333300990066009933CC009900FF009966000099663300993366009966
+        99009966CC009933FF009999330099996600999999009999CC009999FF0099CC
+        000099CC330066CC660099CC990099CCCC0099CCFF0099FF000099FF330099CC
+        660099FF990099FFCC0099FFFF00CC00000099003300CC006600CC009900CC00
+        CC0099330000CC333300CC336600CC339900CC33CC00CC33FF00CC660000CC66
+        330099666600CC669900CC66CC009966FF00CC990000CC993300CC996600CC99
+        9900CC99CC00CC99FF00CCCC0000CCCC3300CCCC6600CCCC9900CCCCCC00CCCC
+        FF00CCFF0000CCFF330099FF6600CCFF9900CCFFCC00CCFFFF00CC003300FF00
+        6600FF009900CC330000FF333300FF336600FF339900FF33CC00FF33FF00FF66
+        0000FF663300CC666600FF669900FF66CC00CC66FF00FF990000FF993300FF99
+        6600FF999900FF99CC00FF99FF00FFCC0000FFCC3300FFCC6600FFCC9900FFCC
+        CC00FFCCFF00FFFF3300CCFF6600FFFF9900FFFFCC006666FF0066FF660066FF
+        FF00FF666600FF66FF00FFFF66002100A5005F5F5F0077777700030303030303
+        0303030303030303030303030303030303030303030303030303030303030303
+        030303030303030303030E0E0E0E0E0E030303030E0E0E0E0E0E000000000003
+        0303030300000000000301010101010E0303030301010101010E000E00000003
+        03030303000E00000003010E0101010E03030303010E0101010E000E00000003
+        03030303000E00000003010E0101010E0E030E0E010E0101010E000000000000
+        00030000000000000003010101010101010E010101010101010E00000E000000
+        0000000E00000000000301010E0101010101010E01010101010E00000E000000
+        0F00000E00000000000301010E0101010F01010E01010101010E00000E000000
+        0F00000E00000000000301010E0101010F01010E01010101010E030000000000
+        0000000000000000030303010101010101010101010101010E030303000E0000
+        0003000E0000000303030303010E0101010E010E0101010E0303030300000000
+        00030000000000030303030301010101010E01010101010E0303030303000000
+        030303000000030303030303030101010E03030101010E030303030303000E00
+        030303000E0003030303030303010E010E0303010E010E030303030303000000
+        030303000000030303030303030101010E03030101010E030303030303030303
+        0303030303030303030303030303030303030303030303030303}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = sb1Click
+    end
+    object Label2: TLabel
+      Left = 2
+      Top = 8
+      Width = 140
+      Height = 13
+      Caption = 'C'#243'digo Fornecedor.......:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label3: TLabel
+      Left = 498
+      Top = 8
+      Width = 41
+      Height = 13
+      Caption = 'Pad'#227'o:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label4: TLabel
+      Left = 16
+      Top = 120
+      Width = 5
+      Height = 13
+    end
+    object Label5: TLabel
+      Left = 400
+      Top = 120
+      Width = 5
+      Height = 13
+    end
+    object lbl_codbar: TLabel
+      Left = 1
+      Top = 72
+      Width = 140
+      Height = 13
+      Caption = 'C'#243'digos de Barras........:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object sb2: TSpeedButton
+      Left = 678
+      Top = 66
+      Width = 23
+      Height = 22
+      Hint = 'Procurar Arquivo a ser importado'
+      Glyph.Data = {
+        36060000424D3606000000000000360400002800000020000000100000000100
+        08000000000000020000C40E0000C40E00000001000000000000000000008080
+        8000000080000080800000800000808000008000000080008000408080004040
+        0000FF80000080400000FF00400000408000FFFFFF00C0C0C0000000FF0000FF
+        FF0000FF0000FFFF0000FF000000FF00FF0080FFFF0080FF0000FFFF8000FF80
+        80008000FF004080FF00C0DCC000F0CAA60004040400080808000C0C0C001111
+        1100161616001C1C1C002222220029292900555555004D4D4D00424242003939
+        3900807CFF005050FF009300D600FFECCC00C6D6EF00D6E7E70090A9AD000000
+        330000006600000099000000CC00003300000033330000336600003399000033
+        CC000033FF00006600000066330000666600006699000066CC000066FF000099
+        00000099330000996600009999000099CC000099FF0000CC000000CC330000CC
+        660000CC990000CCCC0000CCFF0000FF660000FF990000FFCC00330000003300
+        330033006600330099003300CC003300FF003333000033333300333366003333
+        99003333CC003333FF00336600003366330033666600336699003366CC003366
+        FF00339900003399330033996600339999003399CC003399FF0033CC000033CC
+        330033CC660033CC990033CCCC0033CCFF0033FF330033FF660033FF990033FF
+        CC0033FFFF00660000006600330066006600660099006600CC006600FF006633
+        00006633330066336600663399006633CC006633FF0066660000666633006666
+        6600666699006666CC00669900006699330066996600669999006699CC006699
+        FF0066CC000066CC330066CC990066CCCC0066CCFF0066FF000066FF330066FF
+        990066FFCC00CC00FF00FF00CC009999000099339900990099009900CC009900
+        000099333300990066009933CC009900FF009966000099663300993366009966
+        99009966CC009933FF009999330099996600999999009999CC009999FF0099CC
+        000099CC330066CC660099CC990099CCCC0099CCFF0099FF000099FF330099CC
+        660099FF990099FFCC0099FFFF00CC00000099003300CC006600CC009900CC00
+        CC0099330000CC333300CC336600CC339900CC33CC00CC33FF00CC660000CC66
+        330099666600CC669900CC66CC009966FF00CC990000CC993300CC996600CC99
+        9900CC99CC00CC99FF00CCCC0000CCCC3300CCCC6600CCCC9900CCCCCC00CCCC
+        FF00CCFF0000CCFF330099FF6600CCFF9900CCFFCC00CCFFFF00CC003300FF00
+        6600FF009900CC330000FF333300FF336600FF339900FF33CC00FF33FF00FF66
+        0000FF663300CC666600FF669900FF66CC00CC66FF00FF990000FF993300FF99
+        6600FF999900FF99CC00FF99FF00FFCC0000FFCC3300FFCC6600FFCC9900FFCC
+        CC00FFCCFF00FFFF3300CCFF6600FFFF9900FFFFCC006666FF0066FF660066FF
+        FF00FF666600FF66FF00FFFF66002100A5005F5F5F0077777700030303030303
+        0303030303030303030303030303030303030303030303030303030303030303
+        030303030303030303030E0E0E0E0E0E030303030E0E0E0E0E0E000000000003
+        0303030300000000000301010101010E0303030301010101010E000E00000003
+        03030303000E00000003010E0101010E03030303010E0101010E000E00000003
+        03030303000E00000003010E0101010E0E030E0E010E0101010E000000000000
+        00030000000000000003010101010101010E010101010101010E00000E000000
+        0000000E00000000000301010E0101010101010E01010101010E00000E000000
+        0F00000E00000000000301010E0101010F01010E01010101010E00000E000000
+        0F00000E00000000000301010E0101010F01010E01010101010E030000000000
+        0000000000000000030303010101010101010101010101010E030303000E0000
+        0003000E0000000303030303010E0101010E010E0101010E0303030300000000
+        00030000000000030303030301010101010E01010101010E0303030303000000
+        030303000000030303030303030101010E03030101010E030303030303000E00
+        030303000E0003030303030303010E010E0303010E010E030303030303000000
+        030303000000030303030303030101010E03030101010E030303030303030303
+        0303030303030303030303030303030303030303030303030303}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = sb2Click
+    end
+    object NOMARQ: TEdit
+      Left = 144
+      Top = 24
+      Width = 534
+      Height = 21
+      BevelInner = bvNone
+      BevelKind = bkSoft
+      BevelOuter = bvRaised
+      TabOrder = 1
+      Text = 'C:\SGE\PRO17.DBF'
+      OnExit = NOMARQExit
+    end
+    object stAtrib: TStaticText
+      Left = 143
+      Top = 48
+      Width = 534
+      Height = 17
+      Alignment = taCenter
+      AutoSize = False
+      BevelInner = bvLowered
+      BevelKind = bkSoft
+      BorderStyle = sbsSunken
+      TabOrder = 2
+    end
+    object CODFOR: TEdit
+      Left = 144
+      Top = 2
+      Width = 62
+      Height = 21
+      BevelInner = bvNone
+      BevelKind = bkSoft
+      BevelOuter = bvRaised
+      TabOrder = 0
+      OnExit = CODFORExit
+      OnKeyPress = CODFORKeyPress
+    end
+    object stNomFor: TStaticText
+      Left = 205
+      Top = 3
+      Width = 289
+      Height = 19
+      Alignment = taCenter
+      AutoSize = False
+      BevelInner = bvLowered
+      BevelKind = bkSoft
+      BorderStyle = sbsSunken
+      TabOrder = 3
+    end
+    object stPadrao: TStaticText
+      Left = 537
+      Top = 3
+      Width = 137
+      Height = 19
+      Alignment = taCenter
+      AutoSize = False
+      BevelInner = bvLowered
+      BevelKind = bkSoft
+      BorderStyle = sbsSunken
+      TabOrder = 4
+    end
+    object NOMARQ_CODBAR: TEdit
+      Left = 143
+      Top = 67
+      Width = 534
+      Height = 21
+      BevelInner = bvNone
+      BevelKind = bkSoft
+      BevelOuter = bvRaised
+      TabOrder = 5
+      Text = 'C:\SGE\PRO17.DBF'
+      OnExit = NOMARQ_CODBARExit
+    end
+    object stAtrib_codbar: TStaticText
+      Left = 142
+      Top = 87
+      Width = 534
+      Height = 17
+      Alignment = taCenter
+      AutoSize = False
+      BevelInner = bvLowered
+      BevelKind = bkSoft
+      BorderStyle = sbsSunken
+      TabOrder = 6
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 306
+    Width = 713
+    Height = 175
+    Align = alBottom
+    ParentColor = True
+    TabOrder = 1
+    object GroupBox1: TGroupBox
+      Left = 1
+      Top = 1
+      Width = 184
+      Height = 173
+      Align = alLeft
+      Caption = 'Campos a serem Atualizados'
+      TabOrder = 0
+      object cb_codbarras: TCheckBox
+        Left = 10
+        Top = 16
+        Width = 112
+        Height = 17
+        Caption = 'C'#243'digo de Barras'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+      end
+      object cb_nome: TCheckBox
+        Left = 10
+        Top = 31
+        Width = 112
+        Height = 17
+        Caption = 'Descri'#231#227'o'
+        TabOrder = 1
+      end
+      object cb_codfor: TCheckBox
+        Left = 10
+        Top = 46
+        Width = 112
+        Height = 17
+        Caption = 'C'#243'digo Fornecedor'
+        TabOrder = 2
+      end
+      object cb_und: TCheckBox
+        Left = 10
+        Top = 62
+        Width = 112
+        Height = 17
+        Caption = 'Unidade de Medida'
+        TabOrder = 3
+      end
+      object cb_pcofab: TCheckBox
+        Left = 10
+        Top = 78
+        Width = 160
+        Height = 17
+        Caption = 'Pre'#231'o de Venda(01)/F'#225'brica'
+        Checked = True
+        State = cbChecked
+        TabOrder = 4
+      end
+      object cb_pcomax: TCheckBox
+        Left = 10
+        Top = 95
+        Width = 112
+        Height = 17
+        Caption = 'Pre'#231'o M'#225'ximo'
+        Checked = True
+        State = cbChecked
+        TabOrder = 5
+      end
+      object cb_codcon: TCheckBox
+        Left = 10
+        Top = 142
+        Width = 112
+        Height = 17
+        Caption = 'C'#243'digo Controle'
+        TabOrder = 6
+      end
+      object CB_PCO02: TCheckBox
+        Left = 10
+        Top = 110
+        Width = 112
+        Height = 17
+        Caption = 'Pre'#231'o de Venda 02'
+        Checked = True
+        State = cbChecked
+        TabOrder = 7
+      end
+      object CB_PMC02: TCheckBox
+        Left = 10
+        Top = 126
+        Width = 112
+        Height = 17
+        Caption = 'Pre'#231'o M'#225'ximo 02'
+        TabOrder = 8
+      end
+    end
+    object RG_AUMQDO: TRadioGroup
+      Left = 185
+      Top = 1
+      Width = 133
+      Height = 173
+      Align = alLeft
+      Caption = 'Ajustar Pre'#231'os'
+      ItemIndex = 0
+      Items.Strings = (
+        'Todos'
+        'Quando Aumentou'
+        'Quando Baixou')
+      TabOrder = 1
+    end
+    object cb_cadfor: TCheckBox
+      Left = 325
+      Top = 8
+      Width = 191
+      Height = 17
+      Caption = 'Cadastrar Fornecedor se n'#227'o existir'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+    end
+    object RG_TIPOIMP: TRadioGroup
+      Left = 322
+      Top = 33
+      Width = 185
+      Height = 101
+      Caption = 'Importar'
+      ItemIndex = 0
+      Items.Strings = (
+        'Todos'
+        'So Cadastrados'
+        'So N'#227'o Cadastrados')
+      TabOrder = 3
+    end
+    object bbIniciar: TBitBtn
+      Left = 549
+      Top = 2
+      Width = 137
+      Height = 45
+      Caption = '&Iniciar Agora'
+      TabOrder = 4
+      OnClick = bbIniciarClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+        555555555555555555555555555555555555555555FF55555555555559055555
+        55555555577FF5555555555599905555555555557777F5555555555599905555
+        555555557777FF5555555559999905555555555777777F555555559999990555
+        5555557777777FF5555557990599905555555777757777F55555790555599055
+        55557775555777FF5555555555599905555555555557777F5555555555559905
+        555555555555777FF5555555555559905555555555555777FF55555555555579
+        05555555555555777FF5555555555557905555555555555777FF555555555555
+        5990555555555555577755555555555555555555555555555555}
+      NumGlyphs = 2
+    end
+    object bbImprimir: TBitBtn
+      Left = 549
+      Top = 46
+      Width = 137
+      Height = 45
+      Caption = '&Imprimir'
+      Enabled = False
+      TabOrder = 5
+      OnClick = bbImprimirClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
+        00033FFFFFFFFFFFFFFF0888888888888880777777777777777F088888888888
+        8880777777777777777F0000000000000000FFFFFFFFFFFFFFFF0F8F8F8F8F8F
+        8F80777777777777777F08F8F8F8F8F8F9F0777777777777777F0F8F8F8F8F8F
+        8F807777777777777F7F0000000000000000777777777777777F3330FFFFFFFF
+        03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
+        03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
+        33333337F3FF7F3733333330F08F0F0333333337F7737F7333333330FFFF0033
+        33333337FFFF7733333333300000033333333337777773333333}
+      NumGlyphs = 2
+    end
+    object bbSair: TBitBtn
+      Left = 549
+      Top = 90
+      Width = 137
+      Height = 45
+      Caption = '&Sair'
+      TabOrder = 6
+      OnClick = bbSairClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00330000000000
+        03333377777777777F333301BBBBBBBB033333773F3333337F3333011BBBBBBB
+        0333337F73F333337F33330111BBBBBB0333337F373F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337FF3337F33330111B0BBBB
+        0333337F337733337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F3F7F33337F333301E10BBBBB0333337F7F7F33337F333301EE0BBBBB
+        0333337F777FFFFF7F3333000000000003333377777777777333}
+      NumGlyphs = 2
+    end
+  end
+  object gb_etapa: TGroupBox
+    Left = 0
+    Top = 481
+    Width = 713
+    Height = 52
+    Align = alBottom
+    Caption = 'Progresso do Processamento Etapa'
+    TabOrder = 2
+    Visible = False
+    object Gauge_etapa: TGauge
+      Left = 2
+      Top = 13
+      Width = 709
+      Height = 37
+      Align = alBottom
+      Progress = 0
+    end
+  end
+  object gb_geral: TGroupBox
+    Left = 0
+    Top = 533
+    Width = 713
+    Height = 52
+    Align = alBottom
+    Caption = 'Progresso do Processamento Geral'
+    TabOrder = 3
+    Visible = False
+    object Gauge_geral: TGauge
+      Left = 2
+      Top = 13
+      Width = 709
+      Height = 37
+      Align = alBottom
+      Progress = 0
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 0
+    Top = 0
+    Width = 713
+    Height = 105
+    Align = alTop
+    Caption = 'Pre'#231'os Disponiveis para Migra'#231#227'o:'
+    TabOrder = 4
+  end
+  object opd1: TOpenDialog
+    Left = 584
+    Top = 24
+  end
+  object U_imp_precos: TUpdateSQL
+    ModifySQL.Strings = (
+      'update CADPRO_IMP_PRECO'
+      'set'
+      '  PDIP_CODPRO = :PDIP_CODPRO,'
+      '  PDIP_CODFOR = :PDIP_CODFOR,'
+      '  PDIP_CODFAB = :PDIP_CODFAB,'
+      '  PDIP_NOMFAB = :PDIP_NOMFAB,'
+      '  PDIP_DESCRICAO = :PDIP_DESCRICAO,'
+      '  PDIP_APRESENTACAO = :PDIP_APRESENTACAO,'
+      '  PDIP_PMC = :PDIP_PMC,'
+      '  PDIP_PCO_FAB = :PDIP_PCO_FAB,'
+      '  PDIP_PMC_FRACAO = :PDIP_PMC_FRACAO,'
+      '  PDIP_QTDFRAC = :PDIP_QTDFRAC,'
+      '  PDIP_TABELA = :PDIP_TABELA,'
+      '  PDIP_PORTARIA = :PDIP_PORTARIA,'
+      '  PDIP_EDICAO = :PDIP_EDICAO,'
+      '  PDIP_DATAVIG = :PDIP_DATAVIG,'
+      '  PDIP_CODBAR = :PDIP_CODBAR,'
+      '  PDIP_ALIQ = :PDIP_ALIQ,'
+      '  PDIP_TIPO = :PDIP_TIPO'
+      'where'
+      '  PDIP_CODPRO = :OLD_PDIP_CODPRO')
+    InsertSQL.Strings = (
+      'insert into CADPRO_IMP_PRECO'
+      
+        '  (PDIP_CODPRO, PDIP_CODFOR, PDIP_CODFAB, PDIP_NOMFAB, PDIP_DESC' +
+        'RICAO, '
+      
+        '   PDIP_APRESENTACAO, PDIP_PMC, PDIP_PCO_FAB, PDIP_PMC_FRACAO, P' +
+        'DIP_QTDFRAC, '
+      
+        '   PDIP_TABELA, PDIP_PORTARIA, PDIP_EDICAO, PDIP_DATAVIG, PDIP_C' +
+        'ODBAR, '
+      '   PDIP_ALIQ, PDIP_TIPO)'
+      'values'
+      
+        '  (:PDIP_CODPRO, :PDIP_CODFOR, :PDIP_CODFAB, :PDIP_NOMFAB, :PDIP' +
+        '_DESCRICAO, '
+      
+        '   :PDIP_APRESENTACAO, :PDIP_PMC, :PDIP_PCO_FAB, :PDIP_PMC_FRACA' +
+        'O, :PDIP_QTDFRAC, '
+      
+        '   :PDIP_TABELA, :PDIP_PORTARIA, :PDIP_EDICAO, :PDIP_DATAVIG, :P' +
+        'DIP_CODBAR, '
+      '   :PDIP_ALIQ, :PDIP_TIPO)')
+    DeleteSQL.Strings = (
+      'delete from CADPRO_IMP_PRECO'
+      'where'
+      '  PDIP_CODPRO = :OLD_PDIP_CODPRO')
+    Left = 480
+    Top = 136
+  end
+  object cds_imp_precos: TQuery
+    CachedUpdates = True
+    DatabaseName = 'SG_ASSOC'
+    SQL.Strings = (
+      'Select * from CADPRO_IMP_PRECO')
+    UpdateObject = U_imp_precos
+    Left = 528
+    Top = 136
+    object cds_imp_precosPDIP_CODPRO: TStringField
+      FieldName = 'PDIP_CODPRO'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_CODPRO'
+    end
+    object cds_imp_precosPDIP_CODFOR: TFloatField
+      FieldName = 'PDIP_CODFOR'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_CODFOR'
+    end
+    object cds_imp_precosPDIP_CODFAB: TFloatField
+      FieldName = 'PDIP_CODFAB'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_CODFAB'
+    end
+    object cds_imp_precosPDIP_NOMFAB: TStringField
+      FieldName = 'PDIP_NOMFAB'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_NOMFAB'
+      Size = 60
+    end
+    object cds_imp_precosPDIP_PMC: TFloatField
+      FieldName = 'PDIP_PMC'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_PMC'
+    end
+    object cds_imp_precosPDIP_PCO_FAB: TFloatField
+      FieldName = 'PDIP_PCO_FAB'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_PCO_FAB'
+    end
+    object cds_imp_precosPDIP_PMC_FRACAO: TFloatField
+      FieldName = 'PDIP_PMC_FRACAO'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_PMC_FRACAO'
+    end
+    object cds_imp_precosPDIP_QTDFRAC: TFloatField
+      FieldName = 'PDIP_QTDFRAC'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_QTDFRAC'
+    end
+    object cds_imp_precosPDIP_TABELA: TFloatField
+      FieldName = 'PDIP_TABELA'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_TABELA'
+    end
+    object cds_imp_precosPDIP_PORTARIA: TStringField
+      FieldName = 'PDIP_PORTARIA'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_PORTARIA'
+      Size = 3
+    end
+    object cds_imp_precosPDIP_EDICAO: TFloatField
+      FieldName = 'PDIP_EDICAO'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_EDICAO'
+    end
+    object cds_imp_precosPDIP_DATAVIG: TDateTimeField
+      FieldName = 'PDIP_DATAVIG'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_DATAVIG'
+    end
+    object cds_imp_precosPDIP_CODBAR: TStringField
+      FieldName = 'PDIP_CODBAR'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_CODBAR'
+    end
+    object cds_imp_precosPDIP_ALIQ: TFloatField
+      FieldName = 'PDIP_ALIQ'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_ALIQ'
+    end
+    object cds_imp_precosPDIP_TIPO: TFloatField
+      FieldName = 'PDIP_TIPO'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_TIPO'
+    end
+    object cds_imp_precosPDIP_DESCRICAO: TStringField
+      FieldName = 'PDIP_DESCRICAO'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_DESCRICAO'
+      Size = 60
+    end
+    object cds_imp_precosPDIP_APRESENTACAO: TStringField
+      FieldName = 'PDIP_APRESENTACAO'
+      Origin = 'SG_ASSOC.CADPRO_IMP_PRECO.PDIP_APRESENTACAO'
+      Size = 60
+    end
+  end
+end

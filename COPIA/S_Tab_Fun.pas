@@ -1,0 +1,426 @@
+unit S_Tab_Fun;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, Buttons, S_DM1, S_DM2,func, db, dbtables, RDprint,
+  Gauges, S_SQL, Mask, lerarq,S_Tab05,  S_Loc, ComCtrls,S_RCli, CheckLst, S_SelEmp;
+
+type
+  TFrm_Tab_Fun = class(TForm)
+    Panel1: TPanel;
+    Panel2: TPanel;
+    BitBtn1: TBitBtn;
+    BitBtn2: TBitBtn;
+    GroupBox2: TGroupBox;
+    Gauge1: TGauge;
+    RG_PERIODO: TGroupBox;
+    Label11: TLabel;
+    MDT1: TMaskEdit;
+    MDT2: TMaskEdit;
+    Label10: TLabel;
+    Label1: TLabel;
+    MES: TEdit;
+    ANO: TEdit;
+    Label2: TLabel;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    GroupBox1: TGroupBox;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Bevel1: TBevel;
+    Bevel2: TBevel;
+    Bevel3: TBevel;
+    Bevel4: TBevel;
+    NUMCOL: TEdit;
+    INTCOL: TEdit;
+    RG_TPCOL: TRadioGroup;
+    CB_AVPTPI: TCheckBox;
+    CB_MPAGGR: TCheckBox;
+    CB_GRUPO: TCheckBox;
+    CB_AVPIPF: TCheckBox;
+    CB_MPAGSG: TCheckBox;
+    CB_SGRUPO: TCheckBox;
+    St_NomRel: TStaticText;
+    lbl_cidade: TStaticText;
+    CODFUN: TEdit;
+    lbx_codfun: TListBox;
+    OMITIR_FUN: TCheckBox;
+    TsOutrosFiltros: TTabSheet;
+    StaticText3: TStaticText;
+    PALAVRA: TEdit;
+    procedure BitBtn2Click(Sender: TObject);
+    procedure BitBtn1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure MDT1Exit(Sender: TObject);
+    procedure MDT2Exit(Sender: TObject);
+    procedure MESExit(Sender: TObject);
+    procedure INTCOLKeyPress(Sender: TObject; var Key: Char);
+    procedure busca_periodo(pstatus : string);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure CODFUNExit(Sender: TObject);
+    procedure CODFUNKeyPress(Sender: TObject; var Key: Char);
+    procedure lbx_codfunKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure PALAVRAExit(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    Form_SelEmp: TFrm_SelEmp;
+  end;
+
+var
+  Frm_Tab_Fun: TFrm_Tab_Fun;
+  dia1 : real;
+  mes1 : real;
+  ano1 : real;
+
+  dia2 : real;
+  mes2 : real;
+  ano2 : real;
+  dataaux1 : TDateTime;
+  dataaux2 : TDateTime;
+  dataaux3 : string;
+implementation
+
+uses S_Per2, S_UF, S_Tab_Cli, S_Tab_Loc;
+
+
+{$R *.dfm}
+
+procedure TFrm_Tab_Fun.BitBtn2Click(Sender: TObject);
+begin
+Close;
+end;
+
+procedure TFrm_Tab_Fun.BitBtn1Click(Sender: TObject);
+var
+  x    : Integer;
+  minc : String;
+  i    : integer;
+begin
+  if MES.Visible then begin
+     if (valfloat(mes.Text)<0) or (valfloat(mes.Text)>12) then begin
+         MessageDlg('Mês Inválido.',mtWarning,[mbOk],0);
+         MES.SetFocus;
+         exit;
+     end;
+  end;
+
+  mpaggr   := iif(CB_MPAGGR.Checked,true,false);
+  mpagsg   := iif(CB_MPAGSG.Checked,true,false);
+  rpqtdlp  := DM1.Tb_TDVCATCQTDLIN.AsInteger;
+  fnumcol  := StrtoInt('0'+NUMCOL.Text);
+  fintcol  := StrToInt('0'+INTCOL.Text);
+  ftpcol   := RG_TPCOL.ItemIndex;
+  Frm_SQL.STG_COND.RowCount := 1;
+  Frm_SQl.STG_COND.rows[0].Clear;
+
+  mcinst4 := '';
+  mcinst  := '';
+
+  mcinst2 := fItensListBox(0,lbx_codfun,OMITIR_FUN);
+
+  if trim(mcinst2) <> '' then begin
+     mcinst4 := mcinst4+mcinst+' CFCODFUN '+mcinst2;
+     mcinst  := ' and ';
+  end;
+
+  if trim(PALAVRA.Text) <> '' then begin
+     mcinst4 := mcinst4+mcinst+' CFNOMFUN like '+chr(39)+PALAVRA.Text+'%'+chr(39);
+     mcinst  := ' and ';
+  end;
+
+  x := 1;
+
+  if DM1.Tb_TDVCATCQTDDIV.Value > 1 then begin
+     if valfloat(mes.Text) < 1 then begin
+        MessageDlg('Mês Invalido!',mtWarning,[mbOk],0);
+        MES.SetFocus;
+        exit;
+     end;
+
+     x := 4;
+     fmontadiv('CADTDV',DM1.Tb_TDVCATCDOC.Value,DM1.Tb_TDVCATCNOME.Value,mes.Text,ANO.Text,2);
+  end;
+
+  DM2.Qr_ImpRel.Close;
+  DM2.Qr_ImpRel.SQl.Clear;
+  DM2.Qr_ImpRel.SQL.Add(frpersql('CADTDV',DM1.Tb_TDVCATCDOC.Value,DM1.Tb_TDVCATCNOME.Value,mcinst4,x));
+
+  DM2.Qr_ImpRel.Open;
+
+  if DM2.Qr_ImpRel.Eof then begin
+     MessageDlg('Nada a ser impresso na condição Solicitada',mtWarning,[mbOk],0);
+     exit;
+  end;
+
+  if CB_GRUPO.Checked  then pimpg:=True  else pimpg :=False;
+  if CB_SGRUPO.Checked then pimpsg:=True else pimpsg:=False;
+  if CB_AVPTPI.Checked then pavptpi:=true else pavptpi:=False;
+  if CB_AVPIPF.Checked then pavpipf:= true else pavpipf:=False;
+
+  if RG_PERIODO.Visible then
+     pperiodo:=fperiodo(0,mdt1.text,mdt2.Text)
+  else
+     pperiodo:='';
+  psini:=0;
+
+//*****************************************************************************
+//********************** Vendas do Periodo inicio******************************
+//*****************************************************************************
+pVdaPer:=fVerificaVendas('CADTDV',DM1.Tb_TDVCATCDOC.Value,DM1.Tb_TDVCATCNOME.Value,MDT1.Text,MDT2.Text);
+//*****************************************************************************
+//********************** Vendas do Periodo fim   ******************************
+//*****************************************************************************
+
+
+  plocori := 'FRM_TAB_FUN';
+  GroupBox2.Visible:=True;
+  ftab05irel('CADTDV','',1,0);
+  GroupBox2.Visible:=False;
+end;
+
+procedure TFrm_Tab_Fun.FormCreate(Sender: TObject);
+begin
+   Application.CreateForm(TFrm_SelEmp, Form_SelEmp);
+
+   St_NomRel.Caption := 'Relatorio: '+per2_NomeRel;
+
+   fltdvca(0,0,per2_Doc,per2_NomeRel,'CADTDV');
+
+   if Trim(DM1.Tb_TDVCATCPERIODO.Value) <> '' then begin
+      RG_PERIODO.Visible:=True;
+      MDT1.Text:=FormatDatetime(fdt2, date);
+      MDT2.Text:=FormatDatetime(fdt2, date);
+   end;
+
+   if DM1.Tb_TDVCATCQTDDIV.Value>1 then begin
+      MES.Text      :=FormatDateTime('mm',Date);
+      ANO.Text      :=FormatDateTime('yyyy',date);
+      MES.Visible   :=True;
+      ANO.Visible   :=True;
+      label1.Visible:=True;
+      label2.Visible:=True;
+   end;
+
+   NUMCOL.Text       :=DM1.Tb_TDVCATCNUMCOL.AsString;
+   INTCOL.Text       :=DM1.Tb_TDVCATCINTCOL.AsString;
+   RG_TPCOL.ItemIndex:=DM1.Tb_TDVCATCTPCOL.AsInteger;
+   CB_GRUPO.Checked  :=DM1.Tb_TDVCATCIMPG.Value=0;
+   CB_SGRUPO.Checked :=DM1.Tb_TDVCATCIMPSG.Value=0;
+   CB_AVPTPI.Checked :=DM1.Tb_TDVCATCAVPTPI.Value=0;
+   CB_AVPIPF.Checked :=DM1.Tb_TDVCATCAVPIPF.Value=0;
+
+   if DM1.Tb_TDVCATCMPAGGR.Value=1 then
+      CB_MPAGGR.Checked:=True
+   else
+      CB_MPAGGR.Checked:=False;
+end;
+
+procedure TFrm_Tab_Fun.MDT1Exit(Sender: TObject);
+begin
+   if Trim(MDT1.Text)<>'/  /' then begin
+      Try
+        MDT1.Text:=FormatDateTime('dd/mm/yyyy',StrToDate(MDT1.Text));
+      except
+        ShowMessage('Data Invalida!');
+        MDT1.SetFocus;
+        exit;
+      end
+   end;
+end;
+
+procedure TFrm_Tab_Fun.MDT2Exit(Sender: TObject);
+begin
+   if Trim(MDT2.Text)<>'/  /' then begin
+      Try
+        MDT2.Text:=FormatDateTime('dd/mm/yyyy',StrToDate(MDT2.Text));
+      except
+        ShowMessage('Data Invalida!');
+        MDT2.SetFocus;
+        exit;
+      end
+   end;
+
+   if (Trim(MDT1.Text)<>'/  /') and (TRIM(MDT2.Text)<>'/  /') then begin
+      if StrToDate(MDT2.Text)<StrToDate(MDT1.Text) then begin
+         ShowMessage('Data Final Menor que Data Inicial. Invalido!');
+         MDT1.SetFocus;
+         exit;
+      end;
+   end;
+end;
+
+procedure TFrm_Tab_Fun.INTCOLKeyPress(Sender: TObject; var Key: Char);
+begin
+   If not (Key in ['0'..'9']) and (Key<>#8) then Key:=#0;
+end;
+
+procedure TFrm_Tab_Fun.MESExit(Sender: TObject);
+begin
+   if (valfloat(mes.Text)<0) or (valfloat(mes.Text)>12) then begin
+      MessageDlg('Mês Inválido.',mtWarning,[mbOk],0);
+      MES.SetFocus;
+     exit;
+   end;
+end;
+
+procedure TFrm_Tab_Fun.busca_periodo(pstatus : string);
+var
+ i : integer;
+begin
+ dia1 := 1;
+ mes1 := strtofloat(copy(mdt1.text,4,2));
+ ano1 := strtofloat(copy(mdt1.text,7,4));
+ mes1 := mes1-1;
+ if mes1=0 then begin
+    mes1 := 12;
+    ano1 := ano1-1;
+ end;
+
+ dia2 := StrToFloat(copy(mdt2.text,1,2));
+ mes2 := strtofloat(copy(mdt2.text,4,2));
+ ano2 := strtofloat(copy(mdt2.text,7,4));
+ mes2 := mes2-1;
+
+ if mes2=0 then begin
+    mes2 := 12;
+    ano2 := ano2-1;
+ end;
+
+///// para fevereiro
+
+ if (dia1=30)or(dia1=31) then
+    if mes1=2 then begin
+        for i := 1 to 29 do begin
+           try
+             dataaux1 := strtodate(formatfloat('00',dia1)+'/'+formatfloat('00',mes1)+'/'+formatfloat('0000',ano1));
+           except
+             dia1:= dia1-1;
+           end;
+        end;
+    end;
+
+    if (dia2=30)or(dia2=31) then
+       if mes2=2 then begin
+          for i := 1 to 29 do begin
+           try
+             dataaux2 := strtodate(formatfloat('00',dia2)+'/'+formatfloat('00',mes2)+'/'+formatfloat('0000',ano2));
+           except
+             dia2:= dia2-1;
+           end;
+        end;
+    end;
+/////////////////////////
+///// para fevereiro
+
+    if dia1=31 then
+       if mes1<>2 then begin
+          for i := 1 to 31 do begin
+             try
+               dataaux1 := strtodate(formatfloat('00',dia1)+'/'+formatfloat('00',mes1)+'/'+formatfloat('0000',ano1));
+             except
+               dia1:= dia1-1;
+             end;
+          end;
+       end;
+
+    if dia2=31 then
+       if mes2<>2 then begin
+          for i := 1 to 31 do begin
+             try
+               dataaux2 := strtodate(formatfloat('00',dia2)+'/'+formatfloat('00',mes2)+'/'+formatfloat('0000',ano2));
+             except
+               dia2:= dia2-1;
+             end;
+          end;
+       end;
+/////////////////////////
+
+    dataaux1 := strtodate(formatfloat('00',dia1)+'/'+formatfloat('00',mes1)+'/'+formatfloat('0000',ano1));
+    dataaux2 := strtodate(formatfloat('00',dia2)+'/'+formatfloat('00',mes2)+'/'+formatfloat('0000',ano2));
+end;
+
+procedure TFrm_Tab_Fun.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+
+Form_SelEmp.free;
+Form_SelEmp:=nil;
+if (FormState<>[fsModal]) then
+   Action := caFree;
+end;
+
+procedure TFrm_Tab_Fun.CODFUNExit(Sender: TObject);
+begin
+   if Trim(CODFUN.Text)<>'' then begin
+      if flqr1('CFNOMFUN','CF','CADFUN','N','CFCODFUN',CODFUN.Text) then begin
+         lbx_codfun.Items.Add(CODFUN.Text
+                             +' - '+DM1.Query1.Fields[0].AsString);
+         lbx_codfun.ItemIndex:=lbx_codfun.Items.Count-1;
+
+         CODFUN.text := '';
+         CODFUN.SetFocus;
+      end else begin
+         fmensagem('Funcionário(a) não Cadastrado!',0,['0'],0);
+         CODFUN.text := '';
+         CODFUN.SetFocus;
+      end;
+   end;
+end;
+
+procedure TFrm_Tab_Fun.CODFUNKeyPress(Sender: TObject; var Key: Char);
+begin
+   if (key in ['A'..'Z']) or (key in ['a'..'z']) or (key = '%') then begin
+       CODFUN.Text := fChamafun(0,'frm_Tab_fun',Key);
+   if trim(CODFUN.Text)<>'' then
+      CODFUNExit(Self);
+      key:=#0;
+   end;
+end;
+
+procedure TFrm_Tab_Fun.lbx_codfunKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+if key=46 then
+   if lbx_codfun.ItemIndex>=0 then
+      lbx_codfun.Items.Delete(lbx_codfun.ItemIndex);
+end;
+
+procedure TFrm_Tab_Fun.PALAVRAExit(Sender: TObject);
+begin
+  PALAVRA.Text:=fRetAspas(PALAVRA.Text);
+end;
+
+procedure TFrm_Tab_Fun.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+if key=113 then
+   begin
+   if Form_SelEmp.WindowState=wsMinimized then
+      Form_SelEmp.WindowState:=wsNormal
+   else
+      Form_SelEmp.Show;
+   end
+else
+   begin
+   if pTcAtalho_me<>0 then
+      begin
+      if (Shift=pSfAtalho_me) and (pTcAtalho_me=key) then
+         begin
+         if Form_SelEmp.WindowState=wsMinimized then
+            Form_SelEmp.WindowState:=wsNormal
+         else
+            Form_SelEmp.Show;
+         end;
+      end;
+   end;
+end;
+
+end.
+

@@ -1,0 +1,166 @@
+object Frm_CorrecaoPedPDVDuplicado: TFrm_CorrecaoPedPDVDuplicado
+  Left = 192
+  Top = 124
+  Width = 928
+  Height = 480
+  Caption = 'Frm_CorrecaoPedPDVDuplicado'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = [fsBold]
+  OldCreateOrder = False
+  OnClose = FormClose
+  PixelsPerInch = 96
+  TextHeight = 13
+  object gb_dados: TGroupBox
+    Left = 0
+    Top = 73
+    Width = 912
+    Height = 369
+    Align = alClient
+    Caption = 'Daados que serao apagados:'
+    TabOrder = 0
+    Visible = False
+    object DBGrid1: TDBGrid
+      Left = 2
+      Top = 15
+      Width = 908
+      Height = 352
+      Align = alClient
+      DataSource = src_dadosapagar
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'MS Sans Serif'
+      TitleFont.Style = [fsBold]
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 912
+    Height = 73
+    Align = alTop
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 182
+      Top = 15
+      Width = 70
+      Height = 13
+      Caption = 'Data Inicial:'
+    end
+    object Label2: TLabel
+      Left = 398
+      Top = 15
+      Width = 63
+      Height = 13
+      Caption = 'Data Final:'
+    end
+    object edt_datini: TDateEdit
+      Left = 258
+      Top = 9
+      Width = 98
+      Height = 19
+      Ctl3D = False
+      NumGlyphs = 2
+      ParentCtl3D = False
+      TabOrder = 0
+    end
+    object edt_datfin: TDateEdit
+      Left = 474
+      Top = 9
+      Width = 98
+      Height = 19
+      Ctl3D = False
+      NumGlyphs = 2
+      ParentCtl3D = False
+      TabOrder = 1
+    end
+    object bbLerdados: TBitBtn
+      Left = 64
+      Top = 38
+      Width = 153
+      Height = 25
+      Caption = 'Lerdados'
+      TabOrder = 2
+      OnClick = bbLerdadosClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+        555555555555555555555555555555555555555555FF55555555555559055555
+        55555555577FF5555555555599905555555555557777F5555555555599905555
+        555555557777FF5555555559999905555555555777777F555555559999990555
+        5555557777777FF5555557990599905555555777757777F55555790555599055
+        55557775555777FF5555555555599905555555555557777F5555555555559905
+        555555555555777FF5555555555559905555555555555777FF55555555555579
+        05555555555555777FF5555555555557905555555555555777FF555555555555
+        5990555555555555577755555555555555555555555555555555}
+      NumGlyphs = 2
+    end
+    object bbProcessar: TBitBtn
+      Left = 384
+      Top = 38
+      Width = 153
+      Height = 25
+      Caption = 'Processar'
+      TabOrder = 3
+      OnClick = bbProcessarClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        333333333333333333333333333333333333333FFF33FF333FFF339993370733
+        999333777FF37FF377733339993000399933333777F777F77733333399970799
+        93333333777F7377733333333999399933333333377737773333333333990993
+        3333333333737F73333333333331013333333333333777FF3333333333910193
+        333333333337773FF3333333399000993333333337377737FF33333399900099
+        93333333773777377FF333399930003999333337773777F777FF339993370733
+        9993337773337333777333333333333333333333333333333333333333333333
+        3333333333333333333333333333333333333333333333333333}
+      NumGlyphs = 2
+    end
+    object bbSair: TBitBtn
+      Left = 648
+      Top = 38
+      Width = 153
+      Height = 25
+      Caption = 'Sair'
+      TabOrder = 4
+      OnClick = bbSairClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00330000000000
+        03333377777777777F333301BBBBBBBB033333773F3333337F3333011BBBBBBB
+        0333337F73F333337F33330111BBBBBB0333337F373F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337FF3337F33330111B0BBBB
+        0333337F337733337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F3F7F33337F333301E10BBBBB0333337F7F7F33337F333301EE0BBBBB
+        0333337F777FFFFF7F3333000000000003333377777777777333}
+      NumGlyphs = 2
+    end
+  end
+  object Query1: TQuery
+    Left = 616
+    Top = 65528
+  end
+  object src_dadosapagar: TDataSource
+    DataSet = qr_dadosapaga
+    Left = 536
+    Top = 216
+  end
+  object qr_dadosapaga: TQuery
+    DatabaseName = 'SG_ASSOC'
+    Left = 584
+    Top = 256
+  end
+end

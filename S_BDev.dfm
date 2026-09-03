@@ -1,0 +1,133 @@
+object Frm_BDev: TFrm_BDev
+  Left = 83
+  Top = 198
+  Width = 602
+  Height = 124
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Baixa de Devolu'#231#227'o de Mercadorias'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = [fsBold]
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnClose = FormClose
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 21
+    Top = 25
+    Width = 159
+    Height = 13
+    Caption = 'Informe o N'#250'mero do Titulo:'
+  end
+  object Label2: TLabel
+    Left = 252
+    Top = 24
+    Width = 7
+    Height = 13
+    Caption = '/'
+  end
+  object Label22: TLabel
+    Left = 150
+    Top = 3
+    Width = 27
+    Height = 13
+    Caption = 'NR.:'
+  end
+  object NUMERO: TEdit
+    Left = 182
+    Top = 22
+    Width = 65
+    Height = 19
+    Ctl3D = False
+    ParentCtl3D = False
+    TabOrder = 1
+    OnExit = NUMEROExit
+    OnKeyPress = NUMEROKeyPress
+  end
+  object NOMCLI: TEdit
+    Left = 302
+    Top = 21
+    Width = 280
+    Height = 19
+    Ctl3D = False
+    Enabled = False
+    ParentColor = True
+    ParentCtl3D = False
+    TabOrder = 2
+  end
+  object bbBaixar: TBitBtn
+    Left = 8
+    Top = 51
+    Width = 150
+    Height = 25
+    Caption = '&Baixar'
+    TabOrder = 4
+    OnClick = bbBaixarClick
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000120B0000120B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+      555555555555555555555555555555555555555555FF55555555555559055555
+      55555555577FF5555555555599905555555555557777F5555555555599905555
+      555555557777FF5555555559999905555555555777777F555555559999990555
+      5555557777777FF5555557990599905555555777757777F55555790555599055
+      55557775555777FF5555555555599905555555555557777F5555555555559905
+      555555555555777FF5555555555559905555555555555777FF55555555555579
+      05555555555555777FF5555555555557905555555555555777FF555555555555
+      5990555555555555577755555555555555555555555555555555}
+    NumGlyphs = 2
+  end
+  object bbSair: TBitBtn
+    Left = 354
+    Top = 55
+    Width = 150
+    Height = 25
+    Caption = '&Sair'
+    TabOrder = 5
+    OnClick = bbSairClick
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000120B0000120B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00330000000000
+      03333377777777777F333301BBBBBBBB033333773F3333337F3333011BBBBBBB
+      0333337F73F333337F33330111BBBBBB0333337F373F33337F333301110BBBBB
+      0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+      0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+      0333337F337F33337F333301110BBBBB0333337F337FF3337F33330111B0BBBB
+      0333337F337733337F333301110BBBBB0333337F337F33337F333301110BBBBB
+      0333337F3F7F33337F333301E10BBBBB0333337F7F7F33337F333301EE0BBBBB
+      0333337F777FFFFF7F3333000000000003333377777777777333}
+    NumGlyphs = 2
+  end
+  object DESD: TEdit
+    Left = 261
+    Top = 22
+    Width = 33
+    Height = 19
+    Ctl3D = False
+    ParentCtl3D = False
+    TabOrder = 3
+    Text = 'A'
+    OnExit = DESDExit
+  end
+  object NR: TEdit
+    Left = 182
+    Top = 0
+    Width = 97
+    Height = 19
+    Hint = 'N'#250'mero da Nota de Recebimento'
+    Ctl3D = False
+    Enabled = False
+    ParentCtl3D = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+  end
+end

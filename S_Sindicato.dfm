@@ -1,0 +1,509 @@
+object frm_sindicato: Tfrm_sindicato
+  Left = 234
+  Top = 129
+  Width = 583
+  Height = 428
+  ActiveControl = btn_incluir
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Manuten'#231#227'o Cadastro do Sindicato'
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Courier New'
+  Font.Style = []
+  KeyPreview = True
+  OldCreateOrder = True
+  Position = poMainFormCenter
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  PixelsPerInch = 96
+  TextHeight = 15
+  object tlb_sindicato: TToolBar
+    Left = 0
+    Top = 0
+    Width = 567
+    Height = 33
+    ButtonHeight = 29
+    TabOrder = 0
+    object btn_incluir: TBitBtn
+      Left = 0
+      Top = 2
+      Width = 94
+      Height = 29
+      Cursor = crHandPoint
+      Caption = '&Novo'
+      TabOrder = 0
+      OnClick = btn_incluirClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF0033333333B333
+        333B33FF33337F3333F73BB3777BB7777BB3377FFFF77FFFF77333B000000000
+        0B3333777777777777333330FFFFFFFF07333337F33333337F333330FFFFFFFF
+        07333337F33333337F333330FFFFFFFF07333337F33333337F333330FFFFFFFF
+        07333FF7F33333337FFFBBB0FFFFFFFF0BB37777F3333333777F3BB0FFFFFFFF
+        0BBB3777F3333FFF77773330FFFF000003333337F333777773333330FFFF0FF0
+        33333337F3337F37F3333330FFFF0F0B33333337F3337F77FF333330FFFF003B
+        B3333337FFFF77377FF333B000000333BB33337777777F3377FF3BB3333BB333
+        3BB33773333773333773B333333B3333333B7333333733333337}
+      NumGlyphs = 2
+    end
+    object btn_alterar: TBitBtn
+      Left = 94
+      Top = 2
+      Width = 94
+      Height = 29
+      Cursor = crHandPoint
+      Caption = '&Alterar'
+      TabOrder = 1
+      OnClick = btn_alterarClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333000000
+        000033333377777777773333330FFFFFFFF03FF3FF7FF33F3FF700300000FF0F
+        00F077F777773F737737E00BFBFB0FFFFFF07773333F7F3333F7E0BFBF000FFF
+        F0F077F3337773F3F737E0FBFBFBF0F00FF077F3333FF7F77F37E0BFBF00000B
+        0FF077F3337777737337E0FBFBFBFBF0FFF077F33FFFFFF73337E0BF0000000F
+        FFF077FF777777733FF7000BFB00B0FF00F07773FF77373377373330000B0FFF
+        FFF03337777373333FF7333330B0FFFF00003333373733FF777733330B0FF00F
+        0FF03333737F37737F373330B00FFFFF0F033337F77F33337F733309030FFFFF
+        00333377737FFFFF773333303300000003333337337777777333}
+      NumGlyphs = 2
+    end
+    object btn_cancelar: TBitBtn
+      Left = 188
+      Top = 2
+      Width = 94
+      Height = 29
+      Cursor = crHandPoint
+      Caption = '&Cancelar'
+      TabOrder = 4
+      OnClick = btn_cancelarClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        3333333333FFFFF3333333333999993333333333F77777FFF333333999999999
+        3333333777333777FF3333993333339993333377FF3333377FF3399993333339
+        993337777FF3333377F3393999333333993337F777FF333337FF993399933333
+        399377F3777FF333377F993339993333399377F33777FF33377F993333999333
+        399377F333777FF3377F993333399933399377F3333777FF377F993333339993
+        399377FF3333777FF7733993333339993933373FF3333777F7F3399933333399
+        99333773FF3333777733339993333339933333773FFFFFF77333333999999999
+        3333333777333777333333333999993333333333377777333333}
+      NumGlyphs = 2
+    end
+    object btn_excluir: TBitBtn
+      Left = 282
+      Top = 2
+      Width = 94
+      Height = 29
+      Cursor = crHandPoint
+      Caption = '&Excluir'
+      TabOrder = 2
+      OnClick = btn_excluirClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+        55555FFFFFFF5F55FFF5777777757559995777777775755777F7555555555550
+        305555555555FF57F7F555555550055BB0555555555775F777F55555550FB000
+        005555555575577777F5555550FB0BF0F05555555755755757F555550FBFBF0F
+        B05555557F55557557F555550BFBF0FB005555557F55575577F555500FBFBFB0
+        B05555577F555557F7F5550E0BFBFB00B055557575F55577F7F550EEE0BFB0B0
+        B05557FF575F5757F7F5000EEE0BFBF0B055777FF575FFF7F7F50000EEE00000
+        B0557777FF577777F7F500000E055550805577777F7555575755500000555555
+        05555777775555557F5555000555555505555577755555557555}
+      NumGlyphs = 2
+    end
+    object btn_gravar: TBitBtn
+      Left = 376
+      Top = 2
+      Width = 94
+      Height = 29
+      Cursor = crHandPoint
+      Caption = '&Gravar'
+      Enabled = False
+      TabOrder = 3
+      OnClick = btn_gravarClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        333333FFFFFFFFFFFFF33000077777770033377777777777773F000007888888
+        00037F3337F3FF37F37F00000780088800037F3337F77F37F37F000007800888
+        00037F3337F77FF7F37F00000788888800037F3337777777337F000000000000
+        00037F3FFFFFFFFFFF7F00000000000000037F77777777777F7F000FFFFFFFFF
+        00037F7F333333337F7F000FFFFFFFFF00037F7F333333337F7F000FFFFFFFFF
+        00037F7F333333337F7F000FFFFFFFFF00037F7F333333337F7F000FFFFFFFFF
+        00037F7F333333337F7F000FFFFFFFFF07037F7F33333333777F000FFFFFFFFF
+        0003737FFFFFFFFF7F7330099999999900333777777777777733}
+      NumGlyphs = 2
+    end
+    object btn_sair: TBitBtn
+      Left = 470
+      Top = 2
+      Width = 105
+      Height = 29
+      Cursor = crHandPoint
+      Caption = '&Sair'
+      TabOrder = 5
+      OnClick = btn_sairClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00330000000000
+        03333377777777777F333301111111110333337F333333337F33330111111111
+        0333337F333333337F333301111111110333337F333333337F33330111111111
+        0333337F333333337F333301111111110333337F333333337F33330111111111
+        0333337F3333333F7F333301111111B10333337F333333737F33330111111111
+        0333337F333333337F333301111111110333337F33FFFFF37F3333011EEEEE11
+        0333337F377777F37F3333011EEEEE110333337F37FFF7F37F3333011EEEEE11
+        0333337F377777337F333301111111110333337F333333337F33330111111111
+        0333337FFFFFFFFF7F3333000000000003333377777777777333}
+      NumGlyphs = 2
+    end
+  end
+  object TPanel
+    Left = 0
+    Top = 33
+    Width = 567
+    Height = 5
+    Align = alTop
+    BevelInner = bvLowered
+    Color = clActiveCaption
+    TabOrder = 1
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 38
+    Width = 567
+    Height = 35
+    Align = alTop
+    BevelInner = bvLowered
+    TabOrder = 2
+    object Label1: TLabel
+      Left = 5
+      Top = 13
+      Width = 98
+      Height = 15
+      Caption = 'Pesquisar Por.'
+    end
+    object cb_localizar: TComboBox
+      Left = 105
+      Top = 7
+      Width = 102
+      Height = 23
+      Style = csDropDownList
+      ItemHeight = 15
+      TabOrder = 0
+      Items.Strings = (
+        'NOME'
+        'CODIGO')
+    end
+    object edt_conteudo: TEdit
+      Left = 207
+      Top = 7
+      Width = 266
+      Height = 23
+      CharCase = ecUpperCase
+      TabOrder = 1
+      OnChange = edt_conteudoChange
+    end
+    object btn_atualizar: TBitBtn
+      Left = 476
+      Top = 5
+      Width = 95
+      Height = 25
+      Caption = 'Atualizar'
+      TabOrder = 2
+      OnClick = btn_atualizarClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33033333333333333F7F3333333333333000333333333333F777333333333333
+        000333333333333F777333333333333000333333333333F77733333333333300
+        033333333FFF3F777333333700073B703333333F7773F77733333307777700B3
+        33333377333777733333307F8F8F7033333337F333F337F3333377F8F9F8F773
+        3333373337F3373F3333078F898F870333337F33F7FFF37F333307F99999F703
+        33337F377777337F3333078F898F8703333373F337F33373333377F8F9F8F773
+        333337F3373337F33333307F8F8F70333333373FF333F7333333330777770333
+        333333773FF77333333333370007333333333333777333333333}
+      NumGlyphs = 2
+    end
+  end
+  object Panel_Edicao: TPanel
+    Left = 0
+    Top = 226
+    Width = 567
+    Height = 164
+    Align = alBottom
+    BevelInner = bvLowered
+    Enabled = False
+    TabOrder = 3
+    object Label2: TLabel
+      Left = 5
+      Top = 3
+      Width = 42
+      Height = 15
+      Caption = 'C'#243'digo'
+    end
+    object Label3: TLabel
+      Left = 61
+      Top = 3
+      Width = 119
+      Height = 15
+      Caption = 'Nome do Sindicato'
+    end
+    object Label4: TLabel
+      Left = 403
+      Top = 3
+      Width = 28
+      Height = 15
+      Caption = 'Cnpj'
+    end
+    object Label5: TLabel
+      Left = 5
+      Top = 45
+      Width = 56
+      Height = 15
+      Caption = 'Endere'#231'o'
+    end
+    object Label6: TLabel
+      Left = 5
+      Top = 83
+      Width = 42
+      Height = 15
+      Caption = 'Bairro'
+    end
+    object Label7: TLabel
+      Left = 274
+      Top = 84
+      Width = 42
+      Height = 15
+      Caption = 'Cidade'
+    end
+    object Label8: TLabel
+      Left = 545
+      Top = 84
+      Width = 21
+      Height = 15
+      Caption = 'U.F'
+    end
+    object Label13: TLabel
+      Left = 456
+      Top = 120
+      Width = 112
+      Height = 15
+      Caption = 'Vlr. Seg de Vida'
+    end
+    object Label12: TLabel
+      Left = 337
+      Top = 120
+      Width = 112
+      Height = 15
+      Caption = 'Vlr. Alimenta'#231#227'o'
+    end
+    object Label11: TLabel
+      Left = 219
+      Top = 120
+      Width = 98
+      Height = 15
+      Caption = '% Reaj Sal'#225'rio'
+    end
+    object Label10: TLabel
+      Left = 105
+      Top = 120
+      Width = 56
+      Height = 15
+      Caption = 'Telefone'
+    end
+    object Label9: TLabel
+      Left = 5
+      Top = 120
+      Width = 21
+      Height = 15
+      Caption = 'Cep'
+    end
+    object edt_codsindicato: TDBEdit
+      Left = 5
+      Top = 18
+      Width = 54
+      Height = 23
+      DataField = 'SDCODSIND'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 0
+      OnExit = edt_codsindicatoExit
+    end
+    object edt_nomesindicato: TDBEdit
+      Left = 60
+      Top = 18
+      Width = 340
+      Height = 23
+      DataField = 'SDNOME'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 1
+    end
+    object edt_pfpj: TDBEdit
+      Left = 403
+      Top = 17
+      Width = 166
+      Height = 23
+      DataField = 'SDCNPJ'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 2
+      OnExit = edt_pfpjExit
+    end
+    object edt_endereco: TDBEdit
+      Left = 5
+      Top = 60
+      Width = 396
+      Height = 23
+      DataField = 'SDENDE'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 3
+    end
+    object edt_codbairro: TDBEdit
+      Left = 5
+      Top = 98
+      Width = 53
+      Height = 23
+      DataField = 'SDBAIRRO'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 4
+      OnKeyPress = edt_codbairroKeyPress
+    end
+    object edt_nomebairro: TDBEdit
+      Left = 59
+      Top = 98
+      Width = 211
+      Height = 23
+      DataField = 'SDNOMEBAIRRO'
+      DataSource = DM6.Ds_Sind
+      Enabled = False
+      TabOrder = 5
+    end
+    object edt_codcidade: TDBEdit
+      Left = 274
+      Top = 98
+      Width = 54
+      Height = 23
+      DataField = 'SDCODCIDA'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 6
+      OnExit = edt_codcidadeExit
+      OnKeyPress = edt_codcidadeKeyPress
+    end
+    object edt_nomecidade: TDBEdit
+      Left = 330
+      Top = 98
+      Width = 211
+      Height = 23
+      DataField = 'SDNOMECIDA'
+      DataSource = DM6.Ds_Sind
+      Enabled = False
+      TabOrder = 7
+    end
+    object edt_ufed: TDBEdit
+      Left = 544
+      Top = 98
+      Width = 24
+      Height = 23
+      DataField = 'SDUFED'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 8
+    end
+    object edt_seguro: TDBEdit
+      Left = 455
+      Top = 135
+      Width = 113
+      Height = 23
+      DataField = 'SDVLRSEG'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 13
+    end
+    object edt_alimentacao: TDBEdit
+      Left = 336
+      Top = 135
+      Width = 116
+      Height = 23
+      DataField = 'SDVLRVALIME'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 12
+    end
+    object edt_percentual: TDBEdit
+      Left = 219
+      Top = 135
+      Width = 114
+      Height = 23
+      DataField = 'SDPERSAL'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 11
+    end
+    object edt_fone: TDBEdit
+      Left = 105
+      Top = 135
+      Width = 109
+      Height = 23
+      DataField = 'SDFONE'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 10
+      OnExit = edt_foneExit
+    end
+    object edt_cep: TDBEdit
+      Left = 5
+      Top = 135
+      Width = 97
+      Height = 23
+      DataField = 'SDCEP'
+      DataSource = DM6.Ds_Sind
+      TabOrder = 9
+      OnExit = edt_cepExit
+    end
+  end
+  object Grid: TDBGrid
+    Left = 0
+    Top = 73
+    Width = 567
+    Height = 153
+    Align = alClient
+    DataSource = DM6.Ds_Sind
+    Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit]
+    TabOrder = 4
+    TitleFont.Charset = ANSI_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Courier New'
+    TitleFont.Style = []
+    OnDblClick = GridDblClick
+    OnExit = GridExit
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'SDCODSIND'
+        Title.Alignment = taCenter
+        Title.Caption = 'C'#243'digo'
+        Width = 96
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'SDNOME'
+        Title.Caption = 'Descri'#231#227'o'
+        Width = 443
+        Visible = True
+      end>
+  end
+end

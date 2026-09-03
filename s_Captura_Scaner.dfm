@@ -1,0 +1,152 @@
+object Frm_Captura_Scaner: TFrm_Captura_Scaner
+  Left = 192
+  Top = 124
+  Width = 928
+  Height = 479
+  Caption = 'Capturar Imagem de um Scaner'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 400
+    Width = 912
+    Height = 41
+    Align = alBottom
+    TabOrder = 0
+    object sbn_tirar: TSpeedButton
+      Left = -1
+      Top = 0
+      Width = 200
+      Height = 40
+      Caption = 'Capturar Agora'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33033333333333333F7F3333333333333000333333333333F777333333333333
+        000333333333333F777333333333333000333333333333F77733333333333300
+        033333333FFF3F777333333700073B703333333F7773F77733333307777700B3
+        33333377333777733333307F8F8F7033333337F333F337F3333377F8F9F8F773
+        3333373337F3373F3333078F898F870333337F33F7FFF37F333307F99999F703
+        33337F377777337F3333078F898F8703333373F337F33373333377F8F9F8F773
+        333337F3373337F33333307F8F8F70333333373FF333F7333333330777770333
+        333333773FF77333333333370007333333333333777333333333}
+      NumGlyphs = 2
+      ParentFont = False
+      OnClick = sbn_tirarClick
+    end
+    object SpeedButton1: TSpeedButton
+      Left = 324
+      Top = 0
+      Width = 200
+      Height = 40
+      Caption = 'Cancelar'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        333333333333333333333333333333333333333FFF33FF333FFF339993370733
+        999333777FF37FF377733339993000399933333777F777F77733333399970799
+        93333333777F7377733333333999399933333333377737773333333333990993
+        3333333333737F73333333333331013333333333333777FF3333333333910193
+        333333333337773FF3333333399000993333333337377737FF33333399900099
+        93333333773777377FF333399930003999333337773777F777FF339993370733
+        9993337773337333777333333333333333333333333333333333333333333333
+        3333333333333333333333333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentFont = False
+      OnClick = SpeedButton1Click
+    end
+    object SpeedButton2: TSpeedButton
+      Left = 703
+      Top = 0
+      Width = 200
+      Height = 40
+      Caption = 'Sair Confirmando'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00330000000000
+        03333377777777777F333301BBBBBBBB033333773F3333337F3333011BBBBBBB
+        0333337F73F333337F33330111BBBBBB0333337F373F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337FF3337F33330111B0BBBB
+        0333337F337733337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F3F7F33337F333301E10BBBBB0333337F7F7F33337F333301EE0BBBBB
+        0333337F777FFFFF7F3333000000000003333377777777777333}
+      NumGlyphs = 2
+      ParentFont = False
+      OnClick = SpeedButton2Click
+    end
+    object cb_tamreal: TCheckBox
+      Left = 544
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = 'Tamanho Real'
+      TabOrder = 0
+      OnClick = cb_tamrealClick
+    end
+  end
+  object ScrollBox1: TScrollBox
+    Left = 0
+    Top = 0
+    Width = 912
+    Height = 400
+    Align = alClient
+    TabOrder = 1
+    object Image1: TImage
+      Left = 0
+      Top = 0
+      Width = 908
+      Height = 396
+      Align = alClient
+      Stretch = True
+    end
+  end
+  object DelphiTwain1: TDelphiTwain
+    OnTwainAcquire = DelphiTwain1TwainAcquire
+    TransferMode = ttmMemory
+    SourceCount = 0
+    Info.MajorVersion = 1
+    Info.MinorVersion = 0
+    Info.Language = tlUserLocale
+    Info.CountryCode = 1
+    Info.Groups = [tgControl, tgImage]
+    Info.VersionInfo = 'Application name'
+    Info.Manufacturer = 'Application manufacturer'
+    Info.ProductFamily = 'App product family'
+    Info.ProductName = 'App product name'
+    LibraryLoaded = False
+    SourceManagerLoaded = False
+    Left = 168
+    Top = 144
+  end
+end

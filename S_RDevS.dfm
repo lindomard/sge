@@ -1,0 +1,184 @@
+object Frm_RDevS: TFrm_RDevS
+  Left = 45
+  Top = 125
+  Width = 757
+  Height = 375
+  Caption = 'Selecionado Notas de remessa para devolu'#231#245'es'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = [fsBold]
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnClose = FormClose
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object GroupBox1: TGroupBox
+    Left = 0
+    Top = 0
+    Width = 749
+    Height = 300
+    Align = alClient
+    Caption = 
+      'Selecione os Pedidos a serem calculados para   devolu'#231#227'o (CLICK ' +
+      'duplo marca/Desmarca)'
+    TabOrder = 0
+    object STG1: TStringGrid
+      Left = 2
+      Top = 15
+      Width = 745
+      Height = 283
+      Align = alClient
+      ColCount = 8
+      DefaultRowHeight = 15
+      FixedCols = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Courier New'
+      Font.Style = [fsBold]
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing]
+      ParentFont = False
+      TabOrder = 0
+      OnDblClick = STG1DblClick
+      ColWidths = (
+        38
+        63
+        37
+        83
+        273
+        90
+        95
+        64)
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 300
+    Width = 749
+    Height = 41
+    Align = alBottom
+    TabOrder = 1
+    object SELECIONAR: TBitBtn
+      Left = 1
+      Top = 0
+      Width = 200
+      Height = 40
+      Caption = '&Selecionar Todos'
+      TabOrder = 0
+      OnClick = SELECIONARClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+        555555555555555555555555555555555555555555FF55555555555559055555
+        55555555577FF5555555555599905555555555557777F5555555555599905555
+        555555557777FF5555555559999905555555555777777F555555559999990555
+        5555557777777FF5555557990599905555555777757777F55555790555599055
+        55557775555777FF5555555555599905555555555557777F5555555555559905
+        555555555555777FF5555555555559905555555555555777FF55555555555579
+        05555555555555777FF5555555555557905555555555555777FF555555555555
+        5990555555555555577755555555555555555555555555555555}
+      Layout = blGlyphTop
+      NumGlyphs = 2
+    end
+    object DESMARCAR: TBitBtn
+      Left = 216
+      Top = 1
+      Width = 200
+      Height = 40
+      Caption = '&Desmarcar todos'
+      TabOrder = 1
+      OnClick = DESMARCARClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00500005000555
+        555557777F777555F55500000000555055557777777755F75555005500055055
+        555577F5777F57555555005550055555555577FF577F5FF55555500550050055
+        5555577FF77577FF555555005050110555555577F757777FF555555505099910
+        555555FF75777777FF555005550999910555577F5F77777775F5500505509990
+        3055577F75F77777575F55005055090B030555775755777575755555555550B0
+        B03055555F555757575755550555550B0B335555755555757555555555555550
+        BBB35555F55555575F555550555555550BBB55575555555575F5555555555555
+        50BB555555555555575F555555555555550B5555555555555575}
+      Layout = blGlyphTop
+      NumGlyphs = 2
+    end
+    object SAIR: TBitBtn
+      Left = 432
+      Top = 0
+      Width = 200
+      Height = 40
+      Caption = '&Sair'
+      TabOrder = 2
+      OnClick = SAIRClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00330000000000
+        03333377777777777F333301BBBBBBBB033333773F3333337F3333011BBBBBBB
+        0333337F73F333337F33330111BBBBBB0333337F373F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F337F33337F333301110BBBBB0333337F337FF3337F33330111B0BBBB
+        0333337F337733337F333301110BBBBB0333337F337F33337F333301110BBBBB
+        0333337F3F7F33337F333301E10BBBBB0333337F7F7F33337F333301EE0BBBBB
+        0333337F777FFFFF7F3333000000000003333377777777777333}
+      Layout = blGlyphTop
+      NumGlyphs = 2
+    end
+  end
+  object Qr_Sel: TQuery
+    DatabaseName = 'SG_ASSOC'
+    SQL.Strings = (
+      
+        'Select P1CHAVE,P1ORDEM,P1DATAP,P1CODCLI,P1TOTALL,P1TIPO,P1LOTSEQ' +
+        ',CRAZAO'
+      '       from CADP01,CADCLI where'
+      '       P1CODEMP is null'
+      '       and CCODCLI=P1CODCLI'
+      '')
+    Left = 80
+    Top = 104
+    object Qr_SelP1CHAVE: TFloatField
+      FieldName = 'P1CHAVE'
+      Origin = 'SG_ASSOC.CADP01.P1CHAVE'
+    end
+    object Qr_SelP1ORDEM: TFloatField
+      FieldName = 'P1ORDEM'
+      Origin = 'SG_ASSOC.CADP01.P1ORDEM'
+    end
+    object Qr_SelP1DATAP: TDateTimeField
+      FieldName = 'P1DATAP'
+      Origin = 'SG_ASSOC.CADP01.P1DATAP'
+    end
+    object Qr_SelP1CODCLI: TFloatField
+      FieldName = 'P1CODCLI'
+      Origin = 'SG_ASSOC.CADP01.P1CODCLI'
+    end
+    object Qr_SelP1TOTALL: TFloatField
+      FieldName = 'P1TOTALL'
+      Origin = 'SG_ASSOC.CADP01.P1TOTALL'
+    end
+    object Qr_SelCRAZAO: TStringField
+      FieldName = 'CRAZAO'
+      Origin = 'SG_ASSOC.CADCLI.CRAZAO'
+      Size = 40
+    end
+    object Qr_SelP1TIPO: TFloatField
+      FieldName = 'P1TIPO'
+      Origin = 'SG_ASSOC.CADP01.P1TIPO'
+    end
+    object Qr_SelP1LOTSEQ: TFloatField
+      FieldName = 'P1LOTSEQ'
+      Origin = 'SG_ASSOC.CADP01.P1LOTSEQ'
+    end
+  end
+end
