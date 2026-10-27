@@ -20,7 +20,7 @@ type
 
 implementation
 
-uses S_DM_Replica, Func, S_DM1, func_excecoes, func_emitir_notas;
+uses S_DM_Replica, Func, S_DM1, func_excecoes, func_emitir_notas, S_DM4;
 
 { Important: Methods and properties of objects in visual components can only be
   used in a method called using Synchronize, for example,
@@ -192,6 +192,7 @@ While not query_temp.eof do
       ParametrosNfce.pChave_ano :=query_temp.fieldbyname('DP_CHAVE_PED_ANO').asinteger;
       ParametrosNfce.pCodemp := query_temp.fieldbyname('DP_CODEMP').asinteger;
       ParametrosNfce.pSalvarPDFPara := mArqGerar;
+      parametrosNfce.pAmbiente := iif(DM4.Tb_ParGer02PG2USANFE.AsInteger<2,2,1);
 
       if fEmitirNotadeServico(ParametrosNfce).pOk then
          begin

@@ -9,16 +9,36 @@ inherited Frm_ClassTrib: TFrm_ClassTrib
   TextHeight = 13
   inherited Panel1: TPanel
     Width = 1058
+    Height = 54
     inherited lbl_emp: TLabel
       Left = 1013
+      Height = 52
+    end
+    object lbl_filtros_extras: TLabel [2]
+      Left = 27
+      Top = 32
+      Width = 78
+      Height = 13
+      Caption = 'Filtros Extras:'
+      Visible = False
     end
     inherited BBnAtu: TBitBtn
       OnClick = BBnAtuClick
     end
+    object edt_filtros_extras: TEdit
+      Left = 112
+      Top = 28
+      Width = 777
+      Height = 21
+      ReadOnly = True
+      TabOrder = 3
+      Visible = False
+    end
   end
   inherited PC1: TPageControl
+    Top = 54
     Width = 1058
-    Height = 501
+    Height = 476
     inherited tsCad: TTabSheet
       object Label1: TLabel
         Left = 0

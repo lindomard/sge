@@ -1,8 +1,8 @@
 inherited Frm_Emp: TFrm_Emp
-  Left = 234
-  Top = 93
-  Width = 805
-  Height = 638
+  Left = 144
+  Top = 112
+  Width = 1314
+  Height = 737
   Caption = 'Manuten'#231#227'o no Cadastro de Empresas'
   FormStyle = fsNormal
   OldCreateOrder = True
@@ -12,9 +12,9 @@ inherited Frm_Emp: TFrm_Emp
   TextHeight = 13
   inherited Panel1: TPanel
     Top = 34
-    Width = 797
+    Width = 1306
     inherited lbl_emp: TLabel
-      Left = 752
+      Left = 1261
     end
     inherited BBnAtu: TBitBtn
       OnClick = BBnAtuClick
@@ -25,9 +25,10 @@ inherited Frm_Emp: TFrm_Emp
   end
   inherited PC1: TPageControl
     Top = 63
-    Width = 797
-    Height = 477
+    Width = 1306
+    Height = 576
     Cursor = crHandPoint
+    ActivePage = tsCadcnae
     inherited tsCad: TTabSheet
       object Label1: TLabel
         Left = 9
@@ -322,8 +323,8 @@ inherited Frm_Emp: TFrm_Emp
         FocusControl = DBE_CNAE
       end
       object Label46: TLabel
-        Left = 516
-        Top = 185
+        Left = 36
+        Top = 425
         Width = 51
         Height = 13
         Caption = 'Suframa:'
@@ -843,9 +844,9 @@ inherited Frm_Emp: TFrm_Emp
           '3')
       end
       object DBE_suframa: TDBEdit
-        Left = 572
-        Top = 180
-        Width = 211
+        Left = 92
+        Top = 420
+        Width = 129
         Height = 19
         Ctl3D = False
         DataField = 'EMP_SUFRAMA'
@@ -890,7 +891,7 @@ inherited Frm_Emp: TFrm_Emp
       object RxDBCB_NAT_PJ: TRxDBComboBox
         Left = 556
         Top = 198
-        Width = 191
+        Width = 168
         Height = 21
         Style = csDropDownList
         Ctl3D = True
@@ -1288,7 +1289,7 @@ inherited Frm_Emp: TFrm_Emp
     inherited tsTab: TTabSheet
       inherited DBGrid1: TDBGrid
         Width = 789
-        Height = 449
+        Height = 548
         DataSource = DM2.Src_Emp
         OnDblClick = DBGrid1DblClick
         Columns = <
@@ -1312,7 +1313,6 @@ inherited Frm_Emp: TFrm_Emp
           item
             Expanded = False
             FieldName = 'UF'
-            Width = 64
             Visible = True
           end>
       end
@@ -1383,10 +1383,554 @@ inherited Frm_Emp: TFrm_Emp
         Text = 'edtNrToText'
       end
     end
+    object TsNfse: TTabSheet
+      Caption = 'Dados Para NFse'
+      ImageIndex = 4
+      object Label61: TLabel
+        Left = 227
+        Top = 14
+        Width = 237
+        Height = 13
+        Caption = 'C'#243'digo Atividade  no Municipal(nacional):'
+        FocusControl = DBE_CNAE
+      end
+      object Label63: TLabel
+        Left = 557
+        Top = 14
+        Width = 142
+        Height = 13
+        Caption = 'C'#243'digo Tributo Nacional:'
+        FocusControl = DBE_CNAE
+      end
+      object Label64: TLabel
+        Left = 1
+        Top = 38
+        Width = 390
+        Height = 13
+        Caption = 
+          'Regime de Apura'#231#227'o Tribut'#225'ria pelo Simples Nacional(regApTribSN)' +
+          ':'
+        FocusControl = DBE_suframa
+      end
+      object Label65: TLabel
+        Left = 5
+        Top = 103
+        Width = 378
+        Height = 13
+        Caption = 'Tipos de Regimes Especiais de Tributa'#231#227'o Municipal(regEspTrib): '
+        FocusControl = DBE_suframa
+      end
+      object Label66: TLabel
+        Left = 6
+        Top = 156
+        Width = 459
+        Height = 13
+        Caption = 
+          'Tp Op com Entes Governanementais ou outros  serv sobre bens im'#243'v' +
+          'eis(tpOper):'
+        FocusControl = DBE_suframa
+      end
+      object Label67: TLabel
+        Left = 3
+        Top = 215
+        Width = 236
+        Height = 13
+        Caption = 'Tipo de ente governamental (tpEnteGov):'
+        FocusControl = DBE_suframa
+      end
+      object Label68: TLabel
+        Left = 5
+        Top = 239
+        Width = 282
+        Height = 13
+        Caption = 'A respeito do Destinat'#225'rio dos servi'#231'os(indDest): '
+        FocusControl = DBE_suframa
+      end
+      object Label69: TLabel
+        Left = 5
+        Top = 265
+        Width = 313
+        Height = 13
+        Caption = 'Tipo de reten'#231#227'o PIS/COFINS e CSLL(tpRetPisCofins):'
+        FocusControl = DBE_suframa
+      end
+      object Label70: TLabel
+        Left = 7
+        Top = 291
+        Width = 320
+        Height = 13
+        Caption = 'Indicador da finalidade da emiss'#227'o de NFS-e (finNFSe)  '
+        FocusControl = DBE_suframa
+      end
+      object Label71: TLabel
+        Left = 6
+        Top = 316
+        Width = 360
+        Height = 13
+        Caption = 'Indica opera'#231#227'o de uso ou consumo pessoal (art. 57) (IndFinal)'
+        FocusControl = DBE_suframa
+      end
+      object DBE_EMP_CODTRIB_MUN: TDBEdit
+        Left = 480
+        Top = 11
+        Width = 74
+        Height = 19
+        Ctl3D = False
+        DataField = 'EMP_CODTRIB_NAC'
+        DataSource = DM2.Src_Emp
+        ParentCtl3D = False
+        TabOrder = 0
+      end
+      object DBE_EMP_CODTRIB_NAC: TDBEdit
+        Left = 703
+        Top = 11
+        Width = 74
+        Height = 19
+        Ctl3D = False
+        DataField = 'EMP_CODTRIB_MUN'
+        DataSource = DM2.Src_Emp
+        ParentCtl3D = False
+        TabOrder = 1
+        OnExit = DBE_EMP_CODTRIB_NACExit
+        OnKeyPress = DBE_EMP_CODTRIB_NACKeyPress
+      end
+      object RxDBCB_EMP_REG_AP_TRIB_SN: TRxDBComboBox
+        Left = 4
+        Top = 58
+        Width = 749
+        Height = 21
+        Style = csDropDownList
+        Ctl3D = True
+        DataField = 'EMP_REG_AP_TRIB_SN'
+        DataSource = DM2.Src_Emp
+        EnableValues = True
+        ItemHeight = 13
+        Items.Strings = (
+          '  - N'#227'o Consta'
+          
+            '1  Regime de apura'#231#227'o dos tributos federais e municipal pelo SN;' +
+            ' '
+          
+            '2  Regime de apura'#231#227'o dos tributos federais pelo SN e o ISSQN pe' +
+            'la NFS-e conforme respectiva legisla'#231#227'o municipal do tributo; '
+          
+            '3  Regime de apura'#231#227'o dos tributos federais e municipal pela NFS' +
+            '-e conforme respectivas legila'#231#245'es federal e municipal de cada t' +
+            'ributo; ')
+        ParentCtl3D = False
+        TabOrder = 2
+        Values.Strings = (
+          ' '
+          '1'
+          '2'
+          '3'
+          '')
+      end
+      object RxDBCb_EMP_REG_ESP_TRIB: TRxDBComboBox
+        Left = 4
+        Top = 121
+        Width = 461
+        Height = 21
+        Style = csDropDownList
+        Ctl3D = True
+        DataField = 'EMP_REG_ESP_TRIB'
+        DataSource = DM2.Src_Emp
+        EnableValues = True
+        ItemHeight = 13
+        Items.Strings = (
+          '   - N'#227'o Consta'
+          '0 - Nenhum; '
+          '1 - Ato Cooperado (Cooperativa);'
+          '2 - Estimativa; '
+          '3 - Microempresa Municipal; '
+          '4 - Not'#225'rio ou Registrador; '
+          '5 - Profissional Aut'#244'nomo; '
+          '6 - Sociedade de Profissionais; ')
+        ParentCtl3D = False
+        TabOrder = 3
+        Values.Strings = (
+          ' '
+          '0'
+          '1'
+          '2'
+          '3'
+          '4'
+          '5'
+          '6')
+      end
+      object RxDBCb_EMP_IBS_CBS_TP_OPER: TRxDBComboBox
+        Left = 14
+        Top = 176
+        Width = 766
+        Height = 21
+        Style = csDropDownList
+        Ctl3D = True
+        DataField = 'EMP_IBS_CBS_TP_OPER'
+        DataSource = DM2.Src_Emp
+        EnableValues = True
+        ItemHeight = 13
+        Items.Strings = (
+          '0 - N'#227'o Consta'
+          '1 - Fornecimento com pagamento posterior;'
+          '2 - Recebimento do pagamento com fornecimento j'#225' realizado;'
+          '3 - Fornecimento com pagamento j'#225' realizado;'
+          '4 - Recebimento do pagamento com fornecimento posterior;'
+          '5 - Fornecimento e recebimento do pagamento concomitantes.')
+        ParentCtl3D = False
+        TabOrder = 4
+        Values.Strings = (
+          '0'
+          '1'
+          '2'
+          '3'
+          '4'
+          '5')
+      end
+      object RxDBCB_EMP_IBS_CBS_TP_ENTE_GOV: TRxDBComboBox
+        Left = 248
+        Top = 211
+        Width = 535
+        Height = 21
+        Style = csDropDownList
+        Ctl3D = True
+        DataField = 'EMP_IBS_CBS_TP_ENTE_GOV'
+        DataSource = DM2.Src_Emp
+        EnableValues = True
+        ItemHeight = 13
+        Items.Strings = (
+          '0 - N'#227'o Consta'
+          '1 - Uni'#227'o  '
+          '2 - Estado  '
+          '3 - Distrito Federal  '
+          '4 - Munic'#237'pio')
+        ParentCtl3D = False
+        TabOrder = 5
+        Values.Strings = (
+          '0'
+          '1'
+          '2'
+          '3'
+          '4')
+      end
+      object RxDBCB_EMP_IBS_CBS_IND_DEST: TRxDBComboBox
+        Left = 328
+        Top = 235
+        Width = 453
+        Height = 21
+        Style = csDropDownList
+        Ctl3D = True
+        DataField = 'EMP_IBS_CBS_IND_DEST'
+        DataSource = DM2.Src_Emp
+        EnableValues = True
+        ItemHeight = 13
+        Items.Strings = (
+          '  - N'#227'o Consta'
+          
+            '0 - o destinat'#225'rio '#233' o pr'#243'prio tomador/adquirente  identificado ' +
+            'na NFS-e (tomador = adquirente = destinat'#225'rio); '
+          
+            '1 - o destinat'#225'rio n'#227'o '#233' o pr'#243'prio adquirente, podendo ser outra' +
+            ' pessoa, f'#237'sica ou jur'#237'dica (ou equiparada), ou um estabelecimen' +
+            'to diferente do indicado como tomador (tomador = adquirente ? de' +
+            'stinat'#225'rio); ')
+        ParentCtl3D = False
+        TabOrder = 6
+        Values.Strings = (
+          ' '
+          '0'
+          '1'
+          '')
+      end
+      object RxDBCB_EMP_TP_RET_PIS_COFINS: TRxDBComboBox
+        Left = 304
+        Top = 261
+        Width = 477
+        Height = 21
+        Style = csDropDownList
+        Ctl3D = True
+        DataField = 'EMP_TP_RET_PIS_COFINS'
+        DataSource = DM2.Src_Emp
+        EnableValues = True
+        ItemHeight = 13
+        Items.Strings = (
+          '  - N'#227'o Consta'
+          '0 - PIS/COFINS/CSLL N'#227'o Retidos;'
+          '1 - PIS/COFINS Retido;'
+          '2 - PIS/COFINS N'#227'o Retido;'
+          '3 - PIS/COFINS/CSLL Retidos;'
+          '4 - PIS/COFINS Retidos, CSLL N'#227'o Retido;'
+          '5 - PIS Retido, COFINS/CSLL N'#227'o Retido;'
+          '6 - COFINS Retido, PIS/CSLL N'#227'o Retido;'
+          '7 - PIS N'#227'o Retido, COFINS/CSLL Retidos;'
+          '8 - PIS/COFINS N'#227'o Retidos, CSLL Retido;'
+          '9 - COFINS N'#227'o Retido, PIS/CSLL Retidos;'
+          '')
+        ParentCtl3D = False
+        TabOrder = 7
+        Values.Strings = (
+          ' '
+          '0'
+          '1'
+          '2'
+          '3'
+          '4'
+          '5'
+          '6'
+          '7'
+          '8'
+          '9'
+          '')
+      end
+      object RxDBCB_EMP_IBS_CBS_FIN_NFSE: TRxDBComboBox
+        Left = 328
+        Top = 287
+        Width = 453
+        Height = 21
+        Style = csDropDownList
+        Ctl3D = True
+        DataField = 'EMP_IBS_CBS_FIN_NFSE'
+        DataSource = DM2.Src_Emp
+        EnableValues = True
+        ItemHeight = 13
+        Items.Strings = (
+          '  - N'#227'o Consta'
+          ' 0 - NFS-e regular')
+        ParentCtl3D = False
+        TabOrder = 8
+        Values.Strings = (
+          ' '
+          '0')
+      end
+      object RxDBCB_EMP_INDFINAL: TRxDBComboBox
+        Left = 376
+        Top = 312
+        Width = 404
+        Height = 21
+        Style = csDropDownList
+        Ctl3D = True
+        DataField = 'EMP_INDFINAL'
+        DataSource = DM2.Src_Emp
+        EnableValues = True
+        ItemHeight = 13
+        Items.Strings = (
+          '  - N'#227'o Consta'
+          '0 - N'#227'o'
+          '1 - Sim')
+        ParentCtl3D = False
+        TabOrder = 9
+        Values.Strings = (
+          ' '
+          '0'
+          '1')
+      end
+    end
+    object tsCadcnae: TTabSheet
+      Caption = 'Cadastros de CNAE'
+      ImageIndex = 5
+      object Panel2: TPanel
+        Left = 0
+        Top = 507
+        Width = 1298
+        Height = 41
+        Align = alBottom
+        Color = clLime
+        TabOrder = 0
+      end
+      object DBGrid2: TDBGrid
+        Left = 0
+        Top = 0
+        Width = 1298
+        Height = 507
+        Align = alClient
+        DataSource = Src_EmpCnae
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'MS Sans Serif'
+        TitleFont.Style = [fsBold]
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'ECNAE_ID'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_ID_EMP'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_ID_CNAE'
+            Title.Alignment = taCenter
+            Width = 73
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_PRINCIPAL'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_CODLC_SERV'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_COD_SERV'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_IND_OP'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_CODNBS'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_CST_PIS_COFINS'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_CST_IBS_CBS'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_PINSS'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_PCOFINS'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_PPIS'
+            Title.Alignment = taCenter
+            Width = 44
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_PCLSS'
+            Title.Alignment = taCenter
+            Width = 52
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_PIR'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_PISSQN'
+            Title.Alignment = taCenter
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_CADCLASSTRIB'
+            Title.Alignment = taCenter
+            Width = 60
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_COD_ATIV'
+            Title.Alignment = taCenter
+            Width = 63
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_TRIB_NAC'
+            Title.Alignment = taCenter
+            Width = 70
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_REG_AP_TRIB_SN'
+            Title.Alignment = taCenter
+            Width = 70
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_REG_ESP_TRIB'
+            Title.Alignment = taCenter
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_TP_OPER'
+            Title.Alignment = taCenter
+            Width = 78
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_P_ENTE_GOV'
+            Title.Alignment = taCenter
+            Width = 93
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_TP_RET_PIS_COFINS'
+            Title.Alignment = taCenter
+            Width = 135
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_IND_DEST'
+            Title.Alignment = taCenter
+            Width = 73
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_FIN_NFSE'
+            Title.Alignment = taCenter
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ECNAE_IND_FINAL'
+            Title.Alignment = taCenter
+            Visible = True
+          end>
+      end
+    end
   end
   inherited MANUT: TGroupBox
     Top = 0
-    Width = 797
+    Width = 1306
     Height = 34
     Align = alTop
     Caption = ''
@@ -1470,8 +2014,8 @@ inherited Frm_Emp: TFrm_Emp
     end
   end
   inherited GroupBox2: TGroupBox
-    Top = 540
-    Width = 797
+    Top = 639
+    Width = 1306
     Height = 67
     Caption = ''
     inherited DBNavigator1: TDBNavigator
@@ -1546,7 +2090,7 @@ inherited Frm_Emp: TFrm_Emp
       NumGlyphs = 2
     end
     object GroupBox1: TGroupBox
-      Left = 428
+      Left = 937
       Top = 15
       Width = 367
       Height = 50
@@ -1680,5 +2224,207 @@ inherited Frm_Emp: TFrm_Emp
   object opd1: TOpenDialog
     Left = 1040
     Top = 547
+  end
+  object Src_EmpCnae: TDataSource
+    DataSet = Tb_EmpCnae
+    Left = 408
+    Top = 34
+  end
+  object U_EmpCnae: TUpdateSQL
+    ModifySQL.Strings = (
+      'update CADEMP_CNAE'
+      'set'
+      '  ECNAE_ID_EMP = :ECNAE_ID_EMP,'
+      '  ECNAE_ID_CNAE = :ECNAE_ID_CNAE,'
+      '  ECNAE_PRINCIPAL = :ECNAE_PRINCIPAL,'
+      '  ECNAE_CODLC_SERV = :ECNAE_CODLC_SERV,'
+      '  ECNAE_COD_SERV = :ECNAE_COD_SERV,'
+      '  ECNAE_IND_OP = :ECNAE_IND_OP,'
+      '  ECNAE_CODNBS = :ECNAE_CODNBS,'
+      '  ECNAE_CST_PIS_COFINS = :ECNAE_CST_PIS_COFINS,'
+      '  ECNAE_CST_IBS_CBS = :ECNAE_CST_IBS_CBS,'
+      '  ECNAE_PINSS = :ECNAE_PINSS,'
+      '  ECNAE_PCOFINS = :ECNAE_PCOFINS,'
+      '  ECNAE_PPIS = :ECNAE_PPIS,'
+      '  ECNAE_PCLSS = :ECNAE_PCLSS,'
+      '  ECNAE_PIR = :ECNAE_PIR,'
+      '  ECNAE_PISSQN = :ECNAE_PISSQN'
+      'where'
+      '  ECNAE_ID = :OLD_ECNAE_ID')
+    InsertSQL.Strings = (
+      'insert into CADEMP_CNAE'
+      '  (ECNAE_ID, ECNAE_ID_EMP, ECNAE_ID_CNAE, ECNAE_PRINCIPAL, '
+      
+        '   ECNAE_CODLC_SERV, ECNAE_COD_SERV, ECNAE_IND_OP, ECNAE_CODNBS,' +
+        ' '
+      
+        '   ECNAE_CST_PIS_COFINS, ECNAE_CST_IBS_CBS, ECNAE_PINSS, ECNAE_P' +
+        'COFINS, '
+      '   ECNAE_PPIS, ECNAE_PCLSS, ECNAE_PIR, ECNAE_PISSQN)'
+      'values'
+      '  (:ECNAE_ID, :ECNAE_ID_EMP, :ECNAE_ID_CNAE, :ECNAE_PRINCIPAL, '
+      
+        '   :ECNAE_CODLC_SERV, :ECNAE_COD_SERV, :ECNAE_IND_OP, :ECNAE_COD' +
+        'NBS, '
+      
+        '   :ECNAE_CST_PIS_COFINS, :ECNAE_CST_IBS_CBS, :ECNAE_PINSS, :ECN' +
+        'AE_PCOFINS, '
+      '   :ECNAE_PPIS, :ECNAE_PCLSS, :ECNAE_PIR, :ECNAE_PISSQN)')
+    DeleteSQL.Strings = (
+      'delete from CADEMP_CNAE'
+      'where'
+      '  ECNAE_ID = :OLD_ECNAE_ID')
+    Left = 348
+    Top = 58
+  end
+  object Tb_EmpCnae: TQuery
+    CachedUpdates = True
+    DatabaseName = 'SG_ASSOC'
+    SQL.Strings = (
+      'Select * from CADEMP_CNAE where 1=1')
+    UpdateMode = upWhereKeyOnly
+    UpdateObject = U_EmpCnae
+    Left = 320
+    Top = 63
+    object Tb_EmpCnaeECNAE_ID: TFloatField
+      DisplayLabel = 'Chave Id'
+      FieldName = 'ECNAE_ID'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_ID'
+    end
+    object Tb_EmpCnaeECNAE_ID_EMP: TFloatField
+      DisplayLabel = 'ID Empresa'
+      FieldName = 'ECNAE_ID_EMP'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_ID_EMP'
+    end
+    object Tb_EmpCnaeECNAE_ID_CNAE: TStringField
+      DisplayLabel = 'C'#243'd. CNAE'
+      FieldName = 'ECNAE_ID_CNAE'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_ID_CNAE'
+    end
+    object Tb_EmpCnaeECNAE_PRINCIPAL: TFloatField
+      DisplayLabel = 'Principal'
+      FieldName = 'ECNAE_PRINCIPAL'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_PRINCIPAL'
+    end
+    object Tb_EmpCnaeECNAE_CODLC_SERV: TStringField
+      DisplayLabel = 'Cod Lc 116'
+      FieldName = 'ECNAE_CODLC_SERV'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_CODLC_SERV'
+      Size = 8
+    end
+    object Tb_EmpCnaeECNAE_COD_SERV: TStringField
+      DisplayLabel = 'Cod Servi'#231'o'
+      FieldName = 'ECNAE_COD_SERV'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_COD_SERV'
+      Size = 15
+    end
+    object Tb_EmpCnaeECNAE_IND_OP: TStringField
+      DisplayLabel = 'Ind Op'
+      FieldName = 'ECNAE_IND_OP'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_IND_OP'
+      Size = 6
+    end
+    object Tb_EmpCnaeECNAE_CODNBS: TStringField
+      DisplayLabel = 'C'#243'd Nbs'
+      FieldName = 'ECNAE_CODNBS'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_CODNBS'
+      Size = 15
+    end
+    object Tb_EmpCnaeECNAE_CST_PIS_COFINS: TStringField
+      DisplayLabel = 'Cst Pis/Cofins'
+      FieldName = 'ECNAE_CST_PIS_COFINS'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_CST_PIS_COFINS'
+      Size = 3
+    end
+    object Tb_EmpCnaeECNAE_CST_IBS_CBS: TStringField
+      DisplayLabel = 'Cst Ibs/Cbs'
+      FieldName = 'ECNAE_CST_IBS_CBS'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_CST_IBS_CBS'
+      Size = 3
+    end
+    object Tb_EmpCnaeECNAE_PINSS: TFloatField
+      DisplayLabel = '% Inss'
+      FieldName = 'ECNAE_PINSS'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_PINSS'
+    end
+    object Tb_EmpCnaeECNAE_PCOFINS: TFloatField
+      DisplayLabel = '% Cofins'
+      FieldName = 'ECNAE_PCOFINS'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_PCOFINS'
+    end
+    object Tb_EmpCnaeECNAE_PPIS: TFloatField
+      DisplayLabel = '% Pis'
+      FieldName = 'ECNAE_PPIS'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_PPIS'
+    end
+    object Tb_EmpCnaeECNAE_PCLSS: TFloatField
+      DisplayLabel = '% Clss'
+      FieldName = 'ECNAE_PCLSS'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_PCLSS'
+    end
+    object Tb_EmpCnaeECNAE_PIR: TFloatField
+      DisplayLabel = '% Imposto Renda'
+      FieldName = 'ECNAE_PIR'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_PIR'
+    end
+    object Tb_EmpCnaeECNAE_PISSQN: TFloatField
+      DisplayLabel = '% ISSQN'
+      FieldName = 'ECNAE_PISSQN'
+      Origin = 'SG_ASSOC.CADEMP_CNAE.ECNAE_PISSQN'
+    end
+    object Tb_EmpCnaeECNAE_CADCLASSTRIB: TStringField
+      DisplayLabel = 'Clas Trib'
+      FieldName = 'ECNAE_CADCLASSTRIB'
+      Size = 6
+    end
+    object Tb_EmpCnaeECNAE_COD_ATIV: TStringField
+      DisplayLabel = 'C'#243'd Atv'
+      FieldName = 'ECNAE_COD_ATIV'
+      Size = 10
+    end
+    object Tb_EmpCnaeECNAE_TRIB_NAC: TStringField
+      DisplayLabel = 'Trib Nac'
+      FieldName = 'ECNAE_TRIB_NAC'
+      Size = 10
+    end
+    object Tb_EmpCnaeECNAE_REG_AP_TRIB_SN: TStringField
+      DisplayLabel = 'Reg Ap Trb'
+      FieldName = 'ECNAE_REG_AP_TRIB_SN'
+      Size = 1
+    end
+    object Tb_EmpCnaeECNAE_REG_ESP_TRIB: TStringField
+      DisplayLabel = 'Reg Esp Trib'
+      FieldName = 'ECNAE_REG_ESP_TRIB'
+      Size = 1
+    end
+    object Tb_EmpCnaeECNAE_TP_OPER: TStringField
+      DisplayLabel = 'Tp Oper'
+      FieldName = 'ECNAE_TP_OPER'
+      Size = 1
+    end
+    object Tb_EmpCnaeECNAE_P_ENTE_GOV: TStringField
+      DisplayLabel = 'P Ente Gov'
+      FieldName = 'ECNAE_P_ENTE_GOV'
+      Size = 1
+    end
+    object Tb_EmpCnaeECNAE_TP_RET_PIS_COFINS: TStringField
+      DisplayLabel = 'Tp Ret Pis Cofins'
+      FieldName = 'ECNAE_TP_RET_PIS_COFINS'
+      Size = 1
+    end
+    object Tb_EmpCnaeECNAE_IND_DEST: TStringField
+      DisplayLabel = 'Ind Dest'
+      FieldName = 'ECNAE_IND_DEST'
+      Size = 1
+    end
+    object Tb_EmpCnaeECNAE_FIN_NFSE: TStringField
+      DisplayLabel = 'Fin Nfse'
+      FieldName = 'ECNAE_FIN_NFSE'
+      Size = 1
+    end
+    object Tb_EmpCnaeECNAE_IND_FINAL: TStringField
+      DisplayLabel = 'Ind Final'
+      FieldName = 'ECNAE_IND_FINAL'
+    end
   end
 end

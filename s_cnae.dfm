@@ -23,7 +23,6 @@ inherited Frm_Cnae: TFrm_Cnae
   end
   inherited PC1: TPageControl
     Width = 915
-    ActivePage = tsTab
     inherited tsCad: TTabSheet
       object Label1: TLabel
         Left = 80

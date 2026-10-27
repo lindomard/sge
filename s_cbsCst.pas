@@ -46,6 +46,8 @@ type
     DBCheckBox5: TDBCheckBox;
     DBCheckBox6: TDBCheckBox;
     DBCheckBox7: TDBCheckBox;
+    lbl_filtros_extras: TLabel;
+    edt_filtros_extras: TEdit;
     procedure INCLUIRClick(Sender: TObject);
     procedure ALTERARClick(Sender: TObject);
     procedure EXCLUIRClick(Sender: TObject);
@@ -57,6 +59,7 @@ type
     procedure DBGrid1DblClick(Sender: TObject);
     procedure BBnAtuClick(Sender: TObject);
     procedure tb_cbs_cstAfterInsert(DataSet: TDataSet);
+    
   private
     { Private declarations }
     moper_cbs_cst: integer;
@@ -297,6 +300,9 @@ begin
 tb_cbs_cst.Close;
 tb_cbs_cst.Sql.clear;
 tb_cbs_cst.Sql.add('Select * from CADCBS_CST where 1=1 ');
+
+if trim(edt_filtros_extras.Text)<>'' then
+   tb_cbs_cst.sql.add(' and '+edt_filtros_extras.Text);
 
 if PTIPO<1 then
   begin

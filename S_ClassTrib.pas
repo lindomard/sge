@@ -106,6 +106,8 @@ type
     DBCB_CT_IND_NFSE: TDBCheckBox;
     DBCheckBox7: TDBCheckBox;
     Label15: TLabel;
+    lbl_filtros_extras: TLabel;
+    edt_filtros_extras: TEdit;
     procedure BBnAtuClick(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -153,6 +155,9 @@ begin
 tb_classTrib.Close;
 tb_classTrib.Sql.clear;
 tb_classTrib.Sql.add('Select * from CADCLASSTRIB where 1=1 ');
+
+if trim(edt_filtros_extras.Text)<>'' then
+    tb_classTrib.sql.add(' and '+edt_filtros_extras.Text);
 
 if PTIPO<1 then
   begin

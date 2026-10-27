@@ -2107,7 +2107,6 @@ if mger_estanarede then
                              +',P2T_PED1_ICMS_OUTDESP_ALIQ '
                              +',P2T_PED1_ICMS_VALSEG_ALIQ '
                              +',P2T_PED1_ICMS_VALFRE_ALIQ '
-                             +',P2T_PISSQN '
                              +',P2T_INSS_PRED '
                              +',P2T_INSS_ALIQ '
                              +',P2T_IRRF_PRED '
@@ -2156,6 +2155,15 @@ if mger_estanarede then
                              +',P2T_CBS_ALIQ '
                              +',P2T_IBS_UF_ALIQ '
                              +',P2T_IBS_MUN_ALIQ '
+                             +',P2T_INDOP_IBSCBS '
+                             +',P2T_CODTRIB_MUN '
+                             +',P2T_CODTRIB_NAC '
+                             +',P2T_CODNBS '
+                             +',P2T_PCOFINS '
+                             +',P2T_PCSLL '
+                             +',P2T_PISSQN '
+                             +',P2T_PIR '
+
 
                             +') values ('
                              +':P2T_CODEMP'
@@ -2267,7 +2275,6 @@ if mger_estanarede then
                              +',:P2T_PED1_ICMS_OUTDESP_ALIQ '
                              +',:P2T_PED1_ICMS_VALSEG_ALIQ '
                              +',:P2T_PED1_ICMS_VALFRE_ALIQ '
-                             +',:P2T_PISSQN '
                              +',:P2T_INSS_PRED '
                              +',:P2T_INSS_ALIQ '
                              +',:P2T_IRRF_PRED '
@@ -2315,6 +2322,17 @@ if mger_estanarede then
                              +',:P2T_CBS_ALIQ '
                              +',:P2T_IBS_UF_ALIQ '
                              +',:P2T_IBS_MUN_ALIQ '
+                             +',:P2T_INDOP_IBSCBS '
+                             +',:P2T_CODTRIB_MUN '
+                             +',:P2T_CODTRIB_NAC '
+
+
+                             +',:P2T_CODNBS '
+                             +',:P2T_PCOFINS '
+                             +',:P2T_PCSLL '
+                             +',:P2T_PISSQN '
+                             +',:P2T_PIR '
+
 
                              +')');
 
@@ -2569,7 +2587,15 @@ if mger_estanarede then
       query_exe.ParamByName('P2T_CBS_ALIQ').AsFloat                    :=pTabela.FieldByName('P2CBS_ALIQ').AsFloat;
       query_exe.ParamByName('P2T_IBS_UF_ALIQ').AsFloat                 :=pTabela.FieldByName('P2IBS_UF_ALIQ').AsFloat;
       query_exe.ParamByName('P2T_IBS_MUN_ALIQ').AsFloat                :=pTabela.FieldByName('P2IBS_MUN_ALIQ').AsFloat;
+      query_exe.ParamByName('P2T_INDOP_IBSCBS').AsString               :='';
 
+      Query_Exe.ParamByName('P2T_CODTRIB_MUN').AsString                     :='';
+      Query_Exe.ParamByName('P2T_CODTRIB_NAC').AsString                     :='';
+      Query_Exe.ParamByName('P2T_CODNBS').AsString                     :='';
+      query_exe.ParamByName('P2T_PCOFINS').AsFloat                     :=0;
+      query_exe.ParamByName('P2T_PCSLL').AsFloat                       :=0;
+      query_exe.ParamByName('P2T_PISSQN').AsFloat                      :=0;
+      query_exe.ParamByName('P2T_PIR').AsFloat                         :=0;
 
 
       end
@@ -2691,7 +2717,6 @@ if mger_estanarede then
                              +',P2T_PED1_ICMS_OUTDESP_ALIQ '
                              +',P2T_PED1_ICMS_VALSEG_ALIQ '
                              +',P2T_PED1_ICMS_VALFRE_ALIQ '
-                             +',P2T_PISSQN '
                              +',P2T_INSS_PRED '
                              +',P2T_INSS_ALIQ '
                              +',P2T_IRRF_PRED '
@@ -2717,6 +2742,23 @@ if mger_estanarede then
                              +',P2T_ICMSINTER  '
                              +',P2T_ICMSINTERPART '
                              +',P2T_DEDUZIR_ICMS_BC_PIS_COFINS'
+
+                             +',P2T_CBS_CST '
+                             +',P2T_CODCLASSTRIB '
+                             +',P2T_CBS_ALIQ '
+                             +',P2T_IBS_UF_ALIQ '
+                             +',P2T_IBS_MUN_ALIQ '
+                             +',P2T_INDOP_IBSCBS '
+
+                             +',P2T_CODTRIB_MUN '
+                             +',P2T_CODTRIB_NAC '
+
+                             +',P2T_CODNBS '
+                             +',P2T_PCOFINS '
+                             +',P2T_PCSLL '
+                             +',P2T_PISSQN '
+                             +',P2T_PIR '
+
 
                             +') values ('
                              +':P2T_CODEMP'
@@ -2827,7 +2869,6 @@ if mger_estanarede then
                              +',:P2T_PED1_ICMS_OUTDESP_ALIQ '
                              +',:P2T_PED1_ICMS_VALSEG_ALIQ '
                              +',:P2T_PED1_ICMS_VALFRE_ALIQ '
-                             +',:P2T_PISSQN '
                              +',:P2T_INSS_PRED '
                              +',:P2T_INSS_ALIQ '
                              +',:P2T_IRRF_PRED '
@@ -2853,6 +2894,22 @@ if mger_estanarede then
                              +',:P2T_ICMSINTER  '
                              +',:P2T_ICMSINTERPART '
                              +',:P2T_DEDUZIR_ICMS_BC_PIS_COFINS'
+                             +',:P2T_CBS_CST '
+                             +',:P2T_CODCLASSTRIB '
+                             +',:P2T_CBS_ALIQ '
+                             +',:P2T_IBS_UF_ALIQ '
+                             +',:P2T_IBS_MUN_ALIQ '
+                             +',:P2T_INDOP_IBSCBS '
+                             +',:P2T_CODTRIB_MUN '
+                             +',:P2T_CODTRIB_NAC '
+
+                             +',:P2T_CODNBS '
+                             +',:P2T_PCOFINS '
+                             +',:P2T_PCSLL '
+                             +',:P2T_PISSQN '
+                             +',:P2T_PIR '
+
+
 
                              +')');
 
@@ -2991,6 +3048,28 @@ if mger_estanarede then
 
       Query_Exe.ParamByName('P2T_CODUSR').AsInteger              := mPed1_CodUsr_Dig;
       Query_Exe.ParamByName('P2T_DATAPED').AsDateTime            := mPed1_Datap;
+
+
+
+      Query_Exe.ParamByName('P2T_CBS_CST').AsString                    :=pTabela.FieldByName('P2SCBS_CST').AsString;
+      Query_Exe.ParamByName('P2T_PIS_CST').AsString                    :=pTabela.FieldByName('P2SCST_PIS').AsString;
+      Query_Exe.ParamByName('P2T_CODCLASSTRIB').AsString               :=pTabela.FieldByName('P2SCODCLASSTRIB').AsString;
+      query_exe.ParamByName('P2T_CBS_ALIQ').AsFloat                    :=pTabela.FieldByName('P2SCBS_ALIQ').AsFloat;
+      query_exe.ParamByName('P2T_IBS_UF_ALIQ').AsFloat                 :=pTabela.FieldByName('P2SIBS_UF_ALIQ').AsFloat;
+      query_exe.ParamByName('P2T_IBS_MUN_ALIQ').AsFloat                :=pTabela.FieldByName('P2SIBS_MUN_ALIQ').AsFloat;
+      query_exe.ParamByName('P2T_INDOP_IBSCBS').AsString                :=pTabela.FieldByName('P2SINDOP_IBSCBS').AsString;
+
+
+      Query_Exe.ParamByName('P2T_CODNBS').AsString                    :=pTabela.FieldByName('P2SCODNBS').AsString;
+      Query_Exe.ParamByName('P2T_CODTRIB_MUN').AsString                    :=pTabela.FieldByName('P2SCODTRIB_MUN').AsString;
+      Query_Exe.ParamByName('P2T_CODTRIB_NAC').AsString                    :=pTabela.FieldByName('P2SCODTRIB_NAC').AsString;
+      query_exe.ParamByName('P2T_PCOFINS').AsFloat                :=pTabela.FieldByName('P2SPCOFINS').AsFloat;
+      query_exe.ParamByName('P2T_PCSLL').AsFloat                :=pTabela.FieldByName('P2SPCSLL').AsFloat;
+      query_exe.ParamByName('P2T_PISSQN').AsFloat                :=pTabela.FieldByName('P2SPISSQN').AsFloat;
+      query_exe.ParamByName('P2T_PIR').AsFloat                :=pTabela.FieldByName('P2SPIR').AsFloat;
+
+
+
 
    //LINDOMAR
       if pItem_ant=0 then
@@ -3473,7 +3552,6 @@ try
                                  +',P2T_PED1_ICMS_OUTDESP_ALIQ '
                                  +',P2T_PED1_ICMS_VALSEG_ALIQ '
                                  +',P2T_PED1_ICMS_VALFRE_ALIQ '
-                                 +',P2T_PISSQN '
                                  +',P2T_INSS_PRED '
                                  +',P2T_INSS_ALIQ '
                                  +',P2T_IRRF_PRED '
@@ -3491,6 +3569,16 @@ try
                                  +',P2T_CBS_ALIQ'
                                  +',P2T_IBS_UF_ALIQ'
                                  +',P2T_IBS_MUN_ALIQ'
+                                 +',P2T_INDOP_IBSCBS'
+                             +',P2T_CODTRIB_MUN '
+                             +',P2T_CODTRIB_NAC '
+
+                             +',P2T_CODNBS '
+                             +',P2T_PCOFINS '
+                             +',P2T_PCSLL '
+                             +',P2T_PISSQN '
+                             +',P2T_PIR '
+
 
 
 
@@ -3604,7 +3692,6 @@ try
                                  +',:P2T_PED1_ICMS_OUTDESP_ALIQ '
                                  +',:P2T_PED1_ICMS_VALSEG_ALIQ '
                                  +',:P2T_PED1_ICMS_VALFRE_ALIQ '
-                                 +',:P2T_PISSQN '
                                  +',:P2T_INSS_PRED '
                                  +',:P2T_INSS_ALIQ '
                                  +',:P2T_IRRF_PRED '
@@ -3622,6 +3709,16 @@ try
                                  +',:P2T_CBS_ALIQ'
                                  +',:P2T_IBS_UF_ALIQ'
                                  +',:P2T_IBS_MUN_ALIQ'
+                                 +',:P2T_INDOP_IBSCBS '
+
+
+                             +',:P2T_CODTRIB_MUN '
+                             +',:P2T_CODTRIB_NAC '
+                             +',:P2T_CODNBS '
+                             +',:P2T_PCOFINS '
+                             +',:P2T_PCSLL '
+                             +',:P2T_PISSQN '
+                             +',:P2T_PIR '
 
                                  +')');
 
@@ -3841,8 +3938,15 @@ try
           query_exe.ParamByName('P2T_CBS_ALIQ').AsFloat                    :=pTabela.FieldByName('P2CBS_ALIQ').AsFloat;
           query_exe.ParamByName('P2T_IBS_UF_ALIQ').AsFloat                 :=pTabela.FieldByName('P2IBS_UF_ALIQ').AsFloat;
           query_exe.ParamByName('P2T_IBS_MUN_ALIQ').AsFloat                :=pTabela.FieldByName('P2IBS_MUN_ALIQ').AsFloat;
+          query_exe.ParamByName('P2T_INDOP_IBSCBS').AsString               :='';
+      Query_Exe.ParamByName('P2T_CODTRIB_MUN').AsString                     :='';
+      Query_Exe.ParamByName('P2T_CODTRIB_NAC').AsString                     :='';
 
-
+      Query_Exe.ParamByName('P2T_CODNBS').AsString                    :='';
+      query_exe.ParamByName('P2T_PCOFINS').AsFloat                :=0;
+      query_exe.ParamByName('P2T_PCSLL').AsFloat                :=0;
+      query_exe.ParamByName('P2T_PISSQN').AsFloat                :=0;
+      query_exe.ParamByName('P2T_PIR').AsFloat                :=0;
 
           end
     // inicio servico
@@ -3964,7 +4068,6 @@ try
                                  +',P2T_PED1_ICMS_OUTDESP_ALIQ '
                                  +',P2T_PED1_ICMS_VALSEG_ALIQ '
                                  +',P2T_PED1_ICMS_VALFRE_ALIQ '
-                                 +',P2T_PISSQN '
                                  +',P2T_INSS_PRED '
                                  +',P2T_INSS_ALIQ '
                                  +',P2T_IRRF_PRED '
@@ -3976,6 +4079,21 @@ try
                                  +',P2T_ICMSUFDEST '
                                  +',P2T_ICMSINTER  '
                                  +',P2T_ICMSINTERPART '
+
+                                 +',P2T_CBS_CST'
+                                 +',P2T_CODCLASSTRIB'
+                                 +',P2T_CBS_ALIQ'
+                                 +',P2T_IBS_UF_ALIQ'
+                                 +',P2T_IBS_MUN_ALIQ'
+                                 +',P2T_INDOP_IBSCBS '
+
+                             +',P2T_CODTRIB_MUN '
+                             +',P2T_CODTRIB_NAC '
+                             +',P2T_CODNBS '
+                             +',P2T_PCOFINS '
+                             +',P2T_PCSLL '
+                             +',P2T_PISSQN '
+                             +',P2T_PIR '
 
 
 
@@ -4090,7 +4208,6 @@ try
                                  +',:P2T_PED1_ICMS_OUTDESP_ALIQ '
                                  +',:P2T_PED1_ICMS_VALSEG_ALIQ '
                                  +',:P2T_PED1_ICMS_VALFRE_ALIQ '
-                                 +',:P2T_PISSQN '
                                  +',:P2T_INSS_PRED '
                                  +',:P2T_INSS_ALIQ '
                                  +',:P2T_IRRF_PRED '
@@ -4102,6 +4219,21 @@ try
                                  +',:P2T_ICMSUFDEST '
                                  +',:P2T_ICMSINTER  '
                                  +',:P2T_ICMSINTERPART '
+                                 +',:P2T_CBS_CST'
+                                 +',:P2T_CODCLASSTRIB'
+                                 +',:P2T_CBS_ALIQ'
+                                 +',:P2T_IBS_UF_ALIQ'
+                                 +',:P2T_IBS_MUN_ALIQ'
+                                 +',:P2T_INDOP_IBSCBS '
+                             +',:P2T_CODTRIB_MUN '
+                             +',:P2T_CODTRIB_NAC '
+
+                             +',:P2T_CODNBS '
+                             +',:P2T_PCOFINS '
+                             +',:P2T_PCSLL '
+                             +',:P2T_PISSQN '
+                             +',:P2T_PIR '
+
 
 
                                  +')');
@@ -4306,11 +4438,30 @@ try
           query_exe.ParamByName('P2T_ICMSINTERPART').AsFloat               :=pTabela.FieldByName('P2ICMSINTERPART').AsFloat;
     }
 
+
+          Query_Exe.ParamByName('P2T_CBS_CST').AsString                    :=pTabela.FieldByName('P2CBS_CST').AsString;
+          Query_Exe.ParamByName('P2T_CODCLASSTRIB').AsString               :=pTabela.FieldByName('P2CODCLASSTRIB').AsString;
+          query_exe.ParamByName('P2T_CBS_ALIQ').AsFloat                    :=pTabela.FieldByName('P2CBS_ALIQ').AsFloat;
+          query_exe.ParamByName('P2T_IBS_UF_ALIQ').AsFloat                 :=pTabela.FieldByName('P2IBS_UF_ALIQ').AsFloat;
+          query_exe.ParamByName('P2T_IBS_MUN_ALIQ').AsFloat                :=pTabela.FieldByName('P2IBS_MUN_ALIQ').AsFloat;
+          query_exe.ParamByName('P2T_INDOP_IBSCBS').AsString               :='';
+
+
           query_exe.ParamByName('P2T_CEST').AsString                       :=' ';
           query_exe.ParamByName('P2T_CPUFDEST').AsFloat                    :=0;
           query_exe.ParamByName('P2T_ICMSUFDEST').AsFloat                  :=0;
           query_exe.ParamByName('P2T_ICMSINTER').AsFloat                   :=0;
           query_exe.ParamByName('P2T_ICMSINTERPART').AsFloat               :=0;
+
+      Query_Exe.ParamByName('P2T_CODTRIB_MUN').AsString                     :='';
+      Query_Exe.ParamByName('P2T_CODTRIB_NAC').AsString                     :='';
+
+      Query_Exe.ParamByName('P2T_CODNBS').AsString                    :='';
+      query_exe.ParamByName('P2T_PCOFINS').AsFloat                :=0;
+      query_exe.ParamByName('P2T_PCSLL').AsFloat                :=0;
+      query_exe.ParamByName('P2T_PISSQN').AsFloat                :=0;
+      query_exe.ParamByName('P2T_PIR').AsFloat                :=0;
+
 
           end;
 

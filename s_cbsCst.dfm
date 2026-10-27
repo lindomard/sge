@@ -8,16 +8,36 @@ inherited Frm_CbsCst: TFrm_CbsCst
   TextHeight = 13
   inherited Panel1: TPanel
     Width = 858
+    Height = 52
     inherited lbl_emp: TLabel
       Left = 813
+      Height = 50
+    end
+    object lbl_filtros_extras: TLabel [2]
+      Left = 8
+      Top = 32
+      Width = 78
+      Height = 13
+      Caption = 'Filtros Extras:'
+      Visible = False
     end
     inherited BBnAtu: TBitBtn
       OnClick = BBnAtuClick
     end
+    object edt_filtros_extras: TEdit
+      Left = 91
+      Top = 28
+      Width = 746
+      Height = 21
+      ReadOnly = True
+      TabOrder = 3
+      Visible = False
+    end
   end
   inherited PC1: TPageControl
+    Top = 52
     Width = 858
-    ActivePage = tsTab
+    Height = 257
     inherited tsCad: TTabSheet
       object Label1: TLabel
         Left = 32

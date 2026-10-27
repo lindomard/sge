@@ -99,7 +99,7 @@ object Frm_MTipo_Ped: TFrm_MTipo_Ped
     Top = 29
     Width = 680
     Height = 472
-    ActivePage = TsAliquotas
+    ActivePage = tsCad
     Align = alClient
     HotTrack = True
     TabOrder = 1

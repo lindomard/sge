@@ -57,6 +57,7 @@ function fGerarOutrasOpcoesDePagamentos(ParametrosNfce: tParametrosNfce;cds_praz
 
 function fPedidoEstaBloqueado(ParametrosNfce: tParametrosNfce): tRetornoNfce;
 
+function fDesfazeremissaoNfse(ParametrosNfce: tParametrosNfce): tRetornoNfce;
 
 
 //procedure fEmitirDocOnline(ParametrosNfce: tParametrosNfce): tRetornoNfce;
@@ -303,7 +304,6 @@ form_ocorrencias: TFrm_Ocorrencias;
 
 mmensagem: string;
 pHomologando: boolean;
-pEletronica: boolean;
 pSerieNF:string;
 pModNF  :string;
 pNumNF : integer;
@@ -619,6 +619,7 @@ mDadosPedido.pOrdem     :=query_nfe.FieldByName('P1ORDEM').AsInteger;
 mDadosPedido.pcodemp    :=query_nfe.FieldByName('P1CODEMP').AsInteger;
 mDadosPedido.pLotSeq    :=query_nfe.FieldByName('P1LOTSEQ').AsInteger;
 
+
 fFecharPedido_NFSERVICO(MDadosPedido);
 
 query_nfe.Close;
@@ -649,7 +650,7 @@ While not Query_Nfe.Eof do
 
    Fgravarnf(2);
 
-   if pEletronica=false then
+   if ParametrosNfce.pEletronica=false then
       begin
       application.createform(TFrm_Pedido_Fortes, form_pedido_fortes);
       form_pedido_fortes.fLerdadosNFSE(ParametrosNfce.pSalvarPDFPara,ParametrosNfce.pSalvarXmlPara,ParametrosNfce.pNomeArq,ParametrosNfce.pChave,ParametrosNfce.pChave_ano
@@ -848,12 +849,13 @@ query_serv.SQL.Add(' Select P2SQTD,P2SITEM '
                     +' ,PDMARCA,PDREFER'
                     +' ,PDCODIGO_CNAE '
                     +' ,PDCODLC_116_03'
-                    +' ,PDCODNBS '
+                    +' ,P2SCODNBS '
                     +' ,(P2SBCINSS-P2SVDESCF) AS P2SBCINSS '
                     +' ,P2SREDINSS '
                     +' ,P2SVINSS '
                     +' ,P2SALIQINSS '
                     +' ,P2SREDIRRF '
+                    +' ,P2SCST_PIS '
                     +' ,P2SBCIRRF '
                     +' ,P2SVIRRF '
                     +' ,P2SALIQIRRF '
@@ -920,6 +922,7 @@ query_dados_emp.SQL.Add('SELECT RAZAO,FANTASIA, LNOME,LUF '
                        +',LCODMUN_IBGE '
                        +',ENDERECO,NUMERO,BAIRRO,CGC '
                        +',INSCMUNIC,INSCRICAO,CEP,FONE'
+                       +',EMP_CODTRIB_MUN'
                        +',E_MAIL'
                        +',EMP_CNAE'
                        +',EMP_OPTSIMPLES'
@@ -1005,6 +1008,9 @@ mXml_servico.Add(fGeraXMLString(0,'ie',fdeixanum(query_dados_emp.fieldbyname('IN
 mXml_servico.Add(fGeraXMLString(0,'RazaoSocial',query_dados_emp.fieldbyname('RAZAO').AsString));
 mXml_servico.Add(fGeraXMLString(0,'CRT',query_dados_emp.fieldbyname('EMP_OPTSIMPLES').AsString)); // 1-Simples nacional 2-SN c/Exesso de subLimite rec bruta 2-Normal
 
+mXml_servico.Add(fGeraXMLString(0,'regApTribSN',fdeixanum(query_dados_emp.fieldbyname('EMP_REG_AP_TRIB_SN').AsString)));
+mXml_servico.Add(fGeraXMLString(0,'regEspTrib',fdeixanum(query_dados_emp.fieldbyname('EMP_REG_ESP_TRIB').AsString)));
+
 mXml_servico.Add(fGeraXMLString(0,'IncentivadorCultural',iif(query_dados_emp.fieldbyname('EMP_INC_CULTURAL').AsString='2','Sim','Nao')));
 
 
@@ -1087,7 +1093,10 @@ mXml_servico.Add('</TributacaoMunicipio>');
 
 
 mXml_servico.Add('<MunicipioIncidencia>');
+
       mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
+
+
 mXml_servico.Add('</MunicipioIncidencia>');
 
 
@@ -1143,13 +1152,13 @@ While not query_serv.Eof do
           mXml_servico.Add(fGeraXMLString(0,'codServ',query_serv.fieldbyname('PDCODIGO_SERVICO').AsString));
 
 
-          mXml_servico.Add(fGeraXMLString(0,'codLCServ',query_serv.fieldbyname('PDCODLC_116_03').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'codLCServ',query_serv.fieldbyname('P2SCODTRIB_NAC').AsString));
 
 
 // inicio
-          if length(fdeixanum(query_serv.fieldbyname('PDCODNBS').AsString))>2 then
+          if length(fdeixanum(query_serv.fieldbyname('P2SCODNBS').AsString))>2 then
              begin
-                 mXml_servico.Add(fGeraXMLString(0,'codNbs',query_serv.fieldbyname('PDCODNBS').AsString));
+                 mXml_servico.Add(fGeraXMLString(0,'codNbs',query_serv.fieldbyname('P2SCODNBS').AsString));
              end;
 // termnino
 
@@ -1414,6 +1423,612 @@ const
 
     end;
 
+    procedure fGerarModeloTradicional;
+    begin
+
+    mXml_servico.Add('<?xml version="1.0" encoding="UTF-8"?>');
+    mXml_servico.Add('<NotaServico>');
+
+    mXml_servico.Add(fGeraXMLReal(0,'NumNFse',query_serv.fieldbyname('P1NUMNF_SERV').AsInteger));
+    //mXml_servico.Add(fGeraXMLReal(0,'NumNFse',8));
+    mXml_servico.Add(fGeraXMLDataHoraOK('DataNFse',query_serv.fieldbyname('P1DATANF_SERV').AsDateTime));
+    mXml_servico.Add(fGeraXMLReal(0,'tpAmb', ParametrosNfce.pAmbiente));
+    //  mXml_servico.Add(fGeraXMLString(0,'SerieNFse','C'));
+    mXml_servico.Add(fGeraXMLString(0,'SerieNFse',query_serv.fieldbyname('P1SERIE_SERV').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'TipoNFse','1'));
+    mXml_servico.Add(fGeraXMLString(0,'Status','1'));
+
+    mXml_servico.Add('<Prestador>');
+    mXml_servico.Add(fGeraXMLString(0,'cnpj',insere(query_dados_emp.fieldbyname('CGC').AsString,'0',14)));
+    mXml_servico.Add(fGeraXMLString(0,'cpf',''));
+    mXml_servico.Add(fGeraXMLString(0,'im',fdeixanum(query_dados_emp.fieldbyname('INSCMUNIC').AsString)));
+    mXml_servico.Add(fGeraXMLString(0,'ie',fdeixanum(query_dados_emp.fieldbyname('INSCRICAO').AsString)));
+    mXml_servico.Add(fGeraXMLString(0,'RazaoSocial',query_dados_emp.fieldbyname('RAZAO').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'CRT',query_dados_emp.fieldbyname('EMP_OPTSIMPLES').AsString)); // 1-Simples nacional 2-SN c/Exesso de subLimite rec bruta 2-Normal
+
+    mXml_servico.Add(fGeraXMLString(0,'regApTribSN',fdeixanum(query_dados_emp.fieldbyname('EMP_REG_AP_TRIB_SN').AsString)));
+    mXml_servico.Add(fGeraXMLString(0,'regEspTrib',fdeixanum(query_dados_emp.fieldbyname('EMP_REG_ESP_TRIB').AsString)));
+
+
+
+    mXml_servico.Add(fGeraXMLString(0,'IncentivadorCultural',iif(query_dados_emp.fieldbyname('EMP_INC_CULTURAL').AsString='2','Sim','Nao')));
+
+
+    mXml_servico.Add('<Ender>');
+    mXml_servico.Add(fGeraXMLString(0,'xLgr',query_dados_emp.fieldbyname('ENDERECO').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'nro',query_dados_emp.fieldbyname('NUMERO').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'xCpl',''));
+    mXml_servico.Add(fGeraXMLString(0,'xBairro',query_dados_emp.fieldbyname('BAIRRO').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'cMunIbge',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
+
+    //mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',query_serv.fieldbyName('PDCODIGO_CNAE').AsString));
+
+    if fsonumero(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)>0 then
+       mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio', fdeixanum(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)))
+    else
+       mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',fdeixanum(query_dados_emp.fieldbyname('EMP_CNAE').AsString)));
+
+
+    mXml_servico.Add(fGeraXMLString(0,'xMun',query_dados_emp.fieldbyname('LNOME').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'UF',query_dados_emp.fieldbyname('LUF').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'CEP',fdeixanum2(query_dados_emp.fieldbyname('CEP').AsString)));
+    mXml_servico.Add(fGeraXMLString(0,'cPais','1058'));
+    mXml_servico.Add(fGeraXMLString(0,'xPais','BRASIL'));
+    mXml_servico.Add('</Ender>');
+    mXml_servico.Add(fGeraXMLString(0,'fone',fdeixanum2(query_dados_emp.fieldbyname('FONE').AsString)));
+    mXml_servico.Add(fGeraXMLString(0,'eMail',fdeixanum2(query_dados_emp.fieldbyname('E_MAIL').AsString)));
+    mXml_servico.Add('</Prestador>');
+
+
+    mXml_servico.Add('<Tomador>');
+       if fsonumero(query_serv.fieldbyname('CCNPJ').AsString)=0 then
+          mXml_servico.Add(fGeraXMLString(0,'cnpj',''))
+       else
+          mXml_servico.Add(fGeraXMLString(0,'cnpj',insere(query_serv.fieldbyname('CCNPJ').AsString,'0',14)));
+       if fsonumero(query_serv.fieldbyname('CCPF').AsString)=0 then
+          mXml_servico.Add(fGeraXMLString(0,'cpf',''))
+       else
+          mXml_servico.Add(fGeraXMLString(0,'cpf',insere(query_serv.fieldbyname('CCPF').AsString,'0',11)));
+       if fSonumero(query_serv.fieldbyname('CIM').AsString)=0 then
+          mXml_servico.Add(fGeraXMLString(0,'im',''))
+       else
+          mXml_servico.Add(fGeraXMLString(0,'im',fdeixanum(query_serv.fieldbyname('CIM').AsString)));
+
+       mXml_servico.Add(fGeraXMLString(0,'ie',fdeixanum(query_serv.fieldbyname('CIE').AsString)));
+       mXml_servico.Add(fGeraXMLString(0,'RazaoSocial',query_serv.fieldbyname('CRAZAO').AsString));
+       mXml_servico.Add(fGeraXMLString(0,'CRT',query_serv.fieldbyname('CSUPERMICRO').AsString));
+       mXml_servico.Add(fGeraXMLString(0,'IncentivadorCultural','Nao'));
+
+
+
+       mXml_servico.Add('<Ender>');
+          mXml_servico.Add(fGeraXMLString(0,'xLgr',query_serv.fieldbyname('CLOG').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'nro',query_serv.fieldbyname('CNUM').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'xCpl',query_serv.fieldbyname('CCOMPL').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'xBairro',query_serv.fieldbyname('CBAIRRO').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_serv.fieldbyname('LCODMUN_IBGE').AsString));
+
+
+              if fsonumero(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)>0 then
+                 mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',fdeixanum(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)))
+              else
+                 mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',fdeixanum(query_dados_emp.fieldbyname('EMP_CNAE').AsString)));
+
+          mXml_servico.Add(fGeraXMLString(0,'cMunIbge',query_serv.fieldbyname('LCODMUN_IBGE').AsString));
+
+          mXml_servico.Add(fGeraXMLString(0,'xMun',query_serv.fieldbyname('LNOME').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'UF',query_serv.fieldbyname('LUF').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'CEP',fdeixanum2(query_serv.fieldbyname('CCEP').AsString)));
+          mXml_servico.Add(fGeraXMLString(0,'cPais','1058'));
+          mXml_servico.Add(fGeraXMLString(0,'xPais','BRASIL'));
+       mXml_servico.Add('</Ender>');
+       mXml_servico.Add(fGeraXMLString(0,'fone',fdeixanum2(query_serv.fieldbyname('CFONE01').AsString)));
+       mXml_servico.Add(fGeraXMLString(0,'eMail',fdeixanum2(query_serv.fieldbyname('CEMAIL').AsString)));
+    mXml_servico.Add('</Tomador>');
+
+    mXml_servico.Add('<TributacaoMunicipio>');
+          mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
+    mXml_servico.Add('</TributacaoMunicipio>');
+
+
+    mXml_servico.Add('<MunicipioIncidencia>');
+          mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
+    mXml_servico.Add('</MunicipioIncidencia>');
+
+
+
+
+    mXml_servico.Add('<Intermediario>');
+          mXml_servico.Add(fGeraXMLString(0,'cnpj',''));
+          mXml_servico.Add(fGeraXMLString(0,'cpf',''));
+          mXml_servico.Add(fGeraXMLString(0,'im',''));
+          mXml_servico.Add(fGeraXMLString(0,'ie',''));
+          mXml_servico.Add(fGeraXMLString(0,'RazaoSocial',''));
+    mXml_servico.Add('</Intermediario>');
+
+
+    mXml_servico.Add('<ConstrucaoCivil>');
+          mXml_servico.Add(fGeraXMLString(0,'Codigo',''));
+          mXml_servico.Add(fGeraXMLString(0,'Art',''));
+    mXml_servico.Add('</ConstrucaoCivil>');
+    mItem:=0;
+    While not query_serv.Eof do
+       begin
+
+       mtotBcINSS  :=mtotBcINSS+query_serv.fieldbyname('P2SBCINSS').AsFloat;
+       mtotINSS    :=mtotINSS+query_serv.fieldbyname('P2SVINSS').AsFloat;
+       mTotBcCOFINS:=mTotBcCOFINS+0;
+       mTotCOFINS  :=mTotCOFINS+0;
+
+       mTotBcPIS   :=mTotBcPIS+0;
+       mTotPIS     :=mTotPIS+0;
+
+       mTotBcCSLL  :=mTotBcCSLL+0;
+       mTotCSLL    :=mTotCSLL+0;
+
+       mTotBcIR    :=mTotBcIR+0;
+       mTotIR      :=mTotIR+0;
+
+       mTotBcISSQN :=mTotBcISSQN+query_serv.fieldbyname('P2SBCISSQN').AsFloat;;
+       mTotISSQN   :=mTotISSQN+query_serv.fieldbyname('P2SVISSQN').AsFloat;
+
+       mTotBcISSRetido:=mTotBcISSRetido+0;
+       mTotTotLiq     :=mTotTotLiq+query_serv.fieldbyname('P2STOTLIQ').AsFloat;;
+
+       mTotDescIncond :=mTotDescIncond+query_serv.fieldbyname('P2STOTDES').AsFloat;
+       mTotDescCond   :=mTotDescCond+0;
+       mTotDeducoes   :=mTotDeducoes+0;
+
+
+
+
+       mItem:=mItem+1;
+       mXml_servico.Add('<det nItem="'+IntToStr(mItem)+'">');
+           mXml_servico.Add('<Servico>');
+              mXml_servico.Add(fGeraXMLString(0,'codServ',query_serv.fieldbyname('P2SCODTRIB_NAC').AsString));
+
+
+              mXml_servico.Add(fGeraXMLString(0,'codLCServ',query_serv.fieldbyname('P2SCODTRIB_MUN').AsString));
+
+
+    // inicio
+              if length(fdeixanum(query_serv.fieldbyname('P2SCODNBS').AsString))>2 then
+                 begin
+                     mXml_servico.Add(fGeraXMLString(0,'codNbs',query_serv.fieldbyname('P2SCODNBS').AsString));
+                 end;
+    // termnino
+
+    //          mXml_servico.Add(fGeraXMLString(0,'Descricao',query_serv.fieldbyname('DESCRICAO').AsString));
+
+              if length(query_serv.fieldbyName('P1SERVICO_OBS_CORPO').AsString)>1 then
+                 mXml_servico.Add(fGeraXMLString(0,'Descricao',query_serv.fieldbyname('P1SERVICO_OBS_CORPO').AsString))
+              else
+                 mXml_servico.Add(fGeraXMLString(0,'Descricao',query_serv.fieldbyname('DESCRICAO').AsString));
+
+              mXml_servico.Add(fGeraXMLString(0,'Quantidade',query_serv.fieldbyname('P2SQTD').AsString));
+              mXml_servico.Add(fGeraXMLReal(2,'vPU',query_serv.fieldbyname('P2SPRECO').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'vTotal',query_serv.fieldbyname('P2STOTLIQ').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'vDescIncond',query_serv.fieldbyname('P2STOTDES').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'vDescCond',0));
+              mXml_servico.Add(fGeraXMLReal(2,'vDeducoes',0));
+
+              if fsonumero(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)>0 then
+                 mXml_servico.Add(fGeraXMLString(0,'CodigoCnae',fdeixanum(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)))
+              else
+                mXml_servico.Add(fGeraXMLString(0,'CodigoCnae',fdeixanum(query_dados_emp.fieldbyname('EMP_CNAE').AsString)));
+              mXml_servico.Add(fGeraXMLString(0,'ExigibilidadeISS',ExigibilidadeISS));
+
+
+           mXml_servico.Add('</Servico>');
+
+           mXml_servico.Add('<Impostos>');
+              mXml_servico.Add(fGeraXMLReal(2,'vBcINSS',query_serv.fieldbyname('P2SBCINSS').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'pINSS',query_serv.fieldbyname('P2SALIQINSS').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'vINSS',query_serv.fieldbyname('P2SVINSS').AsFloat));
+
+
+              mXml_servico.Add(fGeraXMLReal(2,'vBcCOFINS',0));
+              mXml_servico.Add(fGeraXMLReal(2,'pCOFINS',0));
+              mXml_servico.Add(fGeraXMLReal(2,'vCOFINS',0));
+
+              mXml_servico.Add(fGeraXMLReal(2,'vBcPIS',0));
+              mXml_servico.Add(fGeraXMLReal(2,'pPIS',0));
+              mXml_servico.Add(fGeraXMLReal(2,'vPIS',0));
+
+              mXml_servico.Add(fGeraXMLReal(2,'vBcCSLL',0));
+              mXml_servico.Add(fGeraXMLReal(2,'pCSLL',0));
+              mXml_servico.Add(fGeraXMLReal(2,'vCSLL',0));
+
+              mXml_servico.Add(fGeraXMLReal(2,'vBcIR',0));
+              mXml_servico.Add(fGeraXMLReal(2,'pIR',0));
+              mXml_servico.Add(fGeraXMLReal(2,'vIR',0));
+
+              mXml_servico.Add(fGeraXMLReal(2,'vBcISSQN',query_serv.fieldbyname('P2SBCISSQN').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'pISSQN',query_serv.fieldbyname('ALIQ_ISSQN').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'vISSQN',query_serv.fieldbyname('P2SVISSQN').AsFloat));
+
+              mXml_servico.Add(fGeraXMLString(0,'vBcISSRetido',query_serv.fieldbyname('CISSRETIDO').AsString));
+    //          mXml_servico.Add(fGeraXMLString(0,'ExigibilidadeISS',ExigibilidadeISS));
+
+           mXml_servico.Add('</Impostos>');
+        mXml_servico.Add('</det>');
+        query_serv.Next;
+        end;
+    query_serv.First;
+
+
+    While not query_vcto.Eof do
+       begin
+       mItem:=mItem+1;
+       mXml_servico.Add('<Parc nParc="'+IntToStr(mItem)+'">');
+              mXml_servico.Add('<Parcela>');
+              mXml_servico.Add(fGeraXMLData('dVenc',query_vcto.fieldbyname('P1VDATAV').AsDateTime));
+              mXml_servico.Add(fGeraXMLReal(2,'vDup',query_vcto.fieldbyname('P1VVALOR').AsFloat));
+              mXml_servico.Add('</Parcela>');
+       mXml_servico.Add('</Parc>');
+       query_vcto.Next;
+       end;
+    mXml_servico.Add('<Total>');
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcINSS',mtotBcINSS));
+    mXml_servico.Add(fGeraXMLReal(2,'vINSS',mtotINSS));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcCOFINS',mTotBcCOFINS));
+    mXml_servico.Add(fGeraXMLReal(2,'vCOFINS',mTotCOFINS));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcPIS',mTotBcPIS));
+    mXml_servico.Add(fGeraXMLReal(2,'vPIS',mTotPIS));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcCSLL',mTotBcCSLL));
+    mXml_servico.Add(fGeraXMLReal(2,'vCSLL',mTotCSLL));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcIR',mTotBcIR));
+    mXml_servico.Add(fGeraXMLReal(2,'vIR',mTotIR));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcISSQN',mTotBcISSQN));
+    mXml_servico.Add(fGeraXMLReal(2,'vISSQN',mTotISSQN));
+
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcISSRetido',mTotBcISSRetido));
+    mXml_servico.Add(fGeraXMLReal(2,'vTotLiq',mTotTotLiq));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vTotDescIncond',mTotDescIncond));
+    mXml_servico.Add(fGeraXMLReal(2,'vTotDescCond',mTotDescCond));
+    mXml_servico.Add(fGeraXMLReal(2,'vTotDeducoes',mTotDeducoes));
+
+    mXml_servico.Add('</Total>');
+
+
+     mXml_servico.Add('<InfAdic>');
+        mXml_servico.Add(fGeraXMLstring(0,'InfComplementares',query_serv.fieldbyName('P1SERVICO_OBS_INF_ADIC').AsString));
+
+     mXml_servico.Add('</InfAdic>');
+
+    mXml_servico.Add('</NotaServico>');
+
+
+    end;
+
+// ****************************************** modelo novo ambiente nacional ****************************************************
+
+
+    procedure fGerarModeloAmbienteNacional;
+    begin
+
+    mXml_servico.Add('<?xml version="1.0" encoding="UTF-8"?>');
+    mXml_servico.Add('<NotaServico>');
+    mXml_servico.Add(fGeraXMLString(0,'ativaNFSen','1'));
+    mXml_servico.Add(fGeraXMLReal(0,'NumNFse',query_serv.fieldbyname('P1NUMNF_SERV').AsInteger));
+    mXml_servico.Add(fGeraXMLDataHoraOK('DataNFse',query_serv.fieldbyname('P1DATANF_SERV').AsDateTime));
+    mXml_servico.Add(fGeraXMLReal(0,'tpAmb', ParametrosNfce.pAmbiente));
+    mXml_servico.Add(fGeraXMLString(0,'SerieNFse',query_serv.fieldbyname('P1SERIE_SERV').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'TipoNFse','1'));
+    mXml_servico.Add(fGeraXMLString(0,'Status','1'));
+
+    mXml_servico.Add('<Prestador>');
+    mXml_servico.Add(fGeraXMLString(0,'cnpj',insere(query_dados_emp.fieldbyname('CGC').AsString,'0',14)));
+    mXml_servico.Add(fGeraXMLString(0,'cpf',''));
+    mXml_servico.Add(fGeraXMLString(0,'im',fdeixanum(query_dados_emp.fieldbyname('INSCMUNIC').AsString)));
+    mXml_servico.Add(fGeraXMLString(0,'ie',fdeixanum(query_dados_emp.fieldbyname('INSCRICAO').AsString)));
+    mXml_servico.Add(fGeraXMLString(0,'RazaoSocial',query_dados_emp.fieldbyname('RAZAO').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'CRT',query_dados_emp.fieldbyname('EMP_OPTSIMPLES').AsString)); // 1-Simples nacional 2-SN c/Exesso de subLimite rec bruta 2-Normal
+
+    mXml_servico.Add(fGeraXMLString(0,'regApTribSN',query_dados_emp.fieldbyname('EMP_REG_AP_TRIB_SN').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'regEspTrib',query_dados_emp.fieldbyname('EMP_REG_ESP_TRIB').AsString));
+
+//gerar arqui
+    mXml_servico.Add(fGeraXMLString(0,'IncentivadorCultural',iif(query_dados_emp.fieldbyname('EMP_INC_CULTURAL').AsString='2','Sim','Nao')));
+
+
+    mXml_servico.Add('<Ender>');
+    mXml_servico.Add(fGeraXMLString(0,'xLgr',query_dados_emp.fieldbyname('ENDERECO').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'nro',query_dados_emp.fieldbyname('NUMERO').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'xCpl',''));
+    mXml_servico.Add(fGeraXMLString(0,'xBairro',query_dados_emp.fieldbyname('BAIRRO').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'cMunIbge',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
+
+
+    if fsonumero(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)>0 then
+       mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio', fdeixanum(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)))
+    else
+       mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',fdeixanum(query_dados_emp.fieldbyname('EMP_CNAE').AsString)));
+
+
+    mXml_servico.Add(fGeraXMLString(0,'xMun',query_dados_emp.fieldbyname('LNOME').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'UF',query_dados_emp.fieldbyname('LUF').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'CEP',fdeixanum2(query_dados_emp.fieldbyname('CEP').AsString)));
+    mXml_servico.Add(fGeraXMLString(0,'cPais','1058'));
+    mXml_servico.Add(fGeraXMLString(0,'xPais','BRASIL'));
+    mXml_servico.Add('</Ender>');
+    mXml_servico.Add(fGeraXMLString(0,'fone',fdeixanum2(query_dados_emp.fieldbyname('FONE').AsString)));
+    mXml_servico.Add(fGeraXMLString(0,'eMail',fdeixanum2(query_dados_emp.fieldbyname('E_MAIL').AsString)));
+    mXml_servico.Add('</Prestador>');
+
+
+    mXml_servico.Add('<Tomador>');
+       if fsonumero(query_serv.fieldbyname('CCNPJ').AsString)=0 then
+          mXml_servico.Add(fGeraXMLString(0,'cnpj',''))
+       else
+          mXml_servico.Add(fGeraXMLString(0,'cnpj',insere(query_serv.fieldbyname('CCNPJ').AsString,'0',14)));
+       if fsonumero(query_serv.fieldbyname('CCPF').AsString)=0 then
+          mXml_servico.Add(fGeraXMLString(0,'cpf',''))
+       else
+          mXml_servico.Add(fGeraXMLString(0,'cpf',insere(query_serv.fieldbyname('CCPF').AsString,'0',11)));
+       if fSonumero(query_serv.fieldbyname('CIM').AsString)=0 then
+          mXml_servico.Add(fGeraXMLString(0,'im',''))
+       else
+          mXml_servico.Add(fGeraXMLString(0,'im',fdeixanum(query_serv.fieldbyname('CIM').AsString)));
+
+       mXml_servico.Add(fGeraXMLString(0,'ie',fdeixanum(query_serv.fieldbyname('CIE').AsString)));
+       mXml_servico.Add(fGeraXMLString(0,'RazaoSocial',query_serv.fieldbyname('CRAZAO').AsString));
+       mXml_servico.Add(fGeraXMLString(0,'CRT',query_serv.fieldbyname('CSUPERMICRO').AsString));
+       mXml_servico.Add(fGeraXMLString(0,'IncentivadorCultural','Nao'));
+
+
+
+       mXml_servico.Add('<Ender>');
+          mXml_servico.Add(fGeraXMLString(0,'xLgr',query_serv.fieldbyname('CLOG').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'nro',query_serv.fieldbyname('CNUM').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'xCpl',query_serv.fieldbyname('CCOMPL').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'xBairro',query_serv.fieldbyname('CBAIRRO').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_serv.fieldbyname('LCODMUN_IBGE').AsString));
+
+
+              if fsonumero(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)>0 then
+                 mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',fdeixanum(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)))
+              else
+                 mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',fdeixanum(query_dados_emp.fieldbyname('EMP_CNAE').AsString)));
+
+          mXml_servico.Add(fGeraXMLString(0,'cMunIbge',query_serv.fieldbyname('LCODMUN_IBGE').AsString));
+
+          mXml_servico.Add(fGeraXMLString(0,'xMun',query_serv.fieldbyname('LNOME').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'UF',query_serv.fieldbyname('LUF').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'CEP',fdeixanum2(query_serv.fieldbyname('CCEP').AsString)));
+          mXml_servico.Add(fGeraXMLString(0,'cPais','1058'));
+          mXml_servico.Add(fGeraXMLString(0,'xPais','BRASIL'));
+       mXml_servico.Add('</Ender>');
+       mXml_servico.Add(fGeraXMLString(0,'fone',fdeixanum2(query_serv.fieldbyname('CFONE01').AsString)));
+       mXml_servico.Add(fGeraXMLString(0,'eMail',fdeixanum2(query_serv.fieldbyname('CEMAIL').AsString)));
+    mXml_servico.Add('</Tomador>');
+
+    mXml_servico.Add('<TributacaoMunicipio>');
+          mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
+    mXml_servico.Add('</TributacaoMunicipio>');
+
+
+    mXml_servico.Add('<MunicipioIncidencia>');
+          mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
+          mXml_servico.Add(fGeraXMLString(0,'xMunPref',query_dados_emp.fieldbyname('LNOME').AsString));
+
+    mXml_servico.Add('</MunicipioIncidencia>');
+
+
+
+    mXml_servico.Add('<Intermediario>');
+          mXml_servico.Add(fGeraXMLString(0,'cnpj',''));
+          mXml_servico.Add(fGeraXMLString(0,'cpf',''));
+          mXml_servico.Add(fGeraXMLString(0,'im',''));
+          mXml_servico.Add(fGeraXMLString(0,'ie',''));
+          mXml_servico.Add(fGeraXMLString(0,'RazaoSocial',''));
+    mXml_servico.Add('</Intermediario>');
+
+
+    mXml_servico.Add('<ConstrucaoCivil>');
+          mXml_servico.Add(fGeraXMLString(0,'Codigo',''));
+          mXml_servico.Add(fGeraXMLString(0,'Art',''));
+    mXml_servico.Add('</ConstrucaoCivil>');
+    mItem:=0;
+    While not query_serv.Eof do
+       begin
+
+       mtotBcINSS  :=mtotBcINSS+query_serv.fieldbyname('P2SBCINSS').AsFloat;
+       mtotINSS    :=mtotINSS+query_serv.fieldbyname('P2SVINSS').AsFloat;
+       mTotBcCOFINS:=mTotBcCOFINS+0;
+       mTotCOFINS  :=mTotCOFINS+0;
+
+       mTotBcPIS   :=mTotBcPIS+0;
+       mTotPIS     :=mTotPIS+0;
+
+       mTotBcCSLL  :=mTotBcCSLL+0;
+       mTotCSLL    :=mTotCSLL+0;
+
+       mTotBcIR    :=mTotBcIR+0;
+       mTotIR      :=mTotIR+0;
+
+       mTotBcISSQN :=mTotBcISSQN+query_serv.fieldbyname('P2SBCISSQN').AsFloat;;
+       mTotISSQN   :=mTotISSQN+query_serv.fieldbyname('P2SVISSQN').AsFloat;
+
+       mTotBcISSRetido:=mTotBcISSRetido+0;
+       mTotTotLiq     :=mTotTotLiq+query_serv.fieldbyname('P2STOTLIQ').AsFloat;;
+
+       mTotDescIncond :=mTotDescIncond+query_serv.fieldbyname('P2STOTDES').AsFloat;
+       mTotDescCond   :=mTotDescCond+0;
+       mTotDeducoes   :=mTotDeducoes+0;
+
+
+
+
+       mItem:=mItem+1;
+       mXml_servico.Add('<det nItem="'+IntToStr(mItem)+'">');
+           mXml_servico.Add('<Servico>');
+              mXml_servico.Add(fGeraXMLString(0,'codServ',query_serv.fieldbyname('P2SCODTRIB_NAC').AsString));
+              mXml_servico.Add(fGeraXMLString(0,'codLCServ',query_serv.fieldbyname('P2SCODTRIB_MUN').AsString));
+
+
+
+    // inicio
+              if length(fdeixanum(query_serv.fieldbyname('P2SCODNBS').AsString))>2 then
+                 begin
+                     mXml_servico.Add(fGeraXMLString(0,'codNbs',query_serv.fieldbyname('P2SCODNBS').AsString));
+                 end;
+    // termnino
+
+    //          mXml_servico.Add(fGeraXMLString(0,'Descricao',query_serv.fieldbyname('DESCRICAO').AsString));
+
+              if length(query_serv.fieldbyName('P1SERVICO_OBS_CORPO').AsString)>1 then
+                 mXml_servico.Add(fGeraXMLString(0,'Descricao',query_serv.fieldbyname('P1SERVICO_OBS_CORPO').AsString))
+              else
+                 mXml_servico.Add(fGeraXMLString(0,'Descricao',query_serv.fieldbyname('DESCRICAO').AsString));
+
+              mXml_servico.Add(fGeraXMLString(0,'Quantidade',query_serv.fieldbyname('P2SQTD').AsString));
+              mXml_servico.Add(fGeraXMLReal(2,'vPU',query_serv.fieldbyname('P2SPRECO').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'vTotal',query_serv.fieldbyname('P2STOTLIQ').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'vDescIncond',query_serv.fieldbyname('P2STOTDES').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'vDescCond',0));
+              mXml_servico.Add(fGeraXMLReal(2,'vDeducoes',0));
+
+              if fsonumero(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)>0 then
+                 mXml_servico.Add(fGeraXMLString(0,'CodigoCnae',fdeixanum(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)))
+              else
+                mXml_servico.Add(fGeraXMLString(0,'CodigoCnae',fdeixanum(query_dados_emp.fieldbyname('EMP_CNAE').AsString)));
+              mXml_servico.Add(fGeraXMLString(0,'ExigibilidadeISS',ExigibilidadeISS));
+
+
+           mXml_servico.Add('</Servico>');
+
+           mXml_servico.Add('<Impostos>');
+              mXml_servico.Add(fGeraXMLReal(2,'vBcINSS',query_serv.fieldbyname('P2SBCINSS').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'pINSS',query_serv.fieldbyname('P2SALIQINSS').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'vINSS',query_serv.fieldbyname('P2SVINSS').AsFloat));
+
+
+              mXml_servico.Add(fGeraXMLReal(2,'vBcCOFINS',0));
+              mXml_servico.Add(fGeraXMLReal(2,'pCOFINS',0));
+              mXml_servico.Add(fGeraXMLReal(2,'vCOFINS',0));
+
+              mXml_servico.Add(fGeraXMLReal(2,'vBcPIS',0));
+              mXml_servico.Add(fGeraXMLReal(2,'pPIS',0));
+              mXml_servico.Add(fGeraXMLReal(2,'vPIS',0));
+
+              mXml_servico.Add(fGeraXMLReal(2,'vBcCSLL',0));
+              mXml_servico.Add(fGeraXMLReal(2,'pCSLL',0));
+              mXml_servico.Add(fGeraXMLReal(2,'vCSLL',0));
+
+              mXml_servico.Add(fGeraXMLReal(2,'vBcIR',0));
+              mXml_servico.Add(fGeraXMLReal(2,'pIR',0));
+              mXml_servico.Add(fGeraXMLReal(2,'vIR',0));
+
+              mXml_servico.Add(fGeraXMLReal(2,'vBcISSQN',query_serv.fieldbyname('P2SBCISSQN').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'pISSQN',query_serv.fieldbyname('ALIQ_ISSQN').AsFloat));
+              mXml_servico.Add(fGeraXMLReal(2,'vISSQN',query_serv.fieldbyname('P2SVISSQN').AsFloat));
+
+              mXml_servico.Add(fGeraXMLString(0,'vBcISSRetido',query_serv.fieldbyname('CISSRETIDO').AsString));
+
+
+              mXml_servico.Add(fGeraXMLString(0,'cstPisCofins',query_serv.fieldbyname('P2SCST_PIS').AsString));
+
+
+              mXml_servico.Add(fGeraXMLString(0,'cstIBSCBS',query_serv.fieldbyname('P2SCBS_CST').AsString));
+
+               mXml_servico.Add(fGeraXMLString(0,'cClassTribIBSCBS',query_serv.fieldbyname('P2SCODCLASSTRIB').AsString));
+
+// ATE AQUI REVISADO
+
+
+           mXml_servico.Add('</Impostos>');
+        mXml_servico.Add('</det>');
+        query_serv.Next;
+        end;
+    query_serv.First;
+
+
+    While not query_vcto.Eof do
+       begin
+       mItem:=mItem+1;
+       mXml_servico.Add('<Parc nParc="'+IntToStr(mItem)+'">');
+              mXml_servico.Add('<Parcela>');
+              mXml_servico.Add(fGeraXMLData('dVenc',query_vcto.fieldbyname('P1VDATAV').AsDateTime));
+              mXml_servico.Add(fGeraXMLReal(2,'vDup',query_vcto.fieldbyname('P1VVALOR').AsFloat));
+              mXml_servico.Add('</Parcela>');
+       mXml_servico.Add('</Parc>');
+       query_vcto.Next;
+       end;
+    mXml_servico.Add('<Total>');
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcINSS',mtotBcINSS));
+    mXml_servico.Add(fGeraXMLReal(2,'vINSS',mtotINSS));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcCOFINS',mTotBcCOFINS));
+    mXml_servico.Add(fGeraXMLReal(2,'vCOFINS',mTotCOFINS));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcPIS',mTotBcPIS));
+    mXml_servico.Add(fGeraXMLReal(2,'vPIS',mTotPIS));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcCSLL',mTotBcCSLL));
+    mXml_servico.Add(fGeraXMLReal(2,'vCSLL',mTotCSLL));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcIR',mTotBcIR));
+    mXml_servico.Add(fGeraXMLReal(2,'vIR',mTotIR));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcISSQN',mTotBcISSQN));
+    mXml_servico.Add(fGeraXMLReal(2,'vISSQN',mTotISSQN));
+
+
+    mXml_servico.Add(fGeraXMLReal(2,'vBcISSRetido',mTotBcISSRetido));
+    mXml_servico.Add(fGeraXMLReal(2,'vTotLiq',mTotTotLiq));
+
+    mXml_servico.Add(fGeraXMLReal(2,'vTotDescIncond',mTotDescIncond));
+    mXml_servico.Add(fGeraXMLReal(2,'vTotDescCond',mTotDescCond));
+    mXml_servico.Add(fGeraXMLReal(2,'vTotDeducoes',mTotDeducoes));
+
+    mXml_servico.Add('</Total>');
+
+
+     mXml_servico.Add('<InfAdic>');
+        mXml_servico.Add(fGeraXMLstring(0,'InfComplementares',query_serv.fieldbyName('P1SERVICO_OBS_INF_ADIC').AsString));
+
+     mXml_servico.Add('</InfAdic>');
+
+    mXml_servico.Add(fGeraXMLString(0,'tpRetPisCofins',query_dados_emp.fieldbyname('EMP_TP_RET_PIS_COFINS').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'finNFSe',query_dados_emp.fieldbyname('EMP_IBS_CBS_FIN_NFSE').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'indFinal',query_dados_emp.fieldbyname('EMP_INDFINAL').AsString));
+
+   mXml_servico.Add(fGeraXMLstring(0,'cIndOp',query_serv.fieldbyname('P2SINDOP_IBSCBS').AsString));
+//   LINDOMAR
+//   mXml_servico.Add(fGeraXMLstring(0,'cIndOp','100401'));
+
+
+
+    mXml_servico.Add(fGeraXMLString(0,'tpOper',query_dados_emp.fieldbyname('EMP_IBS_CBS_TP_OPER').AsString));
+
+
+    mXml_servico.Add(fGeraXMLString(0,'tpEnteGov',query_dados_emp.fieldbyname('EMP_IBS_CBS_TP_ENTE_GOV').AsString));
+    mXml_servico.Add(fGeraXMLString(0,'indDest',query_dados_emp.fieldbyname('EMP_IBS_CBS_IND_DEST').AsString));
+
+//   mXml_servico.Add(fGeraXMLstring(0,'tpEnteGov','1'));
+//   mXml_servico.Add(fGeraXMLstring(0,'indDest','0'));
+
+
+
+    mXml_servico.Add('</NotaServico>');
+
+
+    end;
+
+//******************************************* modelo novo ambiente nacional termino *******************************************
+
 begin
 mXml_servico:=TStringList.Create;
 
@@ -1452,15 +2067,19 @@ query_serv.SQL.Add(' Select P2SQTD,P2SITEM '
                     +' ,P2SCFO AS P2SCFO,P2SLISTA,P2SALIQ,PDNOME,PDUND,PDCODBAR'
                     +' ,PDMARCA,PDREFER'
                     +' ,PDCODIGO_CNAE '
-                    +' ,PDCODLC_116_03'
-                    +' ,PDCODNBS '
+                    +' ,P2SCODTRIB_NAC'
+                    +' ,P2SCODNBS '
                     +' ,(P2SBCINSS-P2SVDESCF) AS P2SBCINSS '
                     +' ,P2SREDINSS '
                     +' ,P2SVINSS '
                     +' ,P2SALIQINSS '
                     +' ,P2SREDIRRF '
+                    +' ,P2SCST_PIS '
                     +' ,P2SBCIRRF '
                     +' ,P2SVIRRF '
+                    +' ,P2SCBS_CST'
+                    +' ,P2SCODCLASSTRIB'
+                    +' ,P2SINDOP_IBSCBS '
                     +' ,P2SALIQIRRF '
                     +' ,(P2STOTLIQ-P2SVDESCF) AS P2STOTLIQ '
                     +' ,P2STOTDES '
@@ -1468,6 +2087,8 @@ query_serv.SQL.Add(' Select P2SQTD,P2SITEM '
                     +' ,CRAZAO '
                     +' ,CISSRETIDO'
                     +' ,CSUPERMICRO'
+
+
                     +' ,CCNPJ '
                     +' ,CCPF '
                     +' ,CIE '
@@ -1499,7 +2120,7 @@ query_serv.SQL.Add(' Select P2SQTD,P2SITEM '
                     +' ,CCEP '
                     +',CFONE01,CEMAIL'
                     +',CASE WHEN LENGTH( P2SDESC_COMP)>2 THEN  P2SDESC_COMP ELSE PDNOME END AS DESCRICAO '
-                    +' ,PDCODIGO_CNAE,PDCODIGO_SERVICO,P1SERVICO_OBS_CORPO,P1SERVICO_OBS_INF_ADIC '
+                    +' ,PDCODIGO_CNAE,P2SCODTRIB_MUN,P2SCODTRIB_NAC,P1SERVICO_OBS_CORPO,P1SERVICO_OBS_INF_ADIC '
                     +' from CADP01 '+iif(la_tabelas='','',',')+la_tabelas
                     +'       '+la_Join
                     +'       where '+iif(la_Empresas='','',la_Empresas+' and ')
@@ -1525,10 +2146,19 @@ query_dados_emp.SQL.Add('SELECT RAZAO,FANTASIA, LNOME,LUF '
                        +',LCODMUN_IBGE '
                        +',ENDERECO,NUMERO,BAIRRO,CGC '
                        +',INSCMUNIC,INSCRICAO,CEP,FONE'
+                       +',EMP_CODTRIB_MUN'
                        +',E_MAIL'
                        +',EMP_CNAE'
                        +',EMP_OPTSIMPLES'
                        +',EMP_INC_CULTURAL '
+                       +',EMP_REG_AP_TRIB_SN'
+                       +',EMP_REG_ESP_TRIB'
+                       +',EMP_IBS_CBS_TP_OPER'
+                       +',EMP_IBS_CBS_TP_ENTE_GOV'
+                       +',EMP_IBS_CBS_IND_DEST'
+                       +',EMP_TP_RET_PIS_COFINS '                          
+                       +',EMP_IBS_CBS_FIN_NFSE'
+                       +',EMP_INDFINAL '
                        +' FROM CADEMP,CADLOC '
                        +' WHERE  LCODLOC=CODLOC '
                        +' AND CODEMP=:CODEMP ');
@@ -1537,12 +2167,13 @@ try
    query_dados_emp.Open;
 except on e : exception do
    begin
+   ex_erroSql_Novo(query_dados_emp,27064,'func2 '+e.Message,'CADEMP');
+
    query_dados_emp.close;
    freeandnil(query_dados_emp);
    query_serv.close;
    freeandnil(query_serv);
 
-   ex_erroSql_Novo(query_dados_emp,27064,'func2 '+e.Message,'CADEMP');
    exit;
 
    end;
@@ -1588,233 +2219,6 @@ mTotDeducoes   :=0;
 
 
 query_serv.First;
-mXml_servico.Add('<?xml version="1.0" encoding="UTF-8"?>');
-
-
-mXml_servico.Add('<NotaServico>');
-
-mXml_servico.Add(fGeraXMLReal(0,'NumNFse',query_serv.fieldbyname('P1NUMNF_SERV').AsInteger));
-//mXml_servico.Add(fGeraXMLReal(0,'NumNFse',8));
-mXml_servico.Add(fGeraXMLDataHoraOK('DataNFse',query_serv.fieldbyname('P1DATANF_SERV').AsDateTime));
-mXml_servico.Add(fGeraXMLReal(0,'tpAmb', ParametrosNfce.pAmbiente));
-//  mXml_servico.Add(fGeraXMLString(0,'SerieNFse','C'));
-mXml_servico.Add(fGeraXMLString(0,'SerieNFse',query_serv.fieldbyname('P1SERIE_SERV').AsString));
-mXml_servico.Add(fGeraXMLString(0,'TipoNFse','1'));
-mXml_servico.Add(fGeraXMLString(0,'Status','1'));
-
-mXml_servico.Add('<Prestador>');
-mXml_servico.Add(fGeraXMLString(0,'cnpj',insere(query_dados_emp.fieldbyname('CGC').AsString,'0',14)));
-mXml_servico.Add(fGeraXMLString(0,'cpf',''));
-mXml_servico.Add(fGeraXMLString(0,'im',fdeixanum(query_dados_emp.fieldbyname('INSCMUNIC').AsString)));
-mXml_servico.Add(fGeraXMLString(0,'ie',fdeixanum(query_dados_emp.fieldbyname('INSCRICAO').AsString)));
-mXml_servico.Add(fGeraXMLString(0,'RazaoSocial',query_dados_emp.fieldbyname('RAZAO').AsString));
-mXml_servico.Add(fGeraXMLString(0,'CRT',query_dados_emp.fieldbyname('EMP_OPTSIMPLES').AsString)); // 1-Simples nacional 2-SN c/Exesso de subLimite rec bruta 2-Normal
-
-mXml_servico.Add(fGeraXMLString(0,'IncentivadorCultural',iif(query_dados_emp.fieldbyname('EMP_INC_CULTURAL').AsString='2','Sim','Nao')));
-
-
-mXml_servico.Add('<Ender>');
-mXml_servico.Add(fGeraXMLString(0,'xLgr',query_dados_emp.fieldbyname('ENDERECO').AsString));
-mXml_servico.Add(fGeraXMLString(0,'nro',query_dados_emp.fieldbyname('NUMERO').AsString));
-mXml_servico.Add(fGeraXMLString(0,'xCpl',''));
-mXml_servico.Add(fGeraXMLString(0,'xBairro',query_dados_emp.fieldbyname('BAIRRO').AsString));
-mXml_servico.Add(fGeraXMLString(0,'cMunIbge',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
-mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
-
-//mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',query_serv.fieldbyName('PDCODIGO_CNAE').AsString));
-
-if fsonumero(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)>0 then
-   mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio', fdeixanum(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)))
-else
-   mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',fdeixanum(query_dados_emp.fieldbyname('EMP_CNAE').AsString)));
-
-
-mXml_servico.Add(fGeraXMLString(0,'xMun',query_dados_emp.fieldbyname('LNOME').AsString));
-mXml_servico.Add(fGeraXMLString(0,'UF',query_dados_emp.fieldbyname('LUF').AsString));
-mXml_servico.Add(fGeraXMLString(0,'CEP',fdeixanum2(query_dados_emp.fieldbyname('CEP').AsString)));
-mXml_servico.Add(fGeraXMLString(0,'cPais','1058'));
-mXml_servico.Add(fGeraXMLString(0,'xPais','BRASIL'));
-mXml_servico.Add('</Ender>');
-mXml_servico.Add(fGeraXMLString(0,'fone',fdeixanum2(query_dados_emp.fieldbyname('FONE').AsString)));
-mXml_servico.Add(fGeraXMLString(0,'eMail',fdeixanum2(query_dados_emp.fieldbyname('E_MAIL').AsString)));
-mXml_servico.Add('</Prestador>');
-
-
-mXml_servico.Add('<Tomador>');
-   if fsonumero(query_serv.fieldbyname('CCNPJ').AsString)=0 then
-      mXml_servico.Add(fGeraXMLString(0,'cnpj',''))
-   else
-      mXml_servico.Add(fGeraXMLString(0,'cnpj',insere(query_serv.fieldbyname('CCNPJ').AsString,'0',14)));
-   if fsonumero(query_serv.fieldbyname('CCPF').AsString)=0 then
-      mXml_servico.Add(fGeraXMLString(0,'cpf',''))
-   else
-      mXml_servico.Add(fGeraXMLString(0,'cpf',insere(query_serv.fieldbyname('CCPF').AsString,'0',11)));
-   if fSonumero(query_serv.fieldbyname('CIM').AsString)=0 then
-      mXml_servico.Add(fGeraXMLString(0,'im',''))
-   else
-      mXml_servico.Add(fGeraXMLString(0,'im',fdeixanum(query_serv.fieldbyname('CIM').AsString)));
-
-   mXml_servico.Add(fGeraXMLString(0,'ie',fdeixanum(query_serv.fieldbyname('CIE').AsString)));
-   mXml_servico.Add(fGeraXMLString(0,'RazaoSocial',query_serv.fieldbyname('CRAZAO').AsString));
-   mXml_servico.Add(fGeraXMLString(0,'CRT',query_serv.fieldbyname('CSUPERMICRO').AsString));
-   mXml_servico.Add(fGeraXMLString(0,'IncentivadorCultural','Nao'));
-
-
-
-   mXml_servico.Add('<Ender>');
-      mXml_servico.Add(fGeraXMLString(0,'xLgr',query_serv.fieldbyname('CLOG').AsString));
-      mXml_servico.Add(fGeraXMLString(0,'nro',query_serv.fieldbyname('CNUM').AsString));
-      mXml_servico.Add(fGeraXMLString(0,'xCpl',query_serv.fieldbyname('CCOMPL').AsString));
-      mXml_servico.Add(fGeraXMLString(0,'xBairro',query_serv.fieldbyname('CBAIRRO').AsString));
-      mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_serv.fieldbyname('LCODMUN_IBGE').AsString));
-
-
-          if fsonumero(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)>0 then
-             mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',fdeixanum(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)))
-          else
-             mXml_servico.Add(fGeraXMLString(0,'CodigoTributacaoMunicipio',fdeixanum(query_dados_emp.fieldbyname('EMP_CNAE').AsString)));
-
-      mXml_servico.Add(fGeraXMLString(0,'cMunIbge',query_serv.fieldbyname('LCODMUN_IBGE').AsString));
-
-      mXml_servico.Add(fGeraXMLString(0,'xMun',query_serv.fieldbyname('LNOME').AsString));
-      mXml_servico.Add(fGeraXMLString(0,'UF',query_serv.fieldbyname('LUF').AsString));
-      mXml_servico.Add(fGeraXMLString(0,'CEP',fdeixanum2(query_serv.fieldbyname('CCEP').AsString)));
-      mXml_servico.Add(fGeraXMLString(0,'cPais','1058'));
-      mXml_servico.Add(fGeraXMLString(0,'xPais','BRASIL'));
-   mXml_servico.Add('</Ender>');
-   mXml_servico.Add(fGeraXMLString(0,'fone',fdeixanum2(query_serv.fieldbyname('CFONE01').AsString)));
-   mXml_servico.Add(fGeraXMLString(0,'eMail',fdeixanum2(query_serv.fieldbyname('CEMAIL').AsString)));
-mXml_servico.Add('</Tomador>');
-
-mXml_servico.Add('<TributacaoMunicipio>');
-      mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
-mXml_servico.Add('</TributacaoMunicipio>');
-
-
-mXml_servico.Add('<MunicipioIncidencia>');
-      mXml_servico.Add(fGeraXMLString(0,'cMunPref',query_dados_emp.fieldbyname('LCODMUN_IBGE').AsString));
-mXml_servico.Add('</MunicipioIncidencia>');
-
-
-
-
-mXml_servico.Add('<Intermediario>');
-      mXml_servico.Add(fGeraXMLString(0,'cnpj',''));
-      mXml_servico.Add(fGeraXMLString(0,'cpf',''));
-      mXml_servico.Add(fGeraXMLString(0,'im',''));
-      mXml_servico.Add(fGeraXMLString(0,'ie',''));
-      mXml_servico.Add(fGeraXMLString(0,'RazaoSocial',''));
-mXml_servico.Add('</Intermediario>');
-
-
-mXml_servico.Add('<ConstrucaoCivil>');
-      mXml_servico.Add(fGeraXMLString(0,'Codigo',''));
-      mXml_servico.Add(fGeraXMLString(0,'Art',''));
-mXml_servico.Add('</ConstrucaoCivil>');
-mItem:=0;
-While not query_serv.Eof do
-   begin
-
-   mtotBcINSS  :=mtotBcINSS+query_serv.fieldbyname('P2SBCINSS').AsFloat;
-   mtotINSS    :=mtotINSS+query_serv.fieldbyname('P2SVINSS').AsFloat;
-   mTotBcCOFINS:=mTotBcCOFINS+0;
-   mTotCOFINS  :=mTotCOFINS+0;
-
-   mTotBcPIS   :=mTotBcPIS+0;
-   mTotPIS     :=mTotPIS+0;
-
-   mTotBcCSLL  :=mTotBcCSLL+0;
-   mTotCSLL    :=mTotCSLL+0;
-
-   mTotBcIR    :=mTotBcIR+0;
-   mTotIR      :=mTotIR+0;
-
-   mTotBcISSQN :=mTotBcISSQN+query_serv.fieldbyname('P2SBCISSQN').AsFloat;;
-   mTotISSQN   :=mTotISSQN+query_serv.fieldbyname('P2SVISSQN').AsFloat;
-
-   mTotBcISSRetido:=mTotBcISSRetido+0;
-   mTotTotLiq     :=mTotTotLiq+query_serv.fieldbyname('P2STOTLIQ').AsFloat;;
-
-   mTotDescIncond :=mTotDescIncond+query_serv.fieldbyname('P2STOTDES').AsFloat;
-   mTotDescCond   :=mTotDescCond+0;
-   mTotDeducoes   :=mTotDeducoes+0;
-
-
-
-
-   mItem:=mItem+1;
-   mXml_servico.Add('<det nItem="'+IntToStr(mItem)+'">');
-       mXml_servico.Add('<Servico>');
-          mXml_servico.Add(fGeraXMLString(0,'codServ',query_serv.fieldbyname('PDCODIGO_SERVICO').AsString));
-
-
-          mXml_servico.Add(fGeraXMLString(0,'codLCServ',query_serv.fieldbyname('PDCODLC_116_03').AsString));
-
-
-// inicio
-          if length(fdeixanum(query_serv.fieldbyname('PDCODNBS').AsString))>2 then
-             begin
-                 mXml_servico.Add(fGeraXMLString(0,'codNbs',query_serv.fieldbyname('PDCODNBS').AsString));
-             end;
-// termnino
-
-//          mXml_servico.Add(fGeraXMLString(0,'Descricao',query_serv.fieldbyname('DESCRICAO').AsString));
-
-          if length(query_serv.fieldbyName('P1SERVICO_OBS_CORPO').AsString)>1 then
-             mXml_servico.Add(fGeraXMLString(0,'Descricao',query_serv.fieldbyname('P1SERVICO_OBS_CORPO').AsString))
-          else
-             mXml_servico.Add(fGeraXMLString(0,'Descricao',query_serv.fieldbyname('DESCRICAO').AsString));
-
-          mXml_servico.Add(fGeraXMLString(0,'Quantidade',query_serv.fieldbyname('P2SQTD').AsString));
-          mXml_servico.Add(fGeraXMLReal(2,'vPU',query_serv.fieldbyname('P2SPRECO').AsFloat));
-          mXml_servico.Add(fGeraXMLReal(2,'vTotal',query_serv.fieldbyname('P2STOTLIQ').AsFloat));
-          mXml_servico.Add(fGeraXMLReal(2,'vDescIncond',query_serv.fieldbyname('P2STOTDES').AsFloat));
-          mXml_servico.Add(fGeraXMLReal(2,'vDescCond',0));
-          mXml_servico.Add(fGeraXMLReal(2,'vDeducoes',0));
-
-          if fsonumero(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)>0 then
-             mXml_servico.Add(fGeraXMLString(0,'CodigoCnae',fdeixanum(query_serv.fieldbyname('PDCODIGO_CNAE').AsString)))
-          else
-            mXml_servico.Add(fGeraXMLString(0,'CodigoCnae',fdeixanum(query_dados_emp.fieldbyname('EMP_CNAE').AsString)));
-          mXml_servico.Add(fGeraXMLString(0,'ExigibilidadeISS',ExigibilidadeISS));
-
-
-       mXml_servico.Add('</Servico>');
-
-       mXml_servico.Add('<Impostos>');
-          mXml_servico.Add(fGeraXMLReal(2,'vBcINSS',query_serv.fieldbyname('P2SBCINSS').AsFloat));
-          mXml_servico.Add(fGeraXMLReal(2,'pINSS',query_serv.fieldbyname('P2SALIQINSS').AsFloat));
-          mXml_servico.Add(fGeraXMLReal(2,'vINSS',query_serv.fieldbyname('P2SVINSS').AsFloat));
-
-
-          mXml_servico.Add(fGeraXMLReal(2,'vBcCOFINS',0));
-          mXml_servico.Add(fGeraXMLReal(2,'pCOFINS',0));
-          mXml_servico.Add(fGeraXMLReal(2,'vCOFINS',0));
-
-          mXml_servico.Add(fGeraXMLReal(2,'vBcPIS',0));
-          mXml_servico.Add(fGeraXMLReal(2,'pPIS',0));
-          mXml_servico.Add(fGeraXMLReal(2,'vPIS',0));
-
-          mXml_servico.Add(fGeraXMLReal(2,'vBcCSLL',0));
-          mXml_servico.Add(fGeraXMLReal(2,'pCSLL',0));
-          mXml_servico.Add(fGeraXMLReal(2,'vCSLL',0));
-
-          mXml_servico.Add(fGeraXMLReal(2,'vBcIR',0));
-          mXml_servico.Add(fGeraXMLReal(2,'pIR',0));
-          mXml_servico.Add(fGeraXMLReal(2,'vIR',0));
-
-          mXml_servico.Add(fGeraXMLReal(2,'vBcISSQN',query_serv.fieldbyname('P2SBCISSQN').AsFloat));
-          mXml_servico.Add(fGeraXMLReal(2,'pISSQN',query_serv.fieldbyname('ALIQ_ISSQN').AsFloat));
-          mXml_servico.Add(fGeraXMLReal(2,'vISSQN',query_serv.fieldbyname('P2SVISSQN').AsFloat));
-
-          mXml_servico.Add(fGeraXMLString(0,'vBcISSRetido',query_serv.fieldbyname('CISSRETIDO').AsString));
-//          mXml_servico.Add(fGeraXMLString(0,'ExigibilidadeISS',ExigibilidadeISS));
-
-       mXml_servico.Add('</Impostos>');
-    mXml_servico.Add('</det>');
-    query_serv.Next;
-    end;
-query_serv.First;
 
 query_vcto:=TQuery.create(nil);
 query_vcto.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
@@ -1836,59 +2240,14 @@ except on e : exception do
    end;
 mItem:=0;
 
-While not query_vcto.Eof do
-   begin
-   mItem:=mItem+1;
-   mXml_servico.Add('<Parc nParc="'+IntToStr(mItem)+'">');
-          mXml_servico.Add('<Parcela>');
-          mXml_servico.Add(fGeraXMLData('dVenc',query_vcto.fieldbyname('P1VDATAV').AsDateTime));
-          mXml_servico.Add(fGeraXMLReal(2,'vDup',query_vcto.fieldbyname('P1VVALOR').AsFloat));
-          mXml_servico.Add('</Parcela>');
-   mXml_servico.Add('</Parc>');
-   query_vcto.Next;
-   end;
-mXml_servico.Add('<Total>');
+//GerarModeloTradicional;
 
-mXml_servico.Add(fGeraXMLReal(2,'vBcINSS',mtotBcINSS));
-mXml_servico.Add(fGeraXMLReal(2,'vINSS',mtotINSS));
-
-mXml_servico.Add(fGeraXMLReal(2,'vBcCOFINS',mTotBcCOFINS));
-mXml_servico.Add(fGeraXMLReal(2,'vCOFINS',mTotCOFINS));
-
-mXml_servico.Add(fGeraXMLReal(2,'vBcPIS',mTotBcPIS));
-mXml_servico.Add(fGeraXMLReal(2,'vPIS',mTotPIS));
-
-mXml_servico.Add(fGeraXMLReal(2,'vBcCSLL',mTotBcCSLL));
-mXml_servico.Add(fGeraXMLReal(2,'vCSLL',mTotCSLL));
-
-mXml_servico.Add(fGeraXMLReal(2,'vBcIR',mTotBcIR));
-mXml_servico.Add(fGeraXMLReal(2,'vIR',mTotIR));
-
-mXml_servico.Add(fGeraXMLReal(2,'vBcISSQN',mTotBcISSQN));
-mXml_servico.Add(fGeraXMLReal(2,'vISSQN',mTotISSQN));
-
-
-mXml_servico.Add(fGeraXMLReal(2,'vBcISSRetido',mTotBcISSRetido));
-mXml_servico.Add(fGeraXMLReal(2,'vTotLiq',mTotTotLiq));
-
-mXml_servico.Add(fGeraXMLReal(2,'vTotDescIncond',mTotDescIncond));
-mXml_servico.Add(fGeraXMLReal(2,'vTotDescCond',mTotDescCond));
-mXml_servico.Add(fGeraXMLReal(2,'vTotDeducoes',mTotDeducoes));
-
-mXml_servico.Add('</Total>');
-
-
- mXml_servico.Add('<InfAdic>');
-    mXml_servico.Add(fGeraXMLstring(0,'InfComplementares',query_serv.fieldbyName('P1SERVICO_OBS_INF_ADIC').AsString));
-
- mXml_servico.Add('</InfAdic>');
-
-mXml_servico.Add('</NotaServico>');
-
+fGerarModeloAmbienteNacional;
 
 
 //mXml_servico.SaveToFile('c:\sge\nfse'+query_serv.fieldbyname('P1NUMNF_SERV').AsString+'.xml');
 
+// ShowMessage('sAVO COMO '+'c:\sge\nfse'+query_serv.fieldbyname('P1NUMNF_SERV').AsString+'.xml');
 if (ParametrosNfce.pSoSalvar) then
    begin
    mXml_servico.SaveToFile(ParametrosNfce.pNomeSaida);
@@ -2862,6 +3221,20 @@ if (DM4.Tb_Par01PONLINE_BOL.Value=1) and (pCodbcoCaixa>0) then
       form_ebol_func2:=nil;
       end;
    end;
+
+
+end;
+
+
+function fDesfazeremissaoNfse(ParametrosNfce: tParametrosNfce): tRetornoNfce;
+var
+query_nfse: tQuery;
+begin
+
+if flfilpad(0,'_NF_SERVICO','NF_TIPO') then
+   begin
+   parametrosNfce.pAmbiente := valint(DM4.Tb_FilPad2FPVALOR.AsString);
+   end
 
 
 end;

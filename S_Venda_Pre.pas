@@ -11,7 +11,9 @@ uses
   ,S_Pro_Nov,S_Ped_02_Venda,MaskUtils, Spin,printers,lerarq;
 
 
+
 type
+  TDBGridHACK = class(TDBGrid);
   tDadosPedidoOld = record
   pChave: integer;
   pLotSeq: integer;
@@ -28,6 +30,7 @@ type
 
 
 type
+
   TFrm_Venda_Pre = class(TForm)
     Panel_butons: TPanel;
     Image_buttons: TImage;
@@ -1030,6 +1033,27 @@ type
     sbnGerenciadorTef: TSpeedButton;
     CB_POSCIELO: TCheckBox;
     sbnConfigPosCielo: TSpeedButton;
+    Tb_ped02S_preP2SCBS_CST: TStringField;
+    Tb_ped02S_preP2SCODCLASSTRIB: TStringField;
+    Tb_ped02S_preP2SCBS_ALIQ: TFloatField;
+    Tb_ped02S_preP2SCBS_BC: TFloatField;
+    Tb_ped02S_preP2SCBS_VALOR: TFloatField;
+    Tb_ped02S_preP2SIBS_UF_ALIQ: TFloatField;
+    Tb_ped02S_preP2SIBS_UF_VALOR: TFloatField;
+    Tb_ped02S_preP2SIBS_MUN_ALIQ: TFloatField;
+    Tb_ped02S_preP2SIBS_MUN_VALOR: TFloatField;
+    Tb_ped02S_preP2SCBS_DEV_TRIB: TFloatField;
+    Tb_ped02S_preP2SINDOP_IBSCBS: TStringField;
+    CB_P2SINDOP_IBSCBS: TComboBox;
+    Tb_ped02S_preP2SCST_PIS: TStringField;
+    CB_P2SCST_PIS: TComboBox;
+    Tb_ped02S_preP2SCODNBS: TStringField;
+    Tb_ped02S_preP2SPCSLL: TFloatField;
+    Tb_ped02S_preP2SPISSQN: TFloatField;
+    Tb_ped02S_preP2SPIR: TFloatField;
+    Tb_ped02S_preP2SPCOFINS: TFloatField;
+    Tb_ped02S_preP2SCODTRIB_MUN: TStringField;
+    Tb_ped02S_preP2SCODTRIB_NAC: TStringField;
     procedure sbnIncluirClick(Sender: TObject);
     procedure edt_codcliExit(Sender: TObject);
     procedure edt_codcliKeyPress(Sender: TObject; var Key: Char);
@@ -1503,11 +1527,19 @@ type
 
     procedure fAtualizarBotoesConfigPos;
     procedure sbnConfigPosCieloClick(Sender: TObject);
+    procedure DBGrid_servicosColEnter(Sender: TObject);
+    procedure CB_P2SINDOP_IBSCBSExit(Sender: TObject);
+    procedure CB_P2SCST_PISExit(Sender: TObject);
 
   private
    { Private declarations }
 
 
+
+   mColCbsCst: integer;
+   mColPisCofinsCst: integer;
+   mColCodClassTrib: integer;
+   mColIndOpIbsCbs: integer;
 
    mChaveFilpad: String;
   bbcalt_ped_true : Boolean;
@@ -2109,6 +2141,32 @@ type
    procedure fVerificaTef;
 
 
+
+   procedure fCarregarCBSCST;
+
+
+   function fBuscarCadclasstrib(pCbsCst: String): String;
+
+
+
+   procedure fBuscarCadindOpCbsIbs;
+
+
+   function fTestarCoRelacionadosNFse: boolean;
+   function fExisteCodTributo(pCodTrib: String): boolean;
+
+   function fExisteCodNbs(pCodigo: String): boolean;
+   function fExisteCodCbsCst(pCodigo: String): boolean;
+
+   function fExisteCadClassTrib(pCodigo: String): boolean;
+
+   function fExisteCadcstPis(pCodigo: String): boolean;
+
+   function fExisteCadIndOpIbsCbs(pCodigo: String): boolean;
+
+
+
+
   public
     { Public declarations }
     mLote_Carregando:Boolean;
@@ -2428,9 +2486,13 @@ var
   x,i: Integer;
   query_temp: TQuery;
 begin
-  mGravandoPedido := false;
-   mQtdbloqEve  :=0;
-   mQtdPassouEve:=0;
+mGravandoPedido := false;
+mQtdbloqEve  :=0;
+mQtdPassouEve:=0;
+mColCbsCst :=5;
+mColPisCofinsCst :=4;
+mColCodClassTrib :=6;
+mColIndOpIbsCbs :=7;
 
 if codusr<>1111 then
    begin
@@ -2469,6 +2531,13 @@ if mPrestacao_servico=false then
    begin
    sbnNFS.Visible:=false;
    tsServicos.TabVisible:=false;
+{   end
+
+else
+   begin
+   fCarregarCBSCST;
+   fBuscarCadindOpCbsIbs;
+   }
    end;
 
 
@@ -4334,6 +4403,36 @@ Tb_Ped02S_Pre.SQL.Add(
                      +'      ,max(PDNOME) as PDNOME '
                      +'      ,max(PDMARCA) AS PDMARCA '
                      +'      ,max(PDUND) as PDUND '
+
+
+                     +',max(P2SCBS_CST) as P2SCBS_CST '
+                     +',max(P2SCST_PIS) as P2SCST_PIS '
+                     +',max(P2SCODCLASSTRIB) as P2SCODCLASSTRIB '
+                     +',max(P2SCBS_ALIQ) as P2SCBS_ALIQ           '
+                     +',max(P2SINDOP_IBSCBS) as P2SINDOP_IBSCBS           '
+
+                     +',max(P2SCODNBS) as P2SCODNBS           '
+                     +',max(P2SCODTRIB_MUN) as P2SCODTRIB_MUN           '
+                     +',max(P2SCODTRIB_NAC) as P2SCODTRIB_NAC           '
+
+
+                     +',max(P2SPCOFINS) as P2SPCOFINS           '
+                     +',max(P2SPCSLL) as P2SPCSLL           '
+                     +',max(P2SPISSQN) as P2SPISSQN           '
+                     +',max(P2SPIR) as P2SPIR           '
+                     +',max(P2SPCOFINS) as P2SPCOFINS           '
+
+                     +',sum(P2SCBS_BC) as P2SCBS_BC '
+                     +',sum(P2SCBS_VALOR) as P2SCBS_VALOR '
+                     +',max(P2SIBS_UF_ALIQ) as P2SIBS_UF_ALIQ '
+                     +',sum(P2SIBS_UF_VALOR) as P2SIBS_UF_VALOR '
+                     +',max(P2SIBS_MUN_ALIQ) as P2SIBS_MUN_ALIQ '
+                     +',sum(P2SIBS_MUN_VALOR) as P2SIBS_MUN_VALOR '
+                     +',sum(P2SCBS_DEV_TRIB) as P2SCBS_DEV_TRIB      '
+
+
+
+
                      +',max(P2SID_NEW) AS P2SID_NEW '
 
 
@@ -4414,7 +4513,10 @@ fAtualizarBotoes(2);
 if (DM1.Tb_PargerPCLIPED.Value = 1) then
   begin
   if valfloat(edt_codcli.Text)=0 then
-     edt_codcli.SetFocus
+     begin
+      if sbnGravar.enabled then
+         edt_codcli.SetFocus;
+     end
   else if ValFloat(edt_codven.Text)=0 then
      begin
      if sbnGravar.Enabled then
@@ -4428,11 +4530,15 @@ if (DM1.Tb_PargerPCLIPED.Value = 1) then
   else
      begin
      DBGrid_itens.SelectedField:=Tb_Ped02_preP2CODPRO;
-     DBGrid_itens.SetFocus;
+      if sbnGravar.enabled then
+         DBGrid_itens.SetFocus;
      end;
   end
 else
-   edt_codcli.SetFocus;
+   begin
+   if sbnGravar.enabled then
+      edt_codcli.SetFocus;
+   end;
 
 
 //mVenda_GP.mPed1_Frete_CIFFOB :=CB_TIPOFRETE_PADRAO.itemindex;
@@ -5218,7 +5324,8 @@ if (mant_tipoped<>mped1_tpPed) and (mped1_tpPed<>3) then
        cb_tipoped.Text:=tab_tped_mov[mant_tipoped,00];
        with cb_tipoped do
          ItemIndex := Items.IndexOf(cb_tipoped.Text);
-       cb_tipoped.SetFocus;
+       if sbnGravar.enabled then
+          cb_tipoped.SetFocus;
        exit;
        end;
      if mVenda_GP.mped1_Chave>0 then
@@ -5234,8 +5341,10 @@ if (mant_tipoped<>mped1_tpPed) and (mped1_tpPed<>3) then
            begin
            cb_tipoped.Text:=tab_tped_mov[mant_tipoped,00];
            with cb_tipoped do
+
               ItemIndex := Items.IndexOf(cb_tipoped.Text);
-              cb_tipoped.SetFocus;
+              if sbnGravar.enabled then
+                 cb_tipoped.SetFocus;
               exit;
            end;
         end;
@@ -5264,7 +5373,9 @@ if (mant_tipoped<>mped1_tpPed) and (mVenda_GP.mPed1_CodCli>0) and (mped1_tpPed_a
      cb_tipoped.Text:=tab_tped_mov[mant_tipoped,00];
      with cb_tipoped do
         ItemIndex := Items.IndexOf(cb_tipoped.Text);
-     cb_tipoped.SetFocus;
+
+     if sbnGravar.enabled then
+        cb_tipoped.SetFocus;
      exit;
      end;
 
@@ -5274,7 +5385,8 @@ if (mant_tipoped<>mped1_tpPed) and (mVenda_GP.mPed1_CodCli>0) and (mped1_tpPed_a
          begin
          MessageDlg('Data de vencimento do Cadastro: '+FormatDatetime(fdt2, DM1.Tb_CliCDTUREN.AsDateTime)+' é invalido!',mtWarning,[mbOk],0);
          mped1_tpPed:=mant_tipoped;
-         cb_tipoped.SetFocus;
+         if sbnGravar.Enabled=true then
+            cb_tipoped.SetFocus;
          exit;
          end;
       end;
@@ -5288,7 +5400,8 @@ fSetarAcionarDev;
 if mped1_tpPed<0 then
    begin
    MessageDlg('Tipo Pedido: '+cb_tipoped.Text+' não encontrado!',mtWarning,[mbOk],0);
-   cb_tipoped.SetFocus;
+   if Sbngravar.enabled then
+      cb_tipoped.SetFocus;
    end
 else
    begin
@@ -5309,7 +5422,8 @@ else
          cb_tipoped.Text:=tab_tped_mov[mant_tipoped,00];
          with cb_tipoped do
            ItemIndex := Items.IndexOf(cb_tipoped.Text);
-         cb_tipoped.SetFocus;
+         if Sbngravar.enabled then
+            cb_tipoped.SetFocus;
          exit;
          end
       else if (not Tb_Ped02_pre.IsEmpty)
@@ -5326,7 +5440,8 @@ else
          cb_tipoped.Text:=tab_tped_mov[mant_tipoped,00];
          with cb_tipoped do
             ItemIndex := Items.IndexOf(cb_tipoped.Text);
-         cb_tipoped.SetFocus;
+         if Sbngravar.enabled then
+            cb_tipoped.SetFocus;
          exit;
          end;
       end;
@@ -5340,7 +5455,8 @@ else
           cb_tipoped.Text:=tab_tped_mov[mant_tipoped,00];
           with cb_tipoped do
              ItemIndex := Items.IndexOf(cb_tipoped.Text);
-          cb_tipoped.SetFocus;
+          if Sbngravar.enabled then
+              cb_tipoped.SetFocus;
           exit;
           end;
        if fsonumero(edt_codcli.text)>0 then
@@ -5351,7 +5467,8 @@ else
              cb_tipoped.Text:=tab_tped_mov[mant_tipoped,00];
              with cb_tipoped do
                ItemIndex := Items.IndexOf(cb_tipoped.Text);
-             cb_tipoped.SetFocus;
+             if Sbngravar.enabled then
+                cb_tipoped.SetFocus;
              exit;
              end;
           end;
@@ -5463,7 +5580,8 @@ if (mped1_tpPed_acionar_dev>0) then
    begin
    Ts_TabRefDev.TabVisible:=true;
    pcCabecalho.ActivePage:=Ts_TabRefDev;
-   DBGrid_RefDev.SetFocus;
+   if Sbngravar.enabled then
+      DBGrid_RefDev.SetFocus;
    if (not mlocalizando_pedido) and (sbnGravar.Enabled)  then
       begin
       if (mped1_tpped<>3) then
@@ -6173,12 +6291,14 @@ if sbnGravar.Enabled then
       if (DBGrid_itens.SelectedField<>Tb_Ped02_preP2CODPRO) and (Tb_Ped02_preP2CODPRO.IsNull) then
          begin
          DBGrid_itens.SelectedField:=tb_ped02_preP2CODPRO;
-         DBGrid_itens.SetFocus;
+         if Sbngravar.enabled then
+            DBGrid_itens.SetFocus;
          end
       else if (DBGrid_itens.SelectedField=Tb_Ped02_preP2DESC_PERC01) and (tb_ped02_preP2QTD.AsFloat=0) then
          begin
          DBGrid_itens.SelectedField:=tb_ped02_preP2QTD;
-         DBGrid_itens.SetFocus;
+         if Sbngravar.enabled then
+            DBGrid_itens.SetFocus;
          end
       else if (DBGrid_itens.SelectedField=Tb_Ped02_preP2TIPO_PCO) then
           mTpPco_Ant:=Tb_Ped02_preP2TIPO_PCO.AsInteger;
@@ -6230,7 +6350,8 @@ if Tb_Ped02_PreP2QTD.AsFloat=0 then
    DBGrid_itens.SelectedField:=Tb_Ped02_preP2CODPRO
 else
    DBGrid_itens.SelectedField:=Tb_Ped02_preP2QTD;
-DBGrid_itens.SetFocus;
+if Sbngravar.enabled then
+   DBGrid_itens.SetFocus;
 mProcessando_SubProduto:=false;
 
 end;
@@ -6268,7 +6389,8 @@ if tb_ped02_pre.State in [dsEdit,dsInsert] then
             MessageDlg('Ja foi faturado '+floattostr(mqtdfatemp)+' quantidade nao pode ser menor que faturada!',mtWarning,[mbOk],0);
             Tb_Ped02_preP2QTD.Value:=mQtd_Ant;
             DBGrid_itens.SelectedField:=Tb_Ped02_preP2QTD;
-            DBGrid_itens.SetFocus;
+            if Sbngravar.enabled then
+               DBGrid_itens.SetFocus;
             exit;
             end;
          end;
@@ -6432,7 +6554,8 @@ if tb_ped02_pre.State in [dsEdit,dsInsert] then
             form_arma.fLerArmas(0);
             form_arma.ShowModal;
             DBGrid_itens.SelectedField:=Tb_Ped02_preP2DESC_PERC01;
-            DBGrid_itens.SetFocus;
+            if Sbngravar.enabled then
+               DBGrid_itens.SetFocus;
             FreeAndNil(query_temp);
             FreeAndNil(query_arma);
             mProcessando_SubProduto:=false;
@@ -6595,7 +6718,8 @@ if tb_ped02_pre.State in [dsEdit,dsInsert] then
          if not fValidarDigitacaoItem then
             begin
             DBGrid_itens.SelectedField:=tb_ped02_preP2CODPRO;
-            DBGrid_itens.SetFocus;
+            if Sbngravar.enabled then
+               DBGrid_itens.SetFocus;
             abort;
             end
          else if trim(mCodpro_Ant)<>'' then
@@ -6855,7 +6979,8 @@ else
        fMensagem('Não é permitido fracionar este produto!',0,['0'],0);
        pcProdServ.ActivePage:=tsProdutos;
        DBGrid_itens.SelectedField:=Tb_Ped02_preP2QTD;
-       DBGrid_itens.SetFocus;
+       if Sbngravar.enabled then
+          DBGrid_itens.SetFocus;
        abort;
        exit;
        end;
@@ -6956,7 +7081,8 @@ else
   else
      begin
      MessageDlg('Produto '+tb_ped02_preP2CODPRO.AsString+' não encontrado!',mtWarning,[mbOk],0);
-     DBGrid_itens.SetFocus;
+     if Sbngravar.enabled then
+        DBGrid_itens.SetFocus;
      result:=false;
      exit;
      end;
@@ -7065,25 +7191,99 @@ mTabIcm,mCst: String;
 begin
 
 
-fCalcularComissoesServicos;
+  fCalcularComissoesServicos;
+if sbnGravar.Enabled then
 
-if tb_ped02s_pre.State in [dsEdit,dsInsert] then
+
    begin
+   if not (Tb_ped02S_pre.State in [dsEdit,dsInsert]) then
+      Tb_ped02S_pre.edit;
+
+
+
    if DBGrid_servicos.SelectedField=tb_ped02s_preP2SQTD then
       begin
       if tb_ped02s_preP2SQTD.IsNull then
          begin
          DBGrid_servicos.SelectedField:=tb_ped02s_preP2SQTD;
-         DBGrid_servicos.SetFocus;
+         if Sbngravar.enabled then
+            DBGrid_servicos.SetFocus;
          abort;
          end
       end
+   else if DBGrid_servicos.SelectedField=tb_ped02s_preP2SCODTRIB_NAC then
+      begin
+      if not fExisteCodTributo(tb_ped02s_preP2SCODTRIB_NAC.AsString) then
+         begin
+         DBGrid_servicos.SelectedField:=tb_ped02s_preP2SCODTRIB_NAC;
+         if Sbngravar.enabled then
+            DBGrid_servicos.SetFocus;
+         abort;
+         end
+      end
+
+   else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCBS_CST then
+      begin
+      if not fExisteCodCbsCst(Tb_ped02S_preP2SCBS_CST.AsString) then
+         begin
+         DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SCBS_CST;
+         if Sbngravar.enabled then
+            DBGrid_servicos.SetFocus;
+         abort;
+         end
+      end
+
+   else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCODNBS then
+      begin
+      if not fExisteCodNbs(Tb_ped02S_preP2SCODNBS.AsString) then
+         begin
+         DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SCODNBS;
+         if Sbngravar.enabled then
+            DBGrid_servicos.SetFocus;
+         abort;
+         end
+      end
+
+   else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCODCLASSTRIB then
+      begin
+      if not fExisteCadClassTrib(Tb_ped02S_preP2SCODCLASSTRIB.AsString) then
+         begin
+         DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SCODCLASSTRIB;
+         if Sbngravar.enabled then
+            DBGrid_servicos.SetFocus;
+         abort;
+         end
+      end
+
+   else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCST_PIS then
+      begin
+      if not fExisteCadcstPis(Tb_ped02S_preP2SCST_PIS.AsString) then
+         begin
+         DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SCST_PIS;
+         if Sbngravar.enabled then
+            DBGrid_servicos.SetFocus;
+         abort;
+         end
+      end
+
+   else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SINDOP_IBSCBS then
+      begin
+      if not fExisteCadIndOpIbsCbs(Tb_ped02S_preP2SINDOP_IBSCBS.AsString) then
+         begin
+         DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SINDOP_IBSCBS;
+         if Sbngravar.enabled then
+            DBGrid_servicos.SetFocus;
+         abort;
+         end
+      end
+
    else if DBGrid_servicos.SelectedField=tb_ped02s_preP2SCODSER then
       begin
       if tb_ped02s_preP2SCODSER.AsString='' then
          begin
          DBGrid_servicos.SelectedField:=tb_ped02s_preP2SCODSER;
-         DBGrid_servicos.SetFocus;
+         if Sbngravar.enabled then
+           DBGrid_servicos.SetFocus;
          abort;
          end
       else
@@ -7148,7 +7348,8 @@ if tb_ped02s_pre.State in [dsEdit,dsInsert] then
             MessageDlg('Servico '+tb_ped02s_preP2SCODSER.AsString+' não encontrado!',mtWarning,[mbOk],0);
             DBGrid_servicos.SelectedField:=tb_ped02s_preP2SCODSER;
             tb_ped02s_preP2SCODSER.Value:=0;
-            DBGrid_servicos.SetFocus;
+            if Sbngravar.enabled then
+               DBGrid_servicos.SetFocus;
             abort;
             end;
          end;
@@ -7157,7 +7358,40 @@ if tb_ped02s_pre.State in [dsEdit,dsInsert] then
       tb_ped02s_preVALOR_TOTAL.AsFloat:=tb_ped02s_preP2SQTD.AsFloat*tb_ped02s_preP2SPRECO.AsFloat
    else
       tb_ped02s_preVALOR_TOTAL.AsFloat:=0;
-   end;
+
+//COMBOBOX
+{
+    if DBGrid_servicos.SelectedField.FieldName = 'CB_P2SINDOP_IBSCBS' then
+      begin
+        // Grava o valor selecionado no Dataset
+        if not (DBGrid_servicos.DataSource.DataSet.State in [dsEdit, dsInsert]) then
+          DBGrid_servicos.DataSource.DataSet.Edit;
+
+        DBGrid_servicos.SelectedField.AsString := copy(CB_P2SINDOP_IBSCBS.Text,1,6);
+        CB_P2SINDOP_IBSCBS.Visible := False;
+
+      end;
+
+    if DBGrid_servicos.SelectedField.FieldName = 'P2SCBS_CST' then
+        fBuscarCadclasstrib(Tb_ped02S_preP2SCBS_CST.AsString);
+// cst pis
+
+    if DBGrid_servicos.SelectedField.FieldName = 'CB_P2SCST_PIS' then
+       begin
+        // Grava o valor selecionado no Dataset
+        if not (DBGrid_servicos.DataSource.DataSet.State in [dsEdit, dsInsert]) then
+          DBGrid_servicos.DataSource.DataSet.Edit;
+
+        DBGrid_servicos.SelectedField.AsString := CB_P2SCST_PIS.Text;
+        CB_P2SCST_PIS.Visible := False;
+
+       end;
+ }
+// cst pis
+
+     end;
+
+
 
 
 end;
@@ -7168,14 +7402,17 @@ begin
 if Assigned(HintWindow) then
 HintWindow.ReleaseHandle;
 }
-if tb_ped02s_pre.State in [dsEdit,dsInsert] then
+// if (not CB_P2SINDOP_IBSCBS.Focused) and (not CB_P2SCST_PIS.Focused) then
    begin
-   if not DBMemo_servico.Focused then
+   if tb_ped02s_pre.State in [dsEdit,dsInsert] then
       begin
-      if length(tb_ped02s_preP2SCODSER.AsString)>0 then
-         tb_ped02s_pre.Post
-      else
-         tb_ped02s_pre.Cancel;
+      if not DBMemo_servico.Focused then
+         begin
+         if length(tb_ped02s_preP2SCODSER.AsString)>0 then
+            tb_ped02s_pre.Post
+         else
+            tb_ped02s_pre.Cancel;
+         end;
       end;
    end;
 
@@ -7204,6 +7441,8 @@ end;
 
 procedure TFrm_Venda_Pre.DBGrid_servicosKeyPress(Sender: TObject;
   var Key: Char);
+var
+mFiltrosExtras: String;
 begin
 
 if (key in ['0'..'9']) and
@@ -7232,6 +7471,141 @@ else if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%'))
     keybd_event(VK_RETURN,0,0,0);
     end;
   end
+// INICIO
+
+else if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%'))
+    and (DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCST_PIS) then
+  begin
+  if (tb_ped02S_pre.State in [dsEdit,dsInsert]) then
+     begin
+     Tb_ped02S_preP2SCST_PIS.AsString:=fChamaPesqCstPis(0,'_venda',key);
+     key:=#0;
+     if (Tb_ped02S_preP2SCST_PIS.AsString)<>'' then
+        begin
+        keybd_event(VK_RETURN,0,0,0);
+        end;
+     end;
+  end
+
+else if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%'))
+    and (DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCBS_CST) then
+  begin
+  if (tb_ped02S_pre.State in [dsEdit,dsInsert]) then
+     begin
+     mFiltrosExtras := '';
+     if (trim(Tb_ped02S_preP2SCODTRIB_NAC.AsString)<>'') and
+        (trim(Tb_ped02S_preP2SCODNBS.AsString)<>'') then
+        begin
+        mFiltrosExtras := ' exists (select TC_C_NBS FROM CADCORRELATO_DADOS_NFSE WHERE TC_C_TRIB_NAC='+quotedstr(Tb_ped02S_preP2SCODTRIB_NAC.AsString)
+        +' AND TC_C_NBS = '+quotedstr(Tb_ped02S_preP2SCODNBS.AsString)
+        +' AND TC_C_ST_IBS_CBS=CBS_CODIGO) ';
+
+        end;
+
+
+     Tb_ped02S_preP2SCBS_CST.AsString:=fChamaCbsCst(0,'_venda',key,mfiltrosExtras);
+     key:=#0;
+     if (Tb_ped02S_preP2SCBS_CST.AsString)<>'' then
+        begin
+        keybd_event(VK_RETURN,0,0,0);
+        end;
+     end;
+  end
+
+else if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%'))
+    and (DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCODCLASSTRIB) then
+  begin
+  if (tb_ped02S_pre.State in [dsEdit,dsInsert]) then
+     begin
+
+     mFiltrosExtras := '';
+     if (trim(Tb_ped02S_preP2SCODTRIB_NAC.AsString)<>'') and
+        (trim(Tb_ped02S_preP2SCODNBS.AsString)<>'') and
+        (trim(Tb_ped02S_preP2SCBS_CST.AsString)<>'')     then
+        begin
+        mFiltrosExtras := ' exists (select TC_C_NBS FROM CADCORRELATO_DADOS_NFSE WHERE TC_C_TRIB_NAC='+quotedstr(Tb_ped02S_preP2SCODTRIB_NAC.AsString)
+        +' AND TC_C_NBS = '+quotedstr(Tb_ped02S_preP2SCODNBS.AsString)
+        +' AND TC_C_ST_IBS_CBS = '+quotedstr(Tb_ped02S_preP2SCBS_CST.AsString)
+        +' AND TC_C_CLASSTRIB=CT_CODIGO) ';
+
+        end;
+
+     Tb_ped02S_preP2SCODCLASSTRIB.AsString:=fChamaclasstrib(0,'_venda',key,mfiltrosExtras);
+     key:=#0;
+     if (Tb_ped02S_preP2SCODCLASSTRIB.AsString)<>'' then
+        begin
+        keybd_event(VK_RETURN,0,0,0);
+        end;
+     end;
+  end
+
+
+else if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%'))
+    and (DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCODTRIB_NAC) then
+  begin
+  if (tb_ped02S_pre.State in [dsEdit,dsInsert]) then
+     begin
+     Tb_ped02S_preP2SCODTRIB_NAC.AsString:=fChamaPesqTribNac(0,'_venda',key);
+     key:=#0;
+     if (Tb_ped02S_preP2SCODTRIB_NAC.AsString)<>'' then
+        begin
+        keybd_event(VK_RETURN,0,0,0);
+        end;
+     end;
+  end
+
+else if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%'))
+    and (DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCODNBS) then
+  begin
+  if (tb_ped02S_pre.State in [dsEdit,dsInsert]) then
+     begin
+     mFiltrosExtras := '';
+     if trim(Tb_ped02S_preP2SCODTRIB_NAC.AsString)<>'' then
+        begin
+        mFiltrosExtras := ' exists (select TC_C_NBS FROM CADCORRELATO_DADOS_NFSE WHERE TC_C_TRIB_NAC='+quotedstr(Tb_ped02S_preP2SCODTRIB_NAC.AsString)+' AND TC_C_NBS=NBS_CODIGO) ';
+        end;
+     Tb_ped02S_preP2SCODNBS.AsString:=fChamaNbs(0,'_venda',key,mFiltrosExtras );
+     key:=#0;
+     if (Tb_ped02S_preP2SCODNBS.AsString)<>'' then
+        begin
+        keybd_event(VK_RETURN,0,0,0);
+        end;
+     end;
+  end
+
+
+else if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%'))
+    and (DBGrid_servicos.SelectedField=Tb_ped02S_preP2SINDOP_IBSCBS) then
+  begin
+  if (tb_ped02S_pre.State in [dsEdit,dsInsert]) then
+     begin
+     mFiltrosExtras := '';
+     if (trim(Tb_ped02S_preP2SCODTRIB_NAC.AsString)<>'') and
+        (trim(Tb_ped02S_preP2SCODNBS.AsString)<>'') and
+        (trim(Tb_ped02S_preP2SCBS_CST.AsString)<>'')     AND
+        (trim(Tb_ped02S_preP2SCODCLASSTRIB.AsString)<>'')     then
+        begin
+        mFiltrosExtras := ' exists (select TC_C_NBS FROM CADCORRELATO_DADOS_NFSE WHERE TC_C_TRIB_NAC='+quotedstr(Tb_ped02S_preP2SCODTRIB_NAC.AsString)
+        +' AND TC_C_NBS = '+quotedstr(Tb_ped02S_preP2SCODNBS.AsString)
+        +' AND TC_C_ST_IBS_CBS = '+quotedstr(Tb_ped02S_preP2SCBS_CST.AsString)
+        +' AND TC_C_CLASSTRIB= '+quotedstr(Tb_ped02S_preP2SCODCLASSTRIB.AsString)
+        +' AND TC_C_IND_OP=CIOP_CODIGO) ';
+
+        end;
+
+
+     Tb_ped02S_preP2SINDOP_IBSCBS.AsString:=fChamaIndOpIbsCbs(0,'_venda',key,mFiltrosExtras);
+     key:=#0;
+     if (Tb_ped02S_preP2SINDOP_IBSCBS.AsString)<>'' then
+        begin
+        keybd_event(VK_RETURN,0,0,0);
+        end;
+     end;
+  end
+
+
+// TERMINO
+
 else if (DBGrid_servicos.SelectedField=Tb_ped02S_preP2SPRECO) and (cb_tppco.ItemIndex<>2) then
   begin
   abort;
@@ -7298,7 +7672,8 @@ if (valint(edt_chave.Text)>0) then // and (mVenda_GP.mped1_Chave<>valint(edt_cha
 //   if not fLerPedidoGeral(codemp,valint(edt_chave.Text),valint(FormatDateTime('yyyy', date))) then
       begin
       edt_chave.Text:='';
-      edt_chave.SetFocus;
+      if Sbngravar.enabled then
+        edt_chave.SetFocus;
       end
    else
       begin
@@ -7441,21 +7816,31 @@ if not flcadcli(1,0,edt_codcli.Text) then
    begin
    if edt_codcli.Enabled then
       begin
-      verteclado(0);
-      MessageDlg('Cliente não Cadastrado!',mtWarning,[mbOk],0);
-      edt_codcli.SetFocus;
-      exit;
+      if sbnGravar.enabled then
+         begin
+         verteclado(0);
+         MessageDlg('Cliente não Cadastrado!',mtWarning,[mbOk],0);
+         if Sbngravar.enabled then
+            edt_codcli.SetFocus;
+         exit;
+         end;
       end;
    end;
 
 if DM1.Tb_CliCSITCLI.AsInteger=2 then
    begin
    if edt_codcli.Enabled then
+
       begin
-      verteclado(0);
-      MessageDlg('Cliente '+DM1.Tb_CliCRAZAO.AsString+' bloqueado pelo cadastro!',mtWarning,[mbOk],0);
-      edt_codcli.SetFocus;
-      exit;
+      if sbnGravar.enabled then
+         begin
+         verteclado(0);
+         MessageDlg('Cliente '+DM1.Tb_CliCRAZAO.AsString+' bloqueado pelo cadastro!',mtWarning,[mbOk],0);
+         if Sbngravar.enabled then
+           edt_codcli.SetFocus;
+         end;
+       exit;
+
       end;
    end;
 
@@ -7463,8 +7848,12 @@ if (DM1.Tb_CliCDTUREN.AsDateTime>pdatanula) and (DM1.Tb_CliCDTUREN.AsDateTime<=d
    begin
    if (mped1_tpPed<>0) then
       begin
-      MessageDlg('Data de vencimento do Cadastro: '+FormatDatetime(fdt2, DM1.Tb_CliCDTUREN.AsDateTime)+' é invalido!',mtWarning,[mbOk],0);
-      edt_codcli.SetFocus;
+      if sbnGravar.enabled then
+         begin
+         MessageDlg('Data de vencimento do Cadastro: '+FormatDatetime(fdt2, DM1.Tb_CliCDTUREN.AsDateTime)+' é invalido!',mtWarning,[mbOk],0);
+         if Sbngravar.enabled then
+            edt_codcli.SetFocus;
+         end;
       exit;
       end;
    end;
@@ -7486,7 +7875,10 @@ if mped1_tpPed=9 then
    if not fClienteAceitaEmprestimo(fsonumero(edt_codcli.Text)) then
       begin
       edt_codcli.Text:=floattostr(mCodcli_ant);
-      edt_codcli.SetFocus;
+      if sbnGravar.enabled then
+         begin
+         edt_codcli.SetFocus;
+         end;
       exit;
       end;
    end;
@@ -7502,7 +7894,8 @@ if fTemPrazoFP(DM1.Tb_CliCBLOQVDAPRZ.AsInteger) then
 if not fVerificaRestricaonaTrocadeCliente(fsonumero(edt_codcli.text)) then
    begin
    edt_codcli.Text:=floattostr(mCodcli_ant);
-   edt_codcli.SetFocus;
+   if sbnGravar.enabled then
+      edt_codcli.SetFocus;
    exit;
    end;
 
@@ -7644,7 +8037,8 @@ if mCodCli_ant<>mVenda_GP.mPed1_CodCli then
            cb_tipoped.Text:=tab_tped_mov[mant_tipoped,00];
            with cb_tipoped do
               ItemIndex := Items.IndexOf(cb_tipoped.Text);
-              cb_tipoped.SetFocus;
+              if sbnGravar.enabled then
+                 cb_tipoped.SetFocus;
               exit;
            end;
         end;
@@ -7733,7 +8127,8 @@ else
 
 if not fValidarVencimentosDocumentos(fSonumero(edt_codcli.text)) then
    begin
-   edt_codcli.SetFocus;
+   if sbnGravar.enabled then
+      edt_codcli.SetFocus;
    exit;
    end;
 
@@ -7746,7 +8141,8 @@ if (trim(edt_nomcli.text)<>'') and (mVenda_GP.mPed1_CodCli>0)
   begin
   if not fSituacaoCredito then
      begin
-     edt_codcli.SetFocus;
+     if sbnGravar.enabled then
+        edt_codcli.SetFocus;
      mCodCli_ant:=0;
      exit;
      end;
@@ -8266,7 +8662,8 @@ if not fLCadFP(0,edt_codfp.Text,'') then
       begin
       verteclado(0);
       MessageDlg('Forma de Pagamento não Cadastrado!',mtWarning,[mbOk],0);
-      edt_codfp.SetFocus;
+      if sbnGravar.enabled then
+         edt_codfp.SetFocus;
       exit;
       end;
    end;
@@ -8470,7 +8867,8 @@ except
 if edt_datap.Date > now +1 then
   begin
   fmensagem('Data do pedido não pode ser superior a data atual.',0,['0'],0);
-  edt_datap.SetFocus;
+  if sbnGravar.enabled then
+     edt_datap.SetFocus;
   Exit;
   end;
 
@@ -8496,7 +8894,8 @@ begin
 if (cb_desc100porcento.checked=false) and  (valfloat(edt_desc_valor.Text)>=valfloat(edt_totliq.Text)) and (valfloat(edt_desc_valor.text)>0) then
    begin
    MessageDlg('Valor do Desconto não pode ser superior ao valor do pedido!',mtWarning,[mbOk],0);
-   edt_desc_valor.SetFocus;
+   if sbnGravar.enabled then
+      edt_desc_valor.SetFocus;
    exit;
    end;
 
@@ -10534,6 +10933,33 @@ Tb_Ped02S_Pre.SQL.Add(
                     +',max(case when P2SCODEMP>100 THEN 0 ELSE P2SID_NEW END) AS P2SID_NEW '
                     +',max(case when P2SCODEMP>100 THEN P2SID_NEW ELSE 0 END) AS P2SID_NEW_101 '
 
+                     +',max(P2SCBS_CST) as P2SCBS_CST '
+                     +',max(P2SCST_PIS) as P2SCST_PIS '
+                     +',max(P2SCODTRIB_MUN) as P2SCODTRIB_MUN           '
+                     +',max(P2SCODTRIB_NAC) as P2SCODTRIB_NAC           '
+
+                     +',max(P2SCODNBS) as P2SCODNBS           '
+                     +',max(P2SPCOFINS) as P2SPCOFINS           '
+                     +',max(P2SPCSLL) as P2SPCSLL           '
+                     +',max(P2SPISSQN) as P2SPISSQN           '
+                     +',max(P2SPIR) as P2SPIR           '
+                     +',max(P2SPCOFINS) as P2SPCOFINS           '
+
+
+
+                     +',max(P2SCODCLASSTRIB) as P2SCODCLASSTRIB '
+                     +',max(P2SCBS_ALIQ) as P2SCBS_ALIQ           '
+                     +',max(P2SINDOP_IBSCBS) as P2SINDOP_IBSCBS           '
+
+                     +',sum(P2SCBS_BC) as P2SCBS_BC '
+                     +',sum(P2SCBS_VALOR) as P2SCBS_VALOR '
+                     +',max(P2SIBS_UF_ALIQ) as P2SIBS_UF_ALIQ '
+                     +',sum(P2SIBS_UF_VALOR) as P2SIBS_UF_VALOR '
+                     +',max(P2SIBS_MUN_ALIQ) as P2SIBS_MUN_ALIQ '
+                     +',sum(P2SIBS_MUN_VALOR) as P2SIBS_MUN_VALOR '
+                     +',sum(P2SCBS_DEV_TRIB) as P2SCBS_DEV_TRIB      '
+
+
                      +' from cadp02S'+iif(la_tabelas='','',',')+la_tabelas
                      +'       '+la_Join
                      +'       where '+iif(la_instrucao='','',la_instrucao+' and ')
@@ -11620,7 +12046,10 @@ mTotalProd_ant:=0;
 
 DBGrid_itens.SelectedField:=Tb_Ped02_preP2CODPRO;
 if not mProcessamento_Externo then
-   DBGrid_itens.SetFocus;
+   begin
+   if sbnGravar.enabled then
+      DBGrid_itens.SetFocus;
+   end;   
 
 end;
 
@@ -12131,7 +12560,8 @@ if not fExisteCFOP(Tb_Ped02_preP2CFOP_NF.AsInteger) then
    begin
    MessageDlg('CFOP: '+Tb_Ped02_preP2CFOP_NF.AsString+' não é um cfop valido!',mtWarning,[mbOk],0);
    DBGrid_itens.SelectedField:=Tb_Ped02_preP2CFOP_NF;
-   DBGrid_itens.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_itens.SetFocus;
    tb_ped02_pre.Cancel;
    Abort;
    exit;
@@ -12199,14 +12629,16 @@ if length(tb_ped02_prePDNOME.AsString)<1 then
     begin
     MessageDlg('Código do Produto Invalida!',mtWarning,[mbOk],0);
     DBGrid_itens.SelectedField:=tb_ped02_preP2CODPRO;
-    DBGrid_itens.SetFocus;
+    if sbnGravar.enabled then
+       DBGrid_itens.SetFocus;
     Abort;
     end
  else if (tb_ped02_preP2QTD.AsFloat<=0) or (Tb_Ped02_preP2QTD.AsFloat>999999999) then
     begin
     MessageDlg('Quantidade '+Tb_Ped02_preP2QTD.AsString+' é Invalida!',mtWarning,[mbOk],0);
     DBGrid_itens.SelectedField:=tb_ped02_preP2QTD;
-    DBGrid_itens.SetFocus;
+    if sbnGravar.enabled then
+       DBGrid_itens.SetFocus;
     Abort;
     end
  else if ((tb_ped02_preP2PRECO.AsFloat<=0) and (DM1.Tb_PargerPPUZERO.Asinteger<>1))
@@ -12214,7 +12646,8 @@ if length(tb_ped02_prePDNOME.AsString)<1 then
     begin
     MessageDlg('Preço '+FormatFloat(mcasaspu, Tb_Ped02_preP2PRECO.AsFloat)+' é Invalido!',mtWarning,[mbOk],0);
     DBGrid_itens.SelectedField:=tb_ped02_preP2PRECO;
-    DBGrid_itens.SetFocus;
+    if sbnGravar.enabled then
+       DBGrid_itens.SetFocus;
     Abort;
     end;
 
@@ -12346,7 +12779,8 @@ if DM1.Tb_ProPDVDAMAXM.asfloat>0 then
        fMensagem('Não é permitido fracionar este produto!',0,['0'],0);
        pcProdServ.ActivePage:=tsProdutos;
        DBGrid_itens.SelectedField:=Tb_Ped02_preP2QTD;
-       DBGrid_itens.SetFocus;
+       if sbnGravar.enabled then
+          DBGrid_itens.SetFocus;
        abort;
        exit;
        end;
@@ -12441,7 +12875,8 @@ fGerarEvento('10392 preco tabela '+Tb_Ped02_preP2PRECO_TAB.AsString);
 
  //               freeandnil(Query_Cons);
                    DBGrid_itens.SelectedField:=tb_ped02_preP2CODPRO;
-                   DBGrid_itens.SetFocus;
+                  if sbnGravar.enabled then
+                     DBGrid_itens.SetFocus;
                    Abort;
                    end
                 else
@@ -12482,7 +12917,8 @@ fGerarEvento('10392 preco tabela '+Tb_Ped02_preP2PRECO_TAB.AsString);
                    if not mIgnorar_Restricoes then
                       begin
                       DBGrid_itens.SelectedField:=tb_ped02_preP2QTD;
-                      DBGrid_itens.SetFocus;
+                      if sbnGravar.enabled then
+                         DBGrid_itens.SetFocus;
                       abort;
                       end
                    else
@@ -12509,7 +12945,8 @@ fGerarEvento('10392 preco tabela '+Tb_Ped02_preP2PRECO_TAB.AsString);
                    begin
                    tb_ped02_pre.cancel;
                    DBGrid_itens.SelectedField:=tb_ped02_preP2CODPRO;
-                   DBGrid_itens.SetFocus;
+                   if sbnGravar.enabled then
+                      DBGrid_itens.SetFocus;
                    abort;
                    end
 
@@ -12537,7 +12974,8 @@ fGerarEvento('10392 preco tabela '+Tb_Ped02_preP2PRECO_TAB.AsString);
                 else
                    begin
                    DBGrid_itens.SelectedField:=tb_ped02_preP2CODPRO;
-                   DBGrid_itens.SetFocus;
+                   if sbnGravar.enabled then
+                      DBGrid_itens.SetFocus;
                    abort;
                    end;
                 end;
@@ -12573,7 +13011,8 @@ fGerarEvento('10392 preco tabela '+Tb_Ped02_preP2PRECO_TAB.AsString);
           MessageDlg('Existem apenas '+FormatFloat(mcasqtd,  ((mQtdDev)+mQtd_Ant) )
           +' '+Tb_Ped02_prePDUND.AsString+' disponivel para devolução',mtWarning,[mbOk],0);
           DBGrid_itens.SelectedField:=tb_ped02_preP2CODPRO;
-          DBGrid_itens.SetFocus;
+          if sbnGravar.enabled then
+             DBGrid_itens.SetFocus;
           abort;
           end;
         end;
@@ -12592,7 +13031,8 @@ fGerarEvento('10392 preco tabela '+Tb_Ped02_preP2PRECO_TAB.AsString);
                  +', invalido!',0,['0'],0);
        Tb_Ped02_preP2PRECO.Value :=form_venda_pesqprod.Qr_Propcoven.AsFloat;
        DBGrid_itens.SelectedField:=Tb_Ped02_preP2PRECO;
-       DBGrid_itens.SetFocus;
+       if sbnGravar.enabled then
+          DBGrid_itens.SetFocus;
        Abort;
        exit;
        end;
@@ -12629,7 +13069,8 @@ fGerarEvento('10600 preco tabela '+Tb_Ped02_preP2PRECO_TAB.AsString);
                 +'%, invalido!',0,['0'],0);
            Tb_Ped02_preP2PRECO.AsFloat:=Tb_Ped02_preP2PRECO_TAB.AsFloat;
            DBGrid_itens.SelectedField:=Tb_Ped02_preP2PRECO;
-           DBGrid_itens.SetFocus;
+           if sbnGravar.enabled then
+              DBGrid_itens.SetFocus;
            Abort;
            exit;
            end;
@@ -12762,7 +13203,8 @@ fGerarEvento('10600 preco tabela '+Tb_Ped02_preP2PRECO_TAB.AsString);
                   begin
                   DBGrid_itens.SelectedField:=Tb_Ped02_preP2CODPRO;
                   Tb_Ped02_preP2DESC_PERC01.AsFloat:=0;
-                  DBGrid_itens.SetFocus;
+                  if sbnGravar.enabled then
+                     DBGrid_itens.SetFocus;
                   Abort;
                   exit;
                   end;
@@ -12815,7 +13257,8 @@ else
           begin
           fmensagem('Desconto não pode ser '+FormatFloat(mcasas, mDescMedio )+'%' ,0,['0'],0);
           DBGrid_itens.SelectedField:=Tb_Ped02_preP2PRECO;
-          DBGrid_itens.SetFocus;
+          if sbnGravar.enabled then
+             DBGrid_itens.SetFocus;
           abort;
           exit;
           end;
@@ -12957,7 +13400,8 @@ if not mped1_Calculando then
       begin
       DBGrid_itens.SelectedField:=Tb_Ped02_preP2CODPRO;
       Tb_Ped02_preP2DESC_PERC01.AsFloat:=0;
-      DBGrid_itens.SetFocus;
+      if sbnGravar.enabled then
+         DBGrid_itens.SetFocus;
       Abort;
       exit;
       end;
@@ -13165,7 +13609,8 @@ if Query_Cons.Fields[0].AsInteger>0 then
   mAmbiente_dig:=Tb_Ped02_preP2AMBIENTE.AsString;
   freeandnil(Query_Cons);
   DBGrid_itens.SelectedField:=tb_ped02_preP2CODPRO;
-  DBGrid_itens.SetFocus;
+  if sbnGravar.enabled then
+     DBGrid_itens.SetFocus;
   if (cb_leitor.Checked=true) or (DM1.Tb_PargerPFATDPRO.AsInteger=1) then
     begin
     if (cb_leitor.Checked=true) or (Application.MessageBox('Produto Ja Digitado Neste Pedido, deseja altera-lo?','Confirmação',MB_YESNO+MB_DEFBUTTON1)=mrYes) then
@@ -13646,6 +14091,9 @@ begin
     else
         Tb_Ped02S_preP2SID_NEW_101.AsFloat:=fBuscarProximoId('CADP02S_SEQ');
 
+
+Tb_ped02S_preP2SCODTRIB_MUN.AsString:=DM1.Tb_EmpEMP_CODTRIB_MUN.AsString;
+Tb_ped02S_preP2SCODTRIB_NAC.AsString:=DM1.Tb_EmpEMP_CODTRIB_NAC.AsString;
 
 
 end;
@@ -14265,21 +14713,24 @@ else if length(tb_ped02s_prePDNOME.AsString)<1 then
    begin
    MessageDlg('Código do Serviço Invalido!',mtWarning,[mbOk],0);
    DBGrid_servicos.SelectedField:=tb_ped02s_preP2SCODSER;
-   DBGrid_servicos.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_servicos.SetFocus;
    Abort;
    end
 else if tb_ped02s_preP2SQTD.AsFloat<=0 then
    begin
    MessageDlg('Quantidade Invalida!',mtWarning,[mbOk],0);
    DBGrid_servicos.SelectedField:=tb_ped02s_preP2SQTD;
-   DBGrid_servicos.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_servicos.SetFocus;
    Abort;
    end
 else if tb_ped02s_preP2SPRECO.AsFloat<=0 then
    begin
    MessageDlg('Preço Invalido!',mtWarning,[mbOk],0);
    DBGrid_servicos.SelectedField:=tb_ped02s_preP2SPRECO;
-   DBGrid_servicos.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_servicos.SetFocus;
    Abort;
    end;
 if (tb_ped02s_preP2SQTD.AsFloat>0) and (tb_ped02s_preP2SPRECO.AsFloat>0) then
@@ -14289,6 +14740,13 @@ if (tb_ped02s_preP2SQTD.AsFloat>0) and (tb_ped02s_preP2SPRECO.AsFloat>0) then
    end
 else
    tb_ped02s_preVALOR_TOTAL.AsFloat:=0;
+
+if not fTestarCoRelacionadosNFse then
+   begin
+   if sbnGravar.enabled then
+      DBGrid_servicos.SetFocus;
+   abort;
+   end;
 end;
 
 
@@ -15508,6 +15966,32 @@ Query_Ped02S_Temp.SQL.Add(',max(P2SDESC1) AS P2SDESC_PERC01 '
                     +',max(P2SDESC1) as P2SPDESC01 '
                     +',max(P2SDESC2) as P2SPDESC02 '
                     +',max(P2SDESC3) as P2SPDESC03 '
+
+
+                     +',max(P2SCBS_CST) as P2SCBS_CST '
+                     +',max(P2SCST_PIS) as P2SCST_PIS '
+                     +',max(P2SCODCLASSTRIB) as P2SCODCLASSTRIB '
+                     +',max(P2SCBS_ALIQ) as P2SCBS_ALIQ           '
+                     +',max(P2SINDOP_IBSCBS) as P2SINDOP_IBSCBS           '
+                     +',max(P2SCODTRIB_MUN) as P2SCODTRIB_MUN           '
+
+                     +',max(P2SCODTRIB_NAC) as P2SCODTRIB_NAC           '
+                     +',max(P2SCODNBS) as P2SCODNBS           '
+                     +',max(P2SPCOFINS) as P2SPCOFINS           '
+
+                     +',max(P2SPCSLL) as P2SPCSLL           '
+                     +',max(P2SPISSQN) as P2SPISSQN           '
+                     +',max(P2SPIR) as P2SPIR           '
+                     +',max(P2SPCOFINS) as P2SPCOFINS           '
+
+
+                     +',sum(P2SCBS_BC) as P2SCBS_BC '
+                     +',sum(P2SCBS_VALOR) as P2SCBS_VALOR '
+                     +',max(P2SIBS_UF_ALIQ) as P2SIBS_UF_ALIQ '
+                     +',sum(P2SIBS_UF_VALOR) as P2SIBS_UF_VALOR '
+                     +',max(P2SIBS_MUN_ALIQ) as P2SIBS_MUN_ALIQ '
+                     +',sum(P2SIBS_MUN_VALOR) as P2SIBS_MUN_VALOR '
+                     +',sum(P2SCBS_DEV_TRIB) as P2SCBS_DEV_TRIB      '
 
 
 
@@ -19924,7 +20408,8 @@ if (mtipent_ant<>cb_tipent.itemindex) and (pOperacaoPedido<>1) then
    if fValidaSenha(mValidarSenha)<>0 then
       begin
       cb_tipent.ItemIndex:=mtipent_ant;
-      cb_tipent.SetFocus;
+      if sbnGravar.enabled then
+         cb_tipent.SetFocus;
       exit;
       end;
 
@@ -20046,7 +20531,8 @@ if (edt_datsai.Date>pdatanula) then
      begin
      if Application.MessageBox(pchar('Data de saida '+ FormatDatetime(fdt2, edt_datsai.Date)+' é uma data não esperada!, Quer continuar?'),'',MB_YESNO+MB_DEFBUTTON2)<>mrYes then
         begin
-        edt_datsai.SetFocus;
+        if sbnGravar.enabled then
+            edt_datsai.SetFocus;
         exit;
         end;
      exit;
@@ -20286,7 +20772,8 @@ if Tb_Pend.State in [dsEdit,dsInsert] then
       if Tb_PendPECODPRO.AsString='' then
          begin
          DBGrid_pEND.SelectedField:=Tb_PendPECODPRO;
-         DBGrid_pEND.SetFocus;
+         if sbnGravar.enabled then
+            DBGrid_pEND.SetFocus;
          abort;
          end
       else
@@ -20315,7 +20802,8 @@ if Tb_Pend.State in [dsEdit,dsInsert] then
             MessageDlg('Produto '+Tb_PendPECODPRO.AsString+' não encontrado!',mtWarning,[mbOk],0);
             DBGrid_pEND.SelectedField:=Tb_PendPECODPRO;
             Tb_PendPECODPRO.AsString:='';
-            DBGrid_pEND.SetFocus;
+            if sbnGravar.enabled then
+               DBGrid_pEND.SetFocus;
             mDadosPesqProd.pSemFiltros:=false;
             abort;
             end;
@@ -22008,7 +22496,8 @@ mem_cadpfp.SortOnFields('PFPDATA;PFPFORMA');
 
 tsFpgto.TabVisible:=true;
 pcProdServ.ActivePage:=tsFpgto;
-DBGrid_mem_fpag.SetFocus;
+if sbnGravar.enabled then
+   DBGrid_mem_fpag.SetFocus;
 
 end;
 
@@ -22025,7 +22514,8 @@ if mem_cadpfp.State in [dsEdit,dsInsert] then
          begin
          MessageDlg('Forma de Pagamento '+mem_cadpfpPFPFORMA.AsString+' não encontrada!',mtWarning,[mbOk],0);
          DBGrid_mem_fpag.SelectedField:=mem_cadpfpPFPFORMA;
-         DBGrid_mem_fpag.SetFocus;
+         if sbnGravar.enabled then
+            DBGrid_mem_fpag.SetFocus;
          abort;
          end;
       end
@@ -22129,7 +22619,8 @@ if mem_cadpfpPFPDATA.AsDateTime<date then
       +' é um data anterior a data atual!. Continua? '),'',MB_YESNO+MB_DEFBUTTON2)<>mrYes then
       begin
       DBGrid_mem_fpag.SelectedField:=mem_cadpfpPFPDATA;
-      DBGrid_mem_fpag.SetFocus;
+      if sbnGravar.enabled then
+         DBGrid_mem_fpag.SetFocus;
       abort;
       end;
    end
@@ -22139,7 +22630,8 @@ else if mem_cadpfpPFPDATA.AsDateTime>date+3600 then
       +' é um data bem superior a data atual!. Continua? '),'',MB_YESNO+MB_DEFBUTTON2)<>mrYes then
       begin
       DBGrid_mem_fpag.SelectedField:=mem_cadpfpPFPDATA;
-      DBGrid_mem_fpag.SetFocus;
+      if sbnGravar.enabled then
+         DBGrid_mem_fpag.SetFocus;
       abort;
       end;
    end;
@@ -22173,13 +22665,15 @@ if fpag_cancelou then
 if (ValFloat(st_totfalta_001.Caption)<>0) then
    begin
    MessageDlg('Esta Faltando '+st_totfalta_001.Caption +' no '+StaticText4.Caption+' favor corrigir! ',mtWarning,[mbOk],0);
-   DBGrid_mem_fpag.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_mem_fpag.SetFocus;
    exit;
    end;
 if (ValFloat(st_totfalta_101.Caption)<>0) then
    begin
    MessageDlg('Esta Faltando '+st_totfalta_101.Caption+' no '+StaticText5.Caption+' favor corrigir! ',mtWarning,[mbOk],0);
-   DBGrid_mem_fpag.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_mem_fpag.SetFocus;
    exit;
    end;
 
@@ -22211,7 +22705,8 @@ if flfilpad(0,'_principal','CB_DESFP') then
   end;
 if fTemPrazoMem then
    begin
-   DBGrid_mem_fpag.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_mem_fpag.SetFocus;
    exit;
    end;
 
@@ -22704,7 +23199,8 @@ else
 if fValidarSenhaAlterarLote then
    begin
    tsLotes.TabVisible:=true;
-   DBGrid_Man_lote.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_Man_lote.SetFocus;
    end;
 
 end;
@@ -22766,13 +23262,15 @@ Self.Perform(WM_NEXTDLGCTL,0,0);
 if (ValFloat(st_qtdrest_001.Caption)<>0) then
    begin
    MessageDlg('Esta Faltando '+st_qtdrest_001.Caption +' na '+st_qtd_001.Caption+' favor corrigir! ',mtWarning,[mbOk],0);
-   DBGrid_Man_lote.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_Man_lote.SetFocus;
    exit;
    end;
 if (ValFloat(st_qtdrest_101.Caption)<>0) then
    begin
    MessageDlg('Esta Faltando '+st_qtdrest_101.Caption +' na '+st_qtd_101.Caption+' favor corrigir! ',mtWarning,[mbOk],0);
-   DBGrid_Man_lote.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_Man_lote.SetFocus;
    exit;
    end;
 IF mem_lotes.State in [dsinsert,dsedit] then
@@ -22861,7 +23359,8 @@ if mVenda_GP.mPd_EstNor='S' then
             begin
             MessageDlg('Lote Não Encontrado!',mtWarning,[mbOk],0);
             DBGrid_Man_lote.SelectedField:=mem_lotesP2LM_LOTE;
-            DBGrid_Man_lote.SetFocus;
+            if sbnGravar.enabled then
+               DBGrid_Man_lote.SetFocus;
             mem_lotes.Cancel;
             abort;
             end;
@@ -23010,7 +23509,8 @@ if not mLote_Carregando then
             MessageDlg('Quantidade Requisitada '+FormatFloat(mcasqtd, mQtd)
             +' Disponivel '+FormatFloat(mcasqtd, Query_Soma_Lote_Edit.FieldbyName('CLQTD').asfloat),mtWarning,[mbOk],0);
             DBGrid_Man_lote.SelectedField:=mem_lotesP2LM_LOTE;
-            DBGrid_Man_lote.SetFocus;
+            if sbnGravar.enabled then
+               DBGrid_Man_lote.SetFocus;
             abort;
             end;
 
@@ -23019,7 +23519,8 @@ if not mLote_Carregando then
             begin
             if fLoteJaDigitado(mem_lotesP2LM_LOTE.AsString) then
                begin
-               DBGrid_Man_lote.SetFocus;
+               if sbnGravar.enabled then
+                  DBGrid_Man_lote.SetFocus;
                abort;
                end;
             end;
@@ -23029,7 +23530,8 @@ if not mLote_Carregando then
          MessageDlg('Lote Não Encontrado!',mtWarning,[mbOk],0);
          mem_lotes.Cancel;
          DBGrid_Man_lote.SelectedField:=mem_lotesP2LM_LOTE;
-         DBGrid_Man_lote.SetFocus;
+         if sbnGravar.enabled then
+            DBGrid_Man_lote.SetFocus;
          abort;
          end;
       end;
@@ -24883,7 +25385,8 @@ if mQtdSel=0 then
   begin
   MessageDlg('Não Foi Selecionado Nenhuma Mercadoria para esta Devolução!',mtWarning,[mbOk],0);
   pcCabecalho.ActivePage:=Ts_TabRefDev;
-  DBGrid_itens.SetFocus;
+  if sbnGravar.enabled then
+     DBGrid_itens.SetFocus;
   exit;
   end;
 
@@ -24900,7 +25403,8 @@ while not Qr_itens_pedori.Eof do
     Continue;
     end;
   mPos_ItemDev:=Qr_itens_pedori.GetBookmark;
-  if Tb_Ped02_pre.Locate('P2CODPRO;P2ITEM',vararrayof([Qr_itens_pedoriPDCODPRO.AsFloat,Qr_Itens_PedOriP2ITEM.Asinteger]),[]) then
+  {
+  if Tb_Ped02_pre.Locate('P2CODPRO;P2ITEM,P2PRECO',vararrayof([Qr_itens_pedoriPDCODPRO.AsFloat,Qr_Itens_PedOriP2ITEM.Asinteger,Qr_Itens_PedOriP2PRECO.Asinteger]),[]) then
     begin
     Tb_Ped02_pre.Edit;
     Tb_Ped02_preP2QTD.Value            :=Tb_Ped02_preP2QTD.Value +Qr_itens_pedoriQTDSEL.AsFloat;
@@ -24910,6 +25414,9 @@ while not Qr_itens_pedori.Eof do
     Tb_Ped02_pre.Insert;
     Tb_Ped02_preP2QTD.Value            :=Qr_itens_pedoriQTDSEL.AsFloat;
     end;
+    }
+  Tb_Ped02_pre.Insert;
+  Tb_Ped02_preP2QTD.Value            :=Qr_itens_pedoriQTDSEL.AsFloat;
   Tb_Ped02_preP2CODPRO.AsString         :=Qr_itens_pedoriPDCODPRO.AsString;
   mDescRat:=mDescRat+Qr_itens_pedoriP2DESCRAT.AsFloat;
   fdadosfiscais(Tb_Ped02_pre);
@@ -25348,7 +25855,8 @@ if (Arredonda( Qr_itens_pedoriQTDSEL.AsFloat, DM1.Tb_PargerPCASASPU.AsInteger) )
    begin
    MessageDlg('Quantidade a devolver nao pode ser maior que a compra!',mtWarning,[mbOk],0);
    DBGrid_itens_pedori.SelectedField:=Qr_itens_pedoriQTDSEL;
-   DBGrid_itens_pedori.SetFocus;
+   if sbnGravar.enabled then
+      DBGrid_itens_pedori.SetFocus;
    abort;
    end;
 
@@ -26943,7 +27451,8 @@ if valint(edt_codbco1.Text)<>0 then
          begin
          verteclado(0);
          MessageDlg('Código do Banco não Cadastrado!',mtWarning,[mbOk],0);
-         edt_codbco1.SetFocus;
+         if sbnGravar.enabled then
+            edt_codbco1.SetFocus;
          exit;
          end;
       end;
@@ -27151,7 +27660,8 @@ if IntToStr(mVenda_GP.mPed1_CodFP)='' then
   begin
   fmensagem('Favor Digitar um codigo de Forma de Pagamento válido!',0,['0'],0);
   pcCabecalho.ActivePage:=tsCabecalho;
-  edt_codfp.SetFocus;
+  if sbnGravar.enabled then
+     edt_codfp.SetFocus;
   exit;
   end;
 
@@ -27740,12 +28250,14 @@ if edt_datsep.Date>pdatanula then
    if edt_datsep.Date>Date then
       begin
       fmensagem('Data da Separaçao Não pode ser maior que '+FormatDatetime(fdt2, date),0,['0'],0);
-      edt_datsep.SetFocus;
+      if sbnGravar.enabled then
+         edt_datsep.SetFocus;
       end
    else if edt_datsep.Date>edt_datap.Date then
       begin
       fmensagem('Data da sepitação Não pode ser menor que '+FormatDatetime(fdt2, edt_datsep.date),0,['0'],0);
-      edt_datsep.SetFocus;
+      if sbnGravar.enabled then
+         edt_datsep.SetFocus;
       end
    else
       begin
@@ -27764,12 +28276,14 @@ if edt_datemb.Date>pdatanula then
    if edt_datemb.Date>Date then
       begin
       fmensagem('Data de embalaçao Não pode ser maior que '+FormatDatetime(fdt2, date),0,['0'],0);
-      edt_datemb.SetFocus;
+      if sbnGravar.enabled then
+         edt_datemb.SetFocus;
       end
    else if edt_datemb.Date>edt_datap.Date then
       begin
       fmensagem('Data de embalaçao  Não pode ser menor que '+FormatDatetime(fdt2, edt_datemb.date),0,['0'],0);
-      edt_datemb.SetFocus;
+      if sbnGravar.enabled then
+         edt_datemb.SetFocus;
       end
    else
       begin
@@ -27789,12 +28303,14 @@ if edt_datconf.Date>pdatanula then
    if edt_datconf.Date>Date then
       begin
       fmensagem('Data da conferencia Não pode ser maior que '+FormatDatetime(fdt2, date),0,['0'],0);
-      edt_datconf.SetFocus;
+      if sbnGravar.enabled then
+         edt_datconf.SetFocus;
       end
    else if edt_datconf.Date>edt_datap.Date then
       begin
       fmensagem('Data da conferencia Não pode ser menor que '+FormatDatetime(fdt2, edt_datconf.date),0,['0'],0);
-      edt_datconf.SetFocus;
+      if sbnGravar.enabled then
+         edt_datconf.SetFocus;
       end
    else
       begin
@@ -27813,13 +28329,16 @@ if edt_datent.Date>pdatanula then
    begin
    if edt_datent.Date>Date then
       begin
+
       fmensagem('Data da entaraçao Não pode ser maior que '+FormatDatetime(fdt2, date),0,['0'],0);
-      edt_datent.SetFocus;
+      if sbnGravar.enabled then
+         edt_datent.SetFocus;
       end
    else if edt_datent.Date>edt_datap.Date then
       begin
       fmensagem('Data da entitação Não pode ser menor que '+FormatDatetime(fdt2, edt_datent.date),0,['0'],0);
-      edt_datent.SetFocus;
+      if sbnGravar.enabled then
+         edt_datent.SetFocus;
       end
    else
       begin
@@ -28866,7 +29385,8 @@ if mant_tppco<>cb_tppco.ItemIndex then
    if fValidaSenha(mValidarSenha)<>0 then
       begin
       cb_tppco.ItemIndex:=mant_tppco;
-      cb_tppco.SetFocus;
+      if sbnGravar.enabled then
+         cb_tppco.SetFocus;
       exit;
       end;
    end;
@@ -29247,7 +29767,8 @@ if (edt_data_pent.Date>pdatanula) then
      begin
      if Application.MessageBox(pchar('Data Prevista para entrega '+ FormatDatetime(fdt2, edt_data_pent.Date)+' é uma data não esperada!, Quer continuar?'),'',MB_YESNO+MB_DEFBUTTON2)<>mrYes then
         begin
-        edt_data_pent.SetFocus;
+       if sbnGravar.enabled then
+           edt_data_pent.SetFocus;
         exit;
         end;
      exit;
@@ -29293,7 +29814,8 @@ if fsonumero(edt_entrega_codloc.Text)>0 then
       begin
       verteclado(1);
       fmensagem('Localidade/Cidade não Cadastrada.',0,['0'],0);
-      edt_entrega_codloc.SetFocus;
+      if sbnGravar.enabled then
+         edt_entrega_codloc.SetFocus;
       end
    else
       begin
@@ -30206,7 +30728,8 @@ else
   else
       begin
       MessageDlg('Convenio não Cadastrado!',mtWarning,[mbOk],0);
-      edt_codcv.SetFocus;
+      if sbnGravar.enabled then
+         edt_codcv.SetFocus;
       edt_nomcv.Text:='';
       exit;
       end;
@@ -30793,7 +31316,8 @@ if valint(edt_codbco101.Text)<>0 then
          begin
          verteclado(0);
          MessageDlg('Código do Banco não Cadastrado!',mtWarning,[mbOk],0);
-         edt_codbco101.SetFocus;
+         if sbnGravar.enabled then
+            edt_codbco101.SetFocus;
          exit;
          end;
       end;
@@ -31342,7 +31866,8 @@ if not flcadusr(1,0,edt_codtlv.Text) then
       begin
       verteclado(0);
       MessageDlg('televendas Não Encontrado!',mtWarning,[mbOk],0);
-      edt_codtlv.SetFocus;
+      if sbnGravar.enabled then
+         edt_codtlv.SetFocus;
       exit;
       end;
    end;
@@ -32887,7 +33412,6 @@ var
 query_validar: TQuery;
 form_ocorrencias: TFrm_Ocorrencias;
 
-
 begin
 result:=true;
 
@@ -32972,6 +33496,8 @@ end;
 
 procedure TFrm_Venda_Pre.sbnNFSClick(Sender: TObject);
 var
+mRetornoNfce: tRetornoNfce;
+
 ParametrosNfce: tParametrosNfce;
 mMensagem: string;
       function fValidarNFSE: boolean;
@@ -33032,7 +33558,7 @@ mMensagem: string;
            end;
 
 
-      if NOT fLerGenerico_query('CADP02S,CADPRO','PDNOME,PDUND,PDCODIGO_CNAE,PDCODIGO_SERVICO,P2SCODPRO,P2SALIQ','PDCODPRO=P2SCODPRO and P2SCHAVE='+floattostr(mVenda_GP.mped1_Chave)
+      if NOT fLerGenerico_query('CADP02S,CADPRO','PDNOME,PDUND,PDCODIGO_CNAE,PDCODIGO_SERVICO,P2SCODPRO,P2SALIQ,P2SCST_PIS','PDCODPRO=P2SCODPRO and P2SCHAVE='+floattostr(mVenda_GP.mped1_Chave)
                +' AND P2SLOTSEQ='+floattostr(mVenda_GP.mPed1_Chave_ano)+' and P2SCODEMP='+floattostr(mVenda_GP.mPed1_Codemp)
                +'  '  ,query_consulta) then
          begin
@@ -33043,11 +33569,20 @@ mMensagem: string;
          begin
          While not query_consulta.eof do
             begin
-            if length(query_consulta.fieldbyname('PDCODIGO_CNAE').asstring)<1 then
+//            lindomar
+            if length(trim(query_consulta.fieldbyname('PDCODIGO_CNAE').asstring))<1 then
                begin
                Form_Ocorrencias.adicionaItemListView('Cliente '+edt_nomcli.Text+' - '
                          +edt_codcli.Text+' o Servico '+query_consulta.Fieldbyname('P2SCODPRO').asstring+' - '+query_consulta.fieldbyname('PDNOME').asstring
                          +' não possui o Codigo CNAE !');
+               Form_Ocorrencias.mErros:=true;
+               end;
+
+            if length(trim(query_consulta.fieldbyname('P2SCST_PIS').asstring))<1 then
+               begin
+               Form_Ocorrencias.adicionaItemListView('Cliente '+edt_nomcli.Text+' - '
+                         +edt_codcli.Text+' o Servico '+query_consulta.Fieldbyname('P2SCODPRO').asstring+' - '+query_consulta.fieldbyname('PDNOME').asstring
+                         +' não possui o CST PIS/COFINS !');
                Form_Ocorrencias.mErros:=true;
                end;
 
@@ -33103,12 +33638,25 @@ mDadosPedidoBuscar.pcodemp    := mVenda_GP.mPed1_Codemp;
 ParametrosNfce.pChave := mVenda_GP.mped1_Chave;
 ParametrosNfce.pChave_ano := mVenda_GP.mped1_Chave_ano;
 ParametrosNfce.pCodemp := mVenda_GP.mped1_codemp;
+ParametrosNfce.pSoSalvar := false;
 
-
-if not fEmitirNotadeServico(ParametrosNfce).pOk then
+if flfilpad(0,'_NF_SERVICO','NF_TIPO') then
    begin
-   if trim(mmensagem)<>'' then
-      MessageDlg(mMensagem,mtWarning,[mbOk],0);
+   parametrosNfce.pAmbiente := valint(DM4.Tb_FilPad2FPVALOR.AsString);
+   end
+else
+   begin
+   MessageDlg('Configurar o Ambiente da Nota Fiscal de Serviços Sistema->parametros->notas/duplicatas->Ambiente Nf Servico',mtInformation,[mbOk],0);
+   exit;
+   end;
+
+
+mRetornoNfce:=fEmitirNotadeServico(ParametrosNfce);
+if not (mRetornoNfce.pOk) then
+
+   begin
+   if trim(mRetornoNfce.pMensagem)<>'' then
+      MessageDlg(mRetornoNfce.pMensagem+' ' +mMensagem,mtWarning,[mbOk],0);
    exit;
    end;
 
@@ -35787,7 +36335,8 @@ else
   else
       begin
       MessageDlg('Assessor não Cadastrado!',mtWarning,[mbOk],0);
-      edt_codassessor.SetFocus;
+      if sbnGravar.enabled then
+         edt_codassessor.SetFocus;
       edt_nome_assessor.Text:='';
       exit;
       end;
@@ -35867,7 +36416,8 @@ if (fsonumero(edt_chave.Text)>0) then
    Frm_Trocas.CODVEN.text:=edt_codven.text;
    Frm_Trocas.CODVENExit(self);
    frm_trocas.PageControl1.ActivePageIndex:=1;
-   frm_trocas.DEV_CODPRO.SetFocus;
+   if sbnGravar.enabled then
+      frm_trocas.DEV_CODPRO.SetFocus;
    frm_trocas.ORI_CODEMP.text:=inttostr(mVenda_GP.mPed1_Codemp);
    frm_trocas.ORI_CHAVE.text:=edt_chave.Text;
    frm_trocas.ORI_GRAVARClick(self);
@@ -35948,6 +36498,454 @@ Frm_Venda_PayGo.ShowModal;
 
 
 FreeAndNil(Frm_Venda_PayGo);
+end;
+
+
+
+
+procedure TFrm_Venda_pre.fCarregarCBSCST;
+var
+query_cbsCst: tQuery;
+
+   procedure fechartudo;
+   begin
+   query_cbsCst.close;
+   freeandnil(query_cbsCst);
+   end;
+
+begin
+query_cbsCst:=tQuery.Create(nil);
+query_cbsCst.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+query_cbsCst.SQL.add('SELECT CBS_CODIGO,CBS_NOME FROM CADCBS_CST ORDER BY CBS_CODIGO ');
+
+try
+   query_cbsCst.Open;
+except on e : exception do
+   begin
+   ex_erroSql_Novo(query_cbsCst,6610,'cadcnae_lc','CADCNAE_LC');
+   fechartudo;
+   exit;
+   end
+   end;
+
+DBGrid_servicos.Columns[mColCbsCst].PickList.Clear;
+
+DBGrid_servicos.Columns[mColCbsCst].PickList.Add('');
+
+While not query_cbsCst.eof do
+   begin
+   DBGrid_servicos.Columns[mColCbsCst].PickList.Add(query_cbsCst.fieldByName('CBS_CODIGO').AsString);
+   query_cbsCst.Next;
+   end;
+
+fechartudo;
+
+
+end;
+
+
+function TFrm_Venda_Pre.fBuscarCadclasstrib(pCbsCst: String): String;
+var
+query_classTrib: tQuery;
+
+   procedure fechartudo;
+   begin
+   query_classTrib.close;
+   freeandnil(query_classTrib);
+   end;
+
+begin
+DBGrid_servicos.Columns[mColCodClassTrib].PickList.clear;
+
+if trim(pCbsCst)='' then
+   begin
+   result := '';
+   exit;
+   end;
+query_classTrib:=tQuery.Create(nil);
+query_classTrib.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+query_classTrib.SQL.add('select ICC_CODCLASSTRIB,CT_NOME from CADCBS_CST_X_CLASSTRIB '
+                       +' ,CADCLASSTRIB WHERE CT_CODIGO=ICC_CODCLASSTRIB AND ICC_CODCBS=:CODCBS'
+                       +' ORDER BY ICC_CODCLASSTRIB ');
+
+query_classTrib.parambyname('CODCBS').AsString:=pCbsCst;
+
+try
+   query_classTrib.Open;
+except on e : exception do
+   begin
+   ex_erroSql_Novo(query_classTrib,6610,'cadcbs_cst_x_classtrib','CADCLASSTRIB');
+   fechartudo;
+   exit;
+   end
+   end;
+if query_classTrib.IsEmpty then
+   result:=''
+else
+   begin
+   While not query_classTrib.eof do
+      begin
+      DBGrid_servicos.Columns[mColCodClassTrib].PickList.add(query_classTrib.fieldbyname('ICC_CODCLASSTRIB').AsString);
+      query_classTrib.next;
+      end;
+   end;
+fechartudo;
+
+
+end;
+
+
+procedure TFrm_Venda_Pre.DBGrid_servicosColEnter(Sender: TObject);
+begin
+
+if sbnGravar.Enabled then
+
+   begin
+   if not (Tb_ped02S_pre.State in [dsEdit,dsInsert]) then
+      Tb_ped02S_pre.edit;
+   
+
+   {
+   if DBGrid_servicos.SelectedField.FieldName = 'P2SINDOP_IBSCBS' then
+       begin
+       CB_P2SINDOP_IBSCBS.Visible := True;
+       CB_P2SINDOP_IBSCBS.BringToFront;
+       CB_P2SINDOP_IBSCBS.Text:=Tb_ped02S_preP2SINDOP_IBSCBS.AsString;
+
+       // Posiciona o ComboBox exatamente em cima da célula atual do DBGrid
+       CB_P2SINDOP_IBSCBS.Left := DBGrid_servicos.Left + TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Left + 1;
+       CB_P2SINDOP_IBSCBS.Top  := DBGrid_servicos.Top  + TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Top + 1;
+       CB_P2SINDOP_IBSCBS.Width  := TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Right - TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Left;
+       CB_P2SINDOP_IBSCBS.Height := TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Bottom - TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Top;
+
+       // Sincroniza o valor atual do dataset com o ComboBox
+       CB_P2SINDOP_IBSCBS.Text := DBGrid_servicos.SelectedField.AsString;
+       end
+    else
+       CB_P2SINDOP_IBSCBS.Visible := False;
+
+// cst pis
+
+
+   if DBGrid_servicos.SelectedField.FieldName = 'P2SCST_PIS' then
+       begin
+       CB_P2SCST_PIS.Visible := True;
+       CB_P2SCST_PIS.BringToFront;
+       CB_P2SCST_PIS.Text:=Tb_ped02S_preP2SINDOP_IBSCBS.AsString;
+
+       // Posiciona o ComboBox exatamente em cima da célula atual do DBGrid
+       CB_P2SCST_PIS.Left := DBGrid_servicos.Left + TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Left + 1;
+       CB_P2SCST_PIS.Top  := DBGrid_servicos.Top  + TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Top + 1;
+       CB_P2SCST_PIS.Width  := TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Right - TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Left;
+       CB_P2SCST_PIS.Height := TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Bottom - TDBGridHACK(DBGrid_servicos).CellRect(TDBGridHACK(DBGrid_servicos).Col, TDBGridHACK(DBGrid_servicos).Row).Top;
+
+       // Sincroniza o valor atual do dataset com o ComboBox
+       CB_P2SCST_PIS.Text := DBGrid_servicos.SelectedField.AsString;
+       end
+    else
+       CB_P2SCST_PIS.Visible := False;
+
+// cst pis
+}
+   end;
+
+end;
+
+
+
+procedure TFrm_Venda_Pre.fBuscarCadindOpCbsIbs;
+var
+query_cadindopIbsCbs: tQuery;
+
+   procedure fechartudo;
+   begin
+   query_cadindopIbsCbs.close;
+   freeandnil(query_cadindopIbsCbs);
+   end;
+
+begin
+
+CB_P2SINDOP_IBSCBS.Clear;
+
+query_cadindopIbsCbs:=tQuery.Create(nil);
+query_cadindopIbsCbs.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+query_cadindopIbsCbs.SQL.add('select CIOP_NOME,CIOP_CODIGO from CADINDOP_IBSCBS '
+                       +' ORDER BY CIOP_CODIGO ');
+
+
+try
+   query_cadindopIbsCbs.Open;
+except on e : exception do
+   begin
+   ex_erroSql_Novo(query_cadindopIbsCbs,36285,'CADINDOP_IBSCBS','CADINDOP_IBSCBS');
+   fechartudo;
+   exit;
+   end
+   end;
+CB_P2SINDOP_IBSCBS.Items.add('');
+
+if not query_cadindopIbsCbs.IsEmpty then
+   begin
+   While not query_cadindopIbsCbs.eof do
+      begin
+      CB_P2SINDOP_IBSCBS.Items.Add(query_cadindopIbsCbs.fieldbyname('CIOP_CODIGO').AsString);
+      query_cadindopIbsCbs.next;
+      end;
+   end;
+fechartudo;
+
+
+end;
+
+procedure TFrm_Venda_Pre.CB_P2SINDOP_IBSCBSExit(Sender: TObject);
+begin
+
+if not (DBGrid_servicos.DataSource.DataSet.State in [dsEdit, dsInsert]) then
+   DBGrid_servicos.DataSource.DataSet.Edit;
+
+Tb_ped02S_preP2SINDOP_IBSCBS.Value:= copy(CB_P2SINDOP_IBSCBS.Text,1,6);
+DBGrid_servicos.SetFocus;
+end;
+
+procedure TFrm_Venda_Pre.CB_P2SCST_PISExit(Sender: TObject);
+begin
+ if not (DBGrid_servicos.DataSource.DataSet.State in [dsEdit, dsInsert]) then
+    DBGrid_servicos.DataSource.DataSet.Edit;
+
+
+DBGrid_servicos.SelectedField.AsString := CB_P2SCST_PIS.Text;
+Tb_ped02S_preP2SCST_PIS.Value := CB_P2SCST_PIS.Text;
+CB_P2SCST_PIS.Visible := False;
+
+end;
+
+
+
+function tFrm_venda_pre.fTestarCoRelacionadosNFse: boolean;
+var
+query_existe: tquery;
+   procedure pfecharTudo;
+   begin
+   if query_existe<>nil then
+      begin
+      query_existe.close;
+      freeandnil(query_existe);
+      end;
+   end;
+begin
+result:=true;
+if (length(trim(Tb_ped02S_preP2SCODTRIB_MUN.AsString))>0) and
+   (length(trim(Tb_ped02S_preP2SCODCLASSTRIB.AsString))>0) and
+   (length(trim(Tb_ped02S_preP2SCBS_CST.AsString))>0) and
+   (length(trim(Tb_ped02S_preP2SINDOP_IBSCBS.AsString))>0) and
+   (length(trim(Tb_ped02S_preP2SCODNBS.AsString))>0) then
+   begin
+   query_existe := tquery.create(nil);
+   query_existe.DatabaseName := DM1.SG_ASSOC.DatabaseName;
+   query_existe.sql.add('  SELECT COUNT(*) AS QTD '
+                      +' FROM CADCORRELATO_DADOS_NFSE '
+                      +' WHERE TC_C_TRIB_NAC = :TC_C_TRIB_NAC '
+                      +' AND TC_C_ST_IBS_CBS = :TC_C_ST_IBS_CBS '
+                      +' AND TC_C_CLASSTRIB = :TC_C_CLASSTRIB '
+                      +' AND TC_C_NBS = :TC_C_NBS '
+                      +' AND TC_C_IND_OP = :TC_C_IND_OP '
+                       );
+   query_existe.ParamByName('TC_C_TRIB_NAC').AsString := Tb_ped02S_preP2SCODTRIB_NAC.AsString;
+   query_existe.ParamByName('TC_C_ST_IBS_CBS').AsString := Tb_ped02S_preP2SCBS_CST.AsString;
+   query_existe.ParamByName('TC_C_CLASSTRIB').AsString := Tb_ped02S_preP2SCODCLASSTRIB.AsString;
+   query_existe.ParamByName('TC_C_IND_OP').AsString := Tb_ped02S_preP2SINDOP_IBSCBS.AsString;
+   query_existe.ParamByName('TC_C_NBS').AsString := Tb_ped02S_preP2SCODNBS.AsString;
+   try
+      query_existe.Open;
+      if query_existe.fields[0].AsInteger<1 then
+         begin
+         MessageDlg('Não Esta Co-relacionado os itens '+'Cod Tribudo do Municipio Nacional/CST IBS/Codigo Classificacao Cbs/Indice Op/Codigo Nbs ',mtWarning,[mbOk],0);
+         result:=false;
+         end;
+
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_existe,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   end;
+
+pfechartudo;
+
+end;
+
+function TFrm_Venda_Pre.fExisteCodTributo(pCodTrib: String): boolean;
+var
+query_tributo: tQuery;
+begin
+result:=true;
+if trim(pCodTrib)<>'' then
+   begin
+   query_tributo:=tQuery.create(nil);
+   query_tributo.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_tributo.sql.add('select count(*) from CADTRIB_MUN where TM_CODIGO=:CODIGO ');
+   query_tributo.parambyname('CODIGO').AsString:=pCodTrib;
+   try
+      query_tributo.Open;
+      if query_tributo.fields[0].AsInteger<1 then
+         begin
+         MessageDlg('Código do Tributo '+pCodTrib+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_tributo,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_tributo.close;
+   freeandnil(query_tributo);
+   end;
+end;
+
+
+function TFrm_Venda_Pre.fExisteCodCbsCst(pCodigo: String): boolean;
+var
+query_cbs: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_cbs:=tQuery.create(nil);
+   query_cbs.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_cbs.sql.add('select count(*) from CADCBS_CST where CBS_CODIGO=:CODIGO ');
+   query_cbs.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_cbs.Open;
+      if query_cbs.fields[0].AsInteger<1 then
+         begin
+         MessageDlg('Código do CST/CBS '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_cbs,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_cbs.close;
+   freeandnil(query_cbs);
+   end;
+end;
+
+function TFrm_Venda_Pre.fExisteCodNbs(pCodigo: String): boolean;
+var
+query_nbs: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_nbs:=tQuery.create(nil);
+   query_nbs.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_nbs.sql.add('select count(*) from CADNBS where NBS_CODIGO=:CODIGO ');
+   query_nbs.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_nbs.Open;
+      if query_nbs.fields[0].AsInteger<1 then
+         begin
+         MessageDlg('Código do nbs '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_nbs,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_nbs.close;
+   freeandnil(query_nbs);
+   end;
+end;
+
+
+function TFrm_Venda_Pre.fExisteCadClassTrib(pCodigo: String): boolean;
+var
+query_classtrib: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_classtrib:=tQuery.create(nil);
+   query_classtrib.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_classtrib.sql.add('select count(*) from CADCLASSTRIB where CT_CODIGO=:CODIGO ');
+   query_classtrib.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_classtrib.Open;
+      if query_classtrib.fields[0].AsInteger<1 then
+         begin
+         MessageDlg('Código do classe tributaria '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_classtrib,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_classtrib.close;
+   freeandnil(query_classtrib);
+   end;
+end;
+
+
+
+function TFrm_Venda_Pre.fExisteCadcstPis(pCodigo: String): boolean;
+var
+query_cstpis: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_cstpis:=tQuery.create(nil);
+   query_cstpis.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_cstpis.sql.add('select count(*) from Cadcst_Piscofins where CSTC_CODIGO=:CODIGO ');
+   query_cstpis.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_cstpis.Open;
+      if query_cstpis.fields[0].AsInteger<1 then
+         begin
+         MessageDlg('Código do cst pis '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_cstpis,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_cstpis.close;
+   freeandnil(query_cstpis);
+   end;
+end;
+
+
+
+function TFrm_Venda_Pre.fExisteCadIndOpIbsCbs(pCodigo: String): boolean;
+var
+query_indOpIbsCbs: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_indOpIbsCbs:=tQuery.create(nil);
+   query_indOpIbsCbs.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_indOpIbsCbs.sql.add('select count(*) from CADINDOP_IBSCBS where CIOP_CODIGO=:CODIGO ');
+   query_indOpIbsCbs.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_indOpIbsCbs.Open;
+      if query_indOpIbsCbs.fields[0].AsInteger<1 then
+         begin
+         MessageDlg('Código do cst pis '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_indOpIbsCbs,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_indOpIbsCbs.close;
+   freeandnil(query_indOpIbsCbs);
+   end;
 end;
 
 end.

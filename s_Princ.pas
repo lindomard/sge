@@ -901,6 +901,15 @@ type
     lf_0196: TMenuItem;
     lf_0199: TMenuItem;
     sai_0161: TMenuItem;
+    Servicos1: TMenuItem;
+    ributosNacionais1: TMenuItem;
+    CSTCBS1: TMenuItem;
+    CBS1: TMenuItem;
+    IndOpCbs1: TMenuItem;
+    CstPisCofins1: TMenuItem;
+    ClasseTributaria1: TMenuItem;
+    Nbs1: TMenuItem;
+    CorrelatoNbsibscbs1: TMenuItem;
     procedure cr_0103Click(Sender: TObject);
     procedure mpro_0115Click(Sender: TObject);
     procedure sai_0103Click(Sender: TObject);
@@ -1511,6 +1520,14 @@ type
     procedure lf_0196Click(Sender: TObject);
     procedure mfol_0125Click(Sender: TObject);
     procedure sai_0161Click(Sender: TObject);
+    procedure ributosNacionais1Click(Sender: TObject);
+    procedure CSTCBS1Click(Sender: TObject);
+    procedure CBS1Click(Sender: TObject);
+    procedure IndOpCbs1Click(Sender: TObject);
+    procedure CstPisCofins1Click(Sender: TObject);
+    procedure ClasseTributaria1Click(Sender: TObject);
+    procedure Nbs1Click(Sender: TObject);
+    procedure CorrelatoNbsibscbs1Click(Sender: TObject);
   private
     { Private declarations }
 
@@ -1691,7 +1708,8 @@ uses S_DM1, Func2, lerarq, Func,  S_Ram,
   s_Frm_Imp_trib_prod_planilha, s_financeiro, s_receber_pix,
   s_caucao_remessa, s_caucao_extorno, s_SinalizarLotes, s_cnae, s_cnae_lc,
   S_Cnae_x_Lc,s_cbsCst, S_ClassTrib, s_cbsCstXCadclassTrib,
-  s_pos_integracao;
+  s_pos_integracao, s_trib_mun, s_cbs_cst, s_cbs, s_IndOpIbsCbs,
+  s_CstPisCofins, s_nbs, s_CorrelatoNfse;
 
 
 
@@ -15621,6 +15639,152 @@ if Frm_Pos_Integracao.WindowState=WsMinimized then
 else
    frm_Pos_Integracao.Show;
 
+
+end;
+
+procedure TFrm_Princ.ributosNacionais1Click(Sender: TObject);
+begin
+testeform := TFrm_Princ(FindGlobalComponent('frm_trib_mun'));
+if (testeform=nil)  then
+   begin
+   Application.CreateForm(TFrm_trib_mun, Frm_trib_mun);
+   Frm_trib_mun.FormStyle:=fsMDIChild;
+   Frm_trib_mun.top:=0;
+   end;
+
+
+if Frm_trib_mun.WindowState=WsMinimized then
+   Frm_trib_mun.WindowState:=WsNormal
+else
+   frm_trib_mun.Show;
+
+end;
+
+procedure TFrm_Princ.CSTCBS1Click(Sender: TObject);
+begin
+testeform := TFrm_Princ(FindGlobalComponent('frm_cbscst'));
+if (testeform=nil)  then
+   begin
+   Application.CreateForm(TFrm_cbscst, Frm_cbscst);
+   Frm_cbscst.FormStyle:=fsMDIChild;
+   Frm_cbscst.top:=0;
+   end;
+
+
+if Frm_cbscst.WindowState=WsMinimized then
+   Frm_cbscst.WindowState:=WsNormal
+else
+   frm_cbscst.Show;
+
+end;
+
+procedure TFrm_Princ.CBS1Click(Sender: TObject);
+begin
+testeform := TFrm_Princ(FindGlobalComponent('frm_cbs'));
+if (testeform=nil)  then
+   begin
+   Application.CreateForm(TFrm_cbs, Frm_cbs);
+   Frm_cbs.FormStyle:=fsMDIChild;
+   Frm_cbs.top:=0;
+   end;
+
+
+if Frm_cbs.WindowState=WsMinimized then
+   Frm_cbs.WindowState:=WsNormal
+else
+   frm_cbs.Show;
+
+end;
+
+procedure TFrm_Princ.IndOpCbs1Click(Sender: TObject);
+begin
+testeform := TFrm_Princ(FindGlobalComponent('frm_IndOpIbsCbs'));
+if (testeform=nil)  then
+   begin
+   Application.CreateForm(TFrm_IndOpIbsCbs, Frm_IndOpIbsCbs);
+   Frm_IndOpIbsCbs.FormStyle:=fsMDIChild;
+   Frm_IndOpIbsCbs.top:=0;
+   end;
+
+
+if Frm_IndOpIbsCbs.WindowState=WsMinimized then
+   Frm_IndOpIbsCbs.WindowState:=WsNormal
+else
+   frm_IndOpIbsCbs.Show;
+
+end;
+
+procedure TFrm_Princ.CstPisCofins1Click(Sender: TObject);
+begin
+testeform := TFrm_Princ(FindGlobalComponent('frm_CstPisCofins'));
+if (testeform=nil)  then
+   begin
+   Application.CreateForm(TFrm_CstPisCofins, Frm_CstPisCofins);
+   Frm_CstPisCofins.FormStyle:=fsMDIChild;
+   Frm_CstPisCofins.top:=0;
+   end;
+
+
+if Frm_CstPisCofins.WindowState=WsMinimized then
+   Frm_CstPisCofins.WindowState:=WsNormal
+else
+   frm_CstPisCofins.Show;
+
+end;
+
+procedure TFrm_Princ.ClasseTributaria1Click(Sender: TObject);
+begin
+testeform := TFrm_Princ(FindGlobalComponent('frm_ClassTrib'));
+if (testeform=nil)  then
+   begin
+   Application.CreateForm(TFrm_ClassTrib, Frm_ClassTrib);
+   Frm_ClassTrib.FormStyle:=fsMDIChild;
+   Frm_ClassTrib.top:=0;
+   end;
+
+
+if Frm_ClassTrib.WindowState=WsMinimized then
+   Frm_ClassTrib.WindowState:=WsNormal
+else
+   frm_ClassTrib.Show;
+
+end;
+
+procedure TFrm_Princ.Nbs1Click(Sender: TObject);
+begin
+
+testeform := TFrm_Princ(FindGlobalComponent('frm_nbs'));
+if (testeform=nil)  then
+   begin
+   Application.CreateForm(TFrm_nbs, Frm_nbs);
+   Frm_nbs.FormStyle:=fsMDIChild;
+   Frm_nbs.top:=0;
+   end;
+
+
+if Frm_nbs.WindowState=WsMinimized then
+   Frm_nbs.WindowState:=WsNormal
+else
+   frm_nbs.Show;
+
+
+end;
+
+procedure TFrm_Princ.CorrelatoNbsibscbs1Click(Sender: TObject);
+begin
+testeform := TFrm_Princ(FindGlobalComponent('frm_CorrelatoNfse'));
+if (testeform=nil)  then
+   begin
+   Application.CreateForm(Tfrm_CorrelatoNfse, Frm_CorrelatoNfse);
+   Frm_CorrelatoNfse.FormStyle:=fsMDIChild;
+   Frm_CorrelatoNfse.top:=0;
+   end;
+
+
+if Frm_CorrelatoNfse.WindowState=WsMinimized then
+   Frm_CorrelatoNfse.WindowState:=WsNormal
+else
+   frm_CorrelatoNfse.Show;
 
 end;
 

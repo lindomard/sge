@@ -2786,6 +2786,45 @@ mColunaExcel:=0;
 
 mLinha:='';
 
+
+fAdicionarColuna('opf_id');
+fAdicionarColuna('opf_nome');
+fAdicionarColuna('opf_gertit');
+fAdicionarColuna('opf_desativado');
+fAdicionarColuna('opf_dentro_cfop_rv_st');
+fAdicionarColuna('opf_dentro_cfop_rv_trib');
+fAdicionarColuna('opf_dentro_cfop_rv_isento');
+fAdicionarColuna('opf_dentro_cfop_ind_st');
+fAdicionarColuna('opf_dentro_cfop_ind_trib');
+fAdicionarColuna('opf_dentro_cfop_ind_isento');
+fAdicionarColuna('opf_dentro_cfop_subecf_st');
+fAdicionarColuna('opf_dentro_cfop_subecf_trib');
+fAdicionarColuna('opf_dentro_cfop_subecf_isento');
+fAdicionarColuna('opf_fora_cfop_rv_st');
+fAdicionarColuna('opf_fora_cfop_rv_trib');
+fAdicionarColuna('opf_fora_cfop_rv_isento');
+fAdicionarColuna('opf_fora_cfop_ind_st');
+fAdicionarColuna('opf_fora_cfop_ind_trib');
+fAdicionarColuna('opf_fora_cfop_ind_isento');
+fAdicionarColuna('opf_fora_cfop_subecf_st');
+fAdicionarColuna('opf_fora_cfop_subecf_trib');
+fAdicionarColuna('opf_fora_cfop_subecf_isento');
+fAdicionarColuna('opf_calcimp_dentro_rv');
+fAdicionarColuna('opf_entrada_normal');
+fAdicionarColuna('opf_entrada_consignado');
+fAdicionarColuna('opf_entrada_rem_venda');
+fAdicionarColuna('opf_entrada_est_terceiros');
+fAdicionarColuna('opf_saida_normal');
+fAdicionarColuna('opf_saida_consignado');
+fAdicionarColuna('opf_saida_rem_venda');
+fAdicionarColuna('opf_saida_est_terc');
+fAdicionarColuna('opf_requer_pedori');
+fAdicionarColuna('opf_finnfe');
+fAdicionarColuna('opf_calcimp_dentro_ind');
+fAdicionarColuna('opf_calcimp_fora_rv');
+fAdicionarColuna('opf_calcimp_fora_ind');
+
+{
 fAdicionarColuna('TPCODIGO');
 fAdicionarColuna('TPNOME');
 fAdicionarColuna('TPENTRADA_NORMAL');
@@ -2821,6 +2860,7 @@ fAdicionarColuna('TPCALCIMP_CF_FORA');
 fAdicionarColuna('TPGERDUP');
 fAdicionarColuna('TPATIVO');
 fAdicionarColuna('TPFINNFE');
+}
 mTiposDePedidos.Add(mLinha);
 
 
@@ -2829,6 +2869,52 @@ mTiposDePedidos.Add(mLinha);
 dm2.Tb_TipPed.First;
 While not DM2.Tb_TipPed.Eof do
    begin
+
+
+   mLinha :=          DM2.Tb_TipPedTPCODIGO.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPNOME.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPGERDUP.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPATIVO.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPDENTRO_CFOP_RV_ST.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPDENTRO_CFOP_RV_trib.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPDENTRO_CFOP_RV_isento.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPDENTRO_CFOP_RV_ST.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPDENTRO_CFOP_RV_trib.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPDENTRO_CFOP_RV_ISENTO.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPDENTRO_SUBST_CFOP_ST.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPDENTRO_SUBST_CFOP_trib.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPDENTRO_SUBST_CFOP_isento.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPFORA_CFOP_RV_ST.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPFORA_CFOP_RV_TRIB.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPFORA_CFOP_RV_ISENTO.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPFORA_CFOP_RV_ST.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPFORA_CFOP_RV_TRIB.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPFORA_CFOP_RV_ISENTO.AsString + ';';
+
+   mLinha := mLinha + DM2.Tb_TipPedTPfora_SUBST_CFOP_st.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPfora_SUBST_CFOP_trib.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPfora_SUBST_CFOP_isento.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPCALCIMP_CF_DENTRO.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPENTRADA_NORMAL.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPENTRADA_CONSIGNADO.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPENTRADA_REM_VENDA.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPENTRADA_EST_TERC.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPSAIDA_NORMAL.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPSAIDA_CONSIGNADO.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPSAIDA_REM_VENDA.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPSAIDA_EST_TERC.AsString + ';';
+   mLinha := mLinha + '0' + ';'; // REQUER PEDIDO DE ORIGEM
+   mLinha := mLinha + DM2.Tb_TipPedTPFINNFE.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPCALCIMP_RV_DENTRO.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPCALCIMP_RV_FORA.AsString + ';';
+   mLinha := mLinha + DM2.Tb_TipPedTPCALCIMP_RV_FORA.AsString + ';';
+
+
+
+{
+   mLinha:=mLinha+DM2.Tb_TipPedtpf_id.AsString+';';
+
+
    mLinha:=DM2.Tb_TipPedTPCODIGO.AsString+';';
    mLinha:=mLinha+RetiraAcentos(DM2.Tb_TipPedTPNOME.AsString)+';';
    mLinha:=mLinha+DM2.Tb_TipPedTPENTRADA_NORMAL.AsString+';';
@@ -2877,6 +2963,7 @@ While not DM2.Tb_TipPed.Eof do
    mLinha:=mLinha+iif(DM2.Tb_TipPedTPGERDUP.AsInteger=1,'true','false')+';';
    mLinha:=mLinha+iif(DM2.Tb_TipPedTPATIVO.AsInteger=1,'false','true')+';';
    mLinha:=mLinha+DM2.Tb_TipPedTPFINNFE.AsString+';';
+   }
    mTiposDePedidos.Add(mLinha);
    DM2.Tb_TipPed.Next;
    end;

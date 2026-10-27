@@ -148,11 +148,11 @@ type
 
     function fVendaPendenteDeConfirmacao: boolean;
 
-    function fConfirmarTransacao(pChaveIdForma,pChaveIdRec,pStatusRec: Integer; pConfirmar: boolean): boolean;
+    function fConfirmarTransacao(pChaveIdForma,pChaveIdRec,pStatusRec: Integer; pConfirmar, eCancelamento: boolean): boolean;
 
 
 
-    function fCancelarVenda: boolean;
+    function fCancelarVenda(pConfirmacao: boolean): boolean;
 
 
     function DesfazerTransacoes: boolean;
@@ -248,9 +248,9 @@ mIdentificacao := Formatfloat('000', formPaygoApi.fPegarSeqTef);
 mRetorno :=  formPaygoApi.ExecutarVenda(mIdentificacao,   DM_CDS.cds_pedido_formaschave_id.AsInteger, DM_CDS.cds_pedido_formasvalor.AsFloat);
 if (mRetorno.Aprovado) then
    begin
-   formPaygoApi.fGravarReceb('VENDA',mRetorno,DM_CDS.cds_pedido_formaschave_id.AsInteger,DM_CDS.cds_pedido_formaschave_id_cab.AsInteger);
+   formPaygoApi.fGravarReceb('VENDA',mRetorno,DM_CDS.cds_pedido_formaschave_id.AsInteger,DM_CDS.cds_pedido_formaschave_id_cab.AsInteger, DM_CDS.cds_pedido_formasvalor.Value);
    fImprimirComprovante('VENDA RECEBIMENTO',mRetorno,false);
-   fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, true);
+   fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, true,false);
 //      formPaygoApi.fAtualizarPedidoFormas(DM_CDS.cds_recebchave_id_forma.AsInteger,true);
 //   fTotalizarFpgto;
    bbAtualizarRecbtoClick(self);
@@ -392,14 +392,14 @@ if not DM_CDS.cds_receb.IsEmpty then
       MessageDlg('NSU '+DM_CDS.cds_recebNSU.AsString+' REDE '+DM_CDS.cds_recebnomeRede.AsString+' Status da Venda '+DM_CDS.cds_recebstatus.AsString,mtWarning,[mbOk],0);
       exit;
       end;
-   fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, true);
+   fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, true,false);
 
 
    end;
 
 end;
 
-function TFrm_Venda_PayGo.fConfirmarTransacao(pChaveIdForma,pChaveIdRec,pStatusRec: Integer; pConfirmar: boolean): boolean;
+function TFrm_Venda_PayGo.fConfirmarTransacao(pChaveIdForma,pChaveIdRec,pStatusRec: Integer; pConfirmar, eCancelamento: boolean): boolean;
 var
 retornoPaygo: TRetornoPayGo;
 itens: TStrings;
@@ -410,7 +410,7 @@ retornoPaygo := formPaygoApi.ConfirmarTransacao(itens,pConfirmar);
 if retornoPaygo.Aprovado then
    begin
    formPaygoApi.fAtualizarReceb(pChaveIdRec,iif(pStatusRec=7,iif(pConfirmar=true,9,8),iif(pconfirmar=true,1,2)));
-   formPaygoApi.fAtualizarPedidoFormas(pChaveIdForma,iif(pStatusRec=7,false,true));
+   formPaygoApi.fAtualizarPedidoFormas(pChaveIdForma,iif(pStatusRec=7,false,true),iif(ecancelamento,true,false));
    result:=true;
    end
 else
@@ -509,7 +509,7 @@ if not DM_CDS.cds_receb.IsEmpty then
 
       end;
 
-   fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, false);
+   fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, false,false);
 
 
 
@@ -525,19 +525,31 @@ end;
 
 procedure TFrm_Venda_PayGo.bbCancelarClick(Sender: TObject);
 begin
+
+
 if DM_CDS.cds_receb.IsEmpty then
    begin
    ExibirToast('Selecione uma Venda valida para efetuar o cancelamento.');
-
    end
 else
    begin
-   fCancelarVenda;
+   if not (DM_CDS.cds_receb.Locate('chave_id_forma',DM_CDS.cds_pedido_formaschave_id.AsInteger,[])) then
+      begin
+      MessageDlg('Nao Encontrado o Rebebimento vinculado a forma',mtWarning,[mbOK],0);
+      exit;
+      end;
+
+   if ( DM_CDS.cds_recebstatus.AsInteger=1) then
+      begin
+      if Application.MessageBox(pchar('Quer Realmente excluir a venda no valor '+formatfloat(mcasas, DM_CDS.cds_recebvalorVenda.AsFloat)+'?'),'Confirmação?'
+      ,MB_YESNO+MB_DEFBUTTON2)=mrYes then
+          fCancelarVenda(true);
+      end;
    end;
 end;
 
 
-function TFrm_Venda_PayGo.fCancelarVenda:boolean;
+function TFrm_Venda_PayGo.fCancelarVenda(pConfirmacao: boolean):boolean;
 var
 itens: TStrings;
 mRetorno :TRetornoPayGo;
@@ -568,13 +580,12 @@ fImprimirComprovante('************CANCELAMENTO DE VENDA***********',mRetorno,fal
 if (mRetorno.Aprovado) then
    begin
 
-   formPaygoApi.fGravarReceb('EST0RNO VENDA',mRetorno,DM_CDS.cds_recebchave_id_forma.AsInteger,DM_CDS.cds_recebchave_id_cab.AsInteger  );
-   if fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger,true) then
+   formPaygoApi.fGravarReceb('EST0RNO VENDA',mRetorno,DM_CDS.cds_recebchave_id_forma.AsInteger,DM_CDS.cds_recebchave_id_cab.AsInteger, DM_CDS.cds_recebvalorVenda.AsFloat  );
+   if fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger,true,true) then
       begin
-      formPaygoApi.fAtualizarReceb(DM_CDS.cds_recebchaveId.AsInteger,1);
-      formPaygoApi.fAtualizarReceb(mChaveIdVenda,2);
-      formPaygoApi.fAtualizarPedidoFormas(DM_CDS.cds_recebchave_id_forma.AsInteger,false);
-
+      formPaygoApi.fAtualizarReceb(DM_CDS.cds_recebchaveId.AsInteger,8);
+      formPaygoApi.fAtualizarReceb(mChaveIdVenda,8);
+//      formPaygoApi.fAtualizarPedidoFormas(DM_CDS.cds_recebchave_id_forma.AsInteger,false,true);
 
 
 //      fTotalizarFpgto;
@@ -639,24 +650,37 @@ end;
 
 function TFrm_Venda_PayGo.fVendaPendenteDeConfirmacao:boolean;
 begin
-result:=true;
-if (DM_CDS.cds_pedido_cabvalor_tef_recebido.AsFloat>0) AND (DM_CDS.cds_pedido_cabvalor_tef.AsFloat<>DM_CDS.cds_pedido_cabvalor_tef_recebido.AsFloat) then
-   begin
-   Application.CreateForm(TFrm_tef_pendentes, Frm_tef_pendentes);
-    Frm_tef_pendentes.lbl_notifica.Caption:=Format('Foi encontrado uma transacao pendente cliente %s. Pedido %s Valor total do Pedido %2.f Valor Tef %2.f '
-    +' Valor Aprovado  %2.f  '
+
+
+
+result:=false;
+
+
+DM_CDS.fFiltrarPedidoFormas(DM_CDS.cds_pedido_cabchaveId.AsInteger);
+while ( (not DM_CDS.cds_pedido_formas.Eof) and (DM_CDS.cds_pedido_formaschave_id_cab.AsInteger=DM_CDS.cds_pedido_cabchaveId.AsInteger)) do
+    begin
+    if (AnsiMatchText(DM_CDS.cds_pedido_formasforma_pgto.Value, ['DEBITO', 'CREDITO', 'PIX'])) and (DM_CDS.cds_pedido_formassituacao_venda.AsString='AGUARDANDO') then
+       begin
+       Application.CreateForm(TFrm_tef_pendentes, Frm_tef_pendentes);
+       Frm_tef_pendentes.lbl_notifica.Caption:=Format('Foi encontrado uma transacao pendente cliente %s. Pedido %s Valor total do Pedido %2.f Valor Tef %2.f '
+       +' Valor Aprovado  %2.f  '
           ,[DM_CDS.cds_pedido_cabrazao_social.AsString,DM_CDS.cds_pedido_cabchaveId.AsString,
           DM_CDS.cds_pedido_cabvalor_pedido.AsFloat, DM_CDS.cds_pedido_cabvalor_tef.AsFloat,
-          DM_CDS.cds_pedido_cabvalor_tef.AsFloat]);
-   Frm_tef_pendentes.ShowModal;
-   if Frm_tef_pendentes.mConclusao=0 then
-      result:=ConcluirTransacoes
-   else if Frm_tef_pendentes.mConclusao=1 then
-      result:=DesfazerTransacoes
-   else
-      begin
-      result:=false;
+           DM_CDS.cds_pedido_cabvalor_tef.AsFloat]);
+      Frm_tef_pendentes.ShowModal;
+      if Frm_tef_pendentes.mConclusao=0 then
+         begin
+         result:=ConcluirTransacoes;
+         break;
+         end
+      else if Frm_tef_pendentes.mConclusao=1 then
+         begin
+         result:=DesfazerTransacoes;
+         break;
+         end;
+
       end;
+   DM_CDS.cds_pedido_formas.next;
    end;
 {
 else
@@ -693,7 +717,7 @@ While (not DM_CDS.cds_receb.eof) and (DM_CDS.cds_recebchave_id_cab.AsInteger=DM_
    begin
    if DM_CDS.cds_recebstatus.AsInteger=0 then
       begin
-      if not fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, false) then
+      if not fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, false,false) then
          begin
          MessageDlg('Não foi possivel desfazer as transações, utilize funcoes administrativas',mtError,[mbOk],0);
          result:=false;
@@ -715,7 +739,7 @@ While (not DM_CDS.cds_receb.eof) and (DM_CDS.cds_recebchave_id_cab.AsInteger=DM_
    begin
    if DM_CDS.cds_recebstatus.AsInteger=7 then
       begin
-      if not fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, false) then
+      if not fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, false,false) then
          begin
          MessageDlg('Não foi possivel desfazer as transações, utilize funcoes administrativas',mtError,[mbOk],0);
          result:=false;
@@ -739,7 +763,7 @@ While (not DM_CDS.cds_receb.eof) and ( DM_CDS.cds_recebchave_id_cab.AsInteger=DM
       begin
       if DM_CDS.cds_recebstatus.AsInteger=1 then
          begin
-         if not fCancelarVenda then
+         if not fCancelarVenda(false) then
             begin
             MessageDlg('Não foi possivel desfazer as transações, utilize funcoes administrativas',mtError,[mbOk],0);
             result:=false;
@@ -772,7 +796,7 @@ While (not DM_CDS.cds_receb.eof) and  (DM_CDS.cds_recebchave_id_cab.AsInteger=DM
    begin
    if DM_CDS.cds_recebstatus.AsInteger=0 then
       begin
-      if not fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, true) then
+      if not fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, true,false) then
          begin
          MessageDlg('Não foi possivel concluir as transações, utilize funcoes administrativas',mtError,[mbOk],0);
          result:=false;
@@ -789,7 +813,7 @@ While (not DM_CDS.cds_receb.eof) and (DM_CDS.cds_recebchave_id_cab.AsInteger=DM_
    begin
    if DM_CDS.cds_recebstatus.AsInteger=7 then
       begin
-      if not fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, true) then
+      if not fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, true,false) then
          begin
          MessageDlg('Não foi possivel concluir as transações, utilize funcoes administrativas',mtError,[mbOk],0);
          result:=false;
@@ -1063,7 +1087,7 @@ mRetorno:=mFormVendasPos.AguardarRespostaPos(DM_CDS.cds_pedido_formaschave_id.As
 
 if (mRetorno.Aprovado) then
    begin
-   formPaygoApi.fGravarReceb('VENDA',mRetorno,DM_CDS.cds_pedido_formaschave_id.AsInteger,DM_CDS.cds_pedido_formaschave_id_cab.AsInteger);
+   formPaygoApi.fGravarReceb('VENDA',mRetorno,DM_CDS.cds_pedido_formaschave_id.AsInteger,DM_CDS.cds_pedido_formaschave_id_cab.AsInteger, DM_CDS.cds_recebvalorVenda.AsFloat);
 //   fImprimirComprovante('VENDA RECEBIMENTO',mRetorno,false);
   // fConfirmarTransacao(DM_CDS.cds_recebchave_id_forma.AsInteger, DM_CDS.cds_recebchaveId.AsInteger, DM_CDS.cds_recebstatus.AsInteger, true);
 //      formPaygoApi.fAtualizarPedidoFormas(DM_CDS.cds_recebchave_id_forma.AsInteger,true);

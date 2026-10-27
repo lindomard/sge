@@ -2005,6 +2005,8 @@ parametrosNfce.pChave :=  DM1.Tb_NsNSCHAVEP.AsInteger;
 parametrosNfce.pChave_ano :=  DM1.Tb_NsNSLOTSEQ_CP.AsInteger;
 parametrosNfce.pCodemp :=  DM1.Tb_NsNSCODEMP.AsInteger;
 
+parametrosNfce.pAmbiente := iif(DM4.Tb_ParGer02PG2USANFE.AsInteger<2,2,1);
+
 
 fEmitirNotadeServico(parametrosNfce);
 

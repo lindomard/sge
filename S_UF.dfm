@@ -53,6 +53,7 @@ inherited Frm_UF: TFrm_UF
       Height = 25
       Caption = 'Exportar CadUF-TPPed'
       TabOrder = 4
+      OnClick = bbExpCadUfTpPedClick
     end
     object bbExpDifal: TBitBtn
       Left = 774
@@ -62,12 +63,12 @@ inherited Frm_UF: TFrm_UF
       Caption = 'Exportar Difal'
       TabOrder = 5
     end
-    object bbExpSitTrib: TBitBtn
+    object bbExpTipoPedido: TBitBtn
       Left = 921
       Top = 13
       Width = 146
       Height = 25
-      Caption = 'Exportar Sit Tributaria'
+      Caption = 'Exportar Tipos Pedido'
       TabOrder = 6
     end
   end
@@ -98,7 +99,7 @@ inherited Frm_UF: TFrm_UF
         Top = 348
         Width = 1068
         Height = 91
-        ActivePage = ts_precosprat
+        ActivePage = ts_NFE
         Align = alBottom
         TabOrder = 3
         TabStop = False
@@ -674,7 +675,7 @@ inherited Frm_UF: TFrm_UF
         Top = 54
         Width = 1068
         Height = 294
-        ActivePage = ts_Cfop
+        ActivePage = ts_difal
         Align = alBottom
         Style = tsButtons
         TabOrder = 2
@@ -4002,8 +4003,8 @@ inherited Frm_UF: TFrm_UF
   end
   object src_CADUF_EXCETONCM: TDataSource
     DataSet = cds_CADUF_EXCETONCM
-    Left = 292
-    Top = 253
+    Left = 316
+    Top = 245
   end
   object cds_novo: TClientDataSet
     Aggregates = <>

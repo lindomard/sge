@@ -223,6 +223,7 @@ mjsonpar: TArrayParJson;
 begin
 Memo_evento.Lines.Add('Conectando ao servidor aguarde...');
 murl:='http://'+mendip_Servidor_nfe_ativo+':8139/datasnap/rest/servicenfe/';
+//ShowMessage(murl);
 SetLength(mjsonpar,4,2);
 murl:=murl+'EnvioXMLNFE_JSON';
 lParams := TStringList.Create;

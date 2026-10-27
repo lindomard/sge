@@ -1,12 +1,65 @@
 
+
+
   {
+
+SELECT  * FROM USER_TAB_COLUMNS WHERE TABLE_NAME='CADP01' AND COLUMN_NAME LIKE '%NF%'
+UPDATE CADP01 SET P1NUMNF_SERV_NFSE=0,P1EMIDOC=0,P1NFE_ENVXML=0,P1DATANF_SERV=NULL,P1NUMNF_SERV=0,P1CUPOM=0,P1NFCE_DATA=NULL
+,P1DATANF=NULL,P1NUMNF=0
+WHERE P1CHAVE=9547
+
+
+  SELECT * FROM CADTRIB_MUN;
+SELECT * FROM CADINDOP_IBSCBS;
+SELECT * FROM CADNBS;
+SELECT * FROM CADCST_PISCOFINS;   
+SELECT * FROM CADCBS;
+SELECT * FROM CADCBS_CST;
+SELECT * FROM CADCLASSTRIB;
+
+SECADCST_PISCOFINS
+
+SELECT * FROM CAD_CTSN_NBS_IBS_CBS
+
+
+
+
+
+  
+
+                mXml_servico.Add(fGeraXMLString(0,'codServ',query_serv.fieldbyname('PDCODIGO_SERVICO').AsString)); ->mudar para a empresa vinculado ao cnae
+              mXml_servico.Add(fGeraXMLString(0,'codLCServ',query_serv.fieldbyname('PDCODLC_116_03').AsString)); mudar para a empresa vinculado ao cnae
+
+
+
+
+
+<codLCServ>2886</codLCServ>                                    ==>P2SCODLCSERV //PDCODLC_116_03    VARCHAR(06) procurando tabela
+
+<codServ>010101</codServ>                                      ==>P2SCODTRIB_MUN //PDCODIGO_SERVICO    VARCHAR(15)  CADTRIB_MUN
+
+
+<cIndOp>100301</cIndOp>                     ->cadindop_ibs_cbs/CADINDOP_IBSCBS  ==>P2SINDOP_IBSCBS                 VARCHAR(6)
+<codNbs>115021000</codNbs>                  ->cadnbs            ==>PDCODNBS                        VARCHAR(15)
+<cstPisCofins>01</cstPisCofins>             ->cadcst_piscof     ==>P2SCST_PIS                      VARCHAR(02)
+<cstIBSCBS>000</cstIBSCBS>                  -> cadcbs_cst       ==>P2SCBS_CST                      VARCHAR(03)
+<cClassTribIBSCBS>000001</cClassTribIBSCBS> -> cadclasstrib     ==>P2SCODCLASSTRIB                 VARCHAR(06)
+
+
+
+<pINSS>11.00</pINSS>               ==> P2SALIQINSS BIGDECIMAL
+<pCOFINS>0</pCOFINS>               ==> //P2SPCOFINS BIGDECIMAL
+<pPIS>0</pPIS>                     ==> //P2SPCOFINS BIGDECIMAL
+<pCSLL>0</pCSLL>                   ==> //P2SPCSLL BIGDECIMAL
+<pIR>0</pIR>                       ==> //P2SPIR BIGDECIMAL
+<pISSQN>0</pISSQN>                 ==> //P2SPISSQN BIGDECIMAL
 
 13/05/2025 13:05:05 compra de mercadorias pedido 02 -1500,00 link https://gerentenet.com.br
 13/05/2025 12:10:05 compra de mercadorias pedido 01 -500,00
 13/05/2025 13:05:10 venda pedido 01  500,00
 14/05/2025 09:05:00 conversa com lula pedindo aumento salarial
 11/05/2025 08:05:00 proposta 01/10 link https://www.intersysnet.com.br/
-  
+
 alter sequence CADBAI_SEQ restart start with 625;
 NEXTVALUE SEQUENCE
 
@@ -20,18 +73,18 @@ from  (select tablespace_name, round(sum(bytes)/1024/1024 ,2) as free_space
 where a.tablespace_name(+)=b.tablespace_name
 ORDER BY TABLESPACE_NAME
 
-select resource_type, limit 
-from dba_profiles 
-where profile='DEFAULT' 
+select resource_type, limit
+from dba_profiles
+where profile='DEFAULT'
   and resource_name = 'PASSWORD_LIFE_TIME';
-  
+
 
 ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
 
 
   SELECT PAI.PDCODPRO AS CODPAI,PAI.PDNOME AS NOMEPAI
 ,FILHO.PDCODPRO AS CODFILHO,FILHO.PDNOME AS NOMEFILHO
-FROM CADPRO PAI,CADPRO FILHO WHERE (  SUBSTR(PAI.PDNOME,1,2) = SUBSTR(FILHO.PDNOME,1,2) AND 
+FROM CADPRO PAI,CADPRO FILHO WHERE (  SUBSTR(PAI.PDNOME,1,2) = SUBSTR(FILHO.PDNOME,1,2) AND
 PAI.PDCODPRO<>FILHO.PDCODPRO AND
 UTL_MATCH.JARO_WINKLER_SIMILARITY(PAI.PDNOME,FILHO.PDNOME)>98
 
@@ -1377,6 +1430,18 @@ type
 
 
      procedure fIndexCadcbsCst(pTipo: Integer);
+     function fCriarCadcbsCst(pTipo: Integer): boolean;
+
+
+     procedure fIndexCadcbs(pTipo: Integer);
+     function fCriarCadcbs(pTipo: Integer): boolean;
+
+
+     procedure fIndexCadnbs(pTipo: Integer);
+     function fCriarCadnbs(pTipo: Integer): boolean;
+
+
+
      procedure fIndexCadclasstrib(pTipo: Integer);
      procedure fIndexCadcbsCstXClassifTrib(pTipo: Integer);
 
@@ -1416,6 +1481,25 @@ type
      function fCriarCadUFSt(pTipo: Integer): boolean;
      procedure fIndexCadUfSt(pTipo: Integer);
 
+     function fCriarCadindopIbsCbs(pTipo: Integer): boolean;
+     procedure fIndexCadindopIbsCbs(pTipo: Integer);
+
+
+     function fCriarCadCorrelatoDadosNfe(pTipo: Integer): boolean;
+     procedure fIndexCadCorrelatoDadosNfe(pTipo: Integer);
+
+
+     function fCriarCadtribNac(pTipo: Integer): boolean;
+     procedure fIndexCadCadtribNac(pTipo: Integer);
+
+
+     function fCriarCadcstPisCofins(pTipo: Integer): boolean;
+     procedure fIndexCadCadcstPisCofins(pTipo: Integer);
+
+     function fCriarCadempCnae(pTipo: Integer): boolean;
+     procedure fIndexCadempCnae(pTipo: Integer);
+
+
 
      procedure fIndexCadp02BloqLib(pTipo: Integer);
 
@@ -1432,7 +1516,6 @@ type
      function fCriarCadCnaeLc(pTipo: Integer): boolean;
      function fCriarCadCnaeXLc(pTipo: Integer): boolean;
 
-     function fCriarCadcbsCst(pTipo: Integer): boolean;
      function fCriarCadclasstrib(pTipo: Integer): boolean;
      function fCriarCadcbsCstXClassif(pTipo: Integer): boolean;
 
@@ -5684,6 +5767,104 @@ if (marqsol='') or (marqatual=marqsol) then
 
 
    mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_CODTRIB_MUN';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do Tributo no Municipiow';
+
+
+    mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_CODTRIB_NAC';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do Tributo no Nacional';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_REG_AP_TRIB_SN';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Regime de Apuração Tributária pelo Simples Nacional. ';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_REG_ESP_TRIB';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Tipos de Regimes Especiais de Tributação Municipal: ';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_IBS_CBS_TP_OPER';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Tipos de Operação Junto ao IBS CBS';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_IBS_CBS_TP_ENTE_GOV';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Tipo de ente governamental';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_IBS_CBS_IND_DEST';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='A respeito do Destinatário dos serviços: ';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_TP_RET_PIS_COFINS';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Tipo de retenção PIS/COFINS e CSLL: ';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_IBS_CBS_FIN_NFSE';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Indicador da finalidade da emissão de NFS-e  ';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_INDFINAL';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ndicador da finalidade da emissão de NFS-e   ';
+
+
+
+
+   mlinha:=mlinha+1;
    mtotcam:=mlinha;
    fstruverarq(ptipo);
    end;
@@ -8205,6 +8386,28 @@ if (marqsol='') or (marqatual=marqsol) then
    Frm_Stru.STG1.Cells[3,mlinha]:='';
    Frm_Stru.STG1.Cells[4,mlinha]:='';
    Frm_Stru.STG1.Cells[5,mlinha]:='Codigo do Banco';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P1FPGTO';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Codigo da Forma de Pagamento';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P1CODPV';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Codigo do Plano de vendas';
+
+
    mlinha:=mlinha+1;
    Frm_Stru.STG1.RowCount:=mlinha+1;
    Frm_Stru.STG1.Cells[0,mlinha]:='P1CODVEN';
@@ -13581,171 +13784,6 @@ if (marqsol='') or (marqatual=marqsol) then
    mtotcam:=mlinha;
    fstruverarq(ptipo);
    end;
-
-marqatual:='CADP02_SOBRAS';
-if (marqsol='') or (marqatual=marqsol) then
-   begin
-   mlinha:=0;
-   Frm_Stru.STG1.RowCount:=1;
-   mdesc    :='Tabela de Pedidos 02 Sobras e Devoluções';
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_CODEMP';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Codigo da empresa';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_LOTSEQ';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Lote de Sequencia';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_CHAVE';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Chave do Pedido da Venda';
-
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_ID_NEW';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Chave id do CADP02S';
-
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_ID_PED01_NEW';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Chave id do CADP01';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_CHAVE_NIVEL';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Nivel da hierarquia exemplo: 0-Master(pai) 1,2,3,etc pedidos segundarios';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_ORIGEM';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Origem 1-Pedido 2-Digitado';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_ITEM';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Item';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_CODPRO';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='15';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Código do Produto';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_PRECO_ORI';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Preço Unitário sem Acrescimo';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_PRECO_UNI';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Preço Unitário do Produto na hora da venda.';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_PRECO_CUS';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Preço Custo do Produto na hora da venda.';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_PRECO_VEN';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Preço que produto foi vendido.';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_QTD_VEN';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Quantidade Vendida';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_QTD_SOBRA';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Quantidade SOBRA';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_QTD_DEV';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Quantidade Devolvida';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_QTD_QUE';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Quantidade Quebrada';
-
-   mlinha:=mlinha+1;
-   mtotcam:=mlinha;
-   fstruverarq(ptipo);
-   end;
-
 
 
 //TERMINO CADP02 MATERIAS PRIMAS UTILIZADAS
@@ -73457,6 +73495,7 @@ if (marqsol='') or (marqatual=marqsol) then
 
 
 
+
    mlinha:=mlinha+1;
    Frm_Stru.STG1.RowCount:=mlinha+1;
    Frm_Stru.STG1.Cells[0,mlinha]:='P2T_CODCLASSTRIB';
@@ -73465,6 +73504,17 @@ if (marqsol='') or (marqatual=marqsol) then
    Frm_Stru.STG1.Cells[3,mlinha]:='';
    Frm_Stru.STG1.Cells[4,mlinha]:='';
    Frm_Stru.STG1.Cells[5,mlinha]:='Código da classificacao da tributação';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2T_INDOP_IBSCBS';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código ind op ibs cbs';
 
 
 
@@ -73499,6 +73549,79 @@ if (marqsol='') or (marqatual=marqsol) then
    Frm_Stru.STG1.Cells[4,mlinha]:='';
    Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de IBS no Municipio ' ;
 
+
+
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2T_CODNBS';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do NBS';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2T_CODTRIB_MUN';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do NBS';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2T_CODTRIB_NAC';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do TRIBUTO NACIONAL';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2T_PCOFINS';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de COFINS' ;
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2T_PCSLL';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de P2SPCSLL' ;
+
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2T_PISSQN';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de P2SPISSQN' ;
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2T_PIR';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de P2SPIR' ;
 
 
 // TERMINO
@@ -79714,6 +79837,197 @@ if (marqsol='') or (marqatual=marqsol) then
    Frm_Stru.STG1.Cells[5,mlinha]:='Valor do Cofins';
 
 
+// INICIO
+
+          
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SCBS_CST';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='3';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do CST para CBS e IBS';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SCODCLASSTRIB';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código da classificacao da tributação';
+
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SCBS_ALIQ';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de CBS';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SCBS_BC';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Base de Calculo do CBS/IBS';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SCBS_VALOR';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Valor da CBS';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SIBS_UF_ALIQ';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de IBS estadual ' ;
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SIBS_UF_VALOR';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Valor do IBS no estado';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SIBS_MUN_ALIQ';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de IBS no Municipio ' ;
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SIBS_MUN_VALOR';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Valor do IBS no Municipio';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SCBS_DEV_TRIB';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Valor da Devolução Tributada CBS/OBS' ;
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SINDOP_IBSCBS';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='P2SINDOP_IBSCBS' ;
+
+
+// TERMION
+
+// NOVOS
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SCODNBS';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do NBS';
+
+
+    mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SCODTRIB_MUN';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do NBS';
+
+    mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SCODTRIB_NAC';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do TRIBUTO NACIONAL';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SPCOFINS';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de COFINS' ;
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SPCSLL';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de P2SPCSLL' ;
+
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SPISSQN';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de P2SPISSQN' ;
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SPIR';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='4';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Aliquota de P2SPIR' ;
+
+
+//
 
 
    mlinha:=mlinha+1;
@@ -87391,316 +87705,6 @@ if (marqsol='') or (marqatual=marqsol) then
    mtotcam:=mlinha;
    fstruverarq(ptipo);
    end;
-
-marqatual:='CADCV';
-if (marqsol='') or (marqatual=marqsol) then
-   begin
-   mlinha:=0;
-   Frm_Stru.STG1.RowCount:=1;
-   mdesc    :='Tabela de convênios';
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCODEMP';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='10';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='NOT NULL';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Convenios-Código da empresa';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCODCV';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='10';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='NOT NULL';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Código Convenio';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVRAZAO';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='30';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Mes de Referencia da Folha';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVFANTASIA';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='30';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Nome fantasia';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVDIAV';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
-   Frm_Stru.STG1.Cells[2,mlinha]:='';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Dia do vencimento';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVNLOG';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='40';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Logradouro';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVNUM';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='10';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Numero';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCOMPL';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='30';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Complemento';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCODBAI';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='10';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Código do Bairro';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVBAIRRO';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='30';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Bairro';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCEP';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='9';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Cep';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCODLOC';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='10';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Código da Cidade';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCIDADE';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='30';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Cidade';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVUF';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='2';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Estado';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVFONE';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='20';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Fone';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVFAX';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='20';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Fax';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVEMAIL';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='100';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='E-mail';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVRESP';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='40';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Responsável';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCPF';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='14';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Cpf';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCVRG';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='40';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Registro geral';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCGC';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='14';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Cgc';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVIE';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='20';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Inscrição estadual';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCONT01';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='40';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Contato 01';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVFONC01';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='20';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Fone Contato 01';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCONT02';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='40';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Contato 02';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVFONC02';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='20';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Fone contato 02';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCONT03';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='40';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Contato 03';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVFONC03';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='20';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Fone contato 03';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVOBS';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='500';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Observação';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVTABPV';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='2';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Tabela do Plano de vendas';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVCODPV';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='10';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Codigo do plano de vendas';
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='CVACFIN';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-   Frm_Stru.STG1.Cells[2,mlinha]:='10,3';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='% Acrescimo inanceiro';
-   mlinha:=mlinha+1;
-   mtotcam:=mlinha;
-   fstruverarq(ptipo);
-
-   if ptipo=0 then
-      begin
-      marqatual:='OLD_CADCV';
-      Frm_Stru.STG1.RowCount:=mlinha+1;
-      Frm_Stru.STG1.Cells[0,mlinha]:='CVCODNOV';
-      Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-      Frm_Stru.STG1.Cells[2,mlinha]:='';
-      Frm_Stru.STG1.Cells[3,mlinha]:='';
-      Frm_Stru.STG1.Cells[4,mlinha]:='';
-      Frm_Stru.STG1.Cells[5,mlinha]:='Código novo do Cadastro do registro';
-
-      mlinha:=mlinha+1;
-      Frm_Stru.STG1.RowCount:=mlinha+1;
-      Frm_Stru.STG1.Cells[0,mlinha]:='CVDATHOR';
-      Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
-      Frm_Stru.STG1.Cells[2,mlinha]:='';
-      Frm_Stru.STG1.Cells[3,mlinha]:='';
-      Frm_Stru.STG1.Cells[4,mlinha]:='';
-      Frm_Stru.STG1.Cells[5,mlinha]:='Data e Hora do Evento';
-
-      mlinha:=mlinha+1;
-      Frm_Stru.STG1.RowCount:=mlinha+1;
-      Frm_Stru.STG1.Cells[0,mlinha]:='CVCODUSR';
-      Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-      Frm_Stru.STG1.Cells[2,mlinha]:='';
-      Frm_Stru.STG1.Cells[3,mlinha]:='';
-      Frm_Stru.STG1.Cells[4,mlinha]:='';
-      Frm_Stru.STG1.Cells[5,mlinha]:='Usuário';
-
-      mlinha:=mlinha+1;
-      Frm_Stru.STG1.RowCount:=mlinha+1;
-      Frm_Stru.STG1.Cells[0,mlinha]:='CVSTATUS';
-      Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
-      Frm_Stru.STG1.Cells[2,mlinha]:='';
-      Frm_Stru.STG1.Cells[3,mlinha]:='';
-      Frm_Stru.STG1.Cells[4,mlinha]:='';
-      Frm_Stru.STG1.Cells[5,mlinha]:='8-Alteração 9-Exclusao';
-
-      mlinha:=mlinha+1;
-      mtotcam:=mlinha;
-      fstruverarq(ptipo);
-
-      end;
-   end;
-
 
 fStruCont8(ptipo);
 
@@ -98508,6 +98512,15 @@ fCriarIcmsUf(pTipo);
 fCriarProduto_Cod(pTipo);
 fCriarCadUndProdutos(ptipo);
 fCriarCadUfSt(ptipo);
+
+fCriarCadindopIbsCbs(pTipo);
+fCriarCadCorrelatoDadosNfe(pTipo);
+fCriarCadTribNac(pTipo);
+fCriarCadCstPisCofins(pTipo);
+
+fCriarCadempCnae(pTipo);
+
+
 fCriarCadEmailRecebido(pTipo);
 fCriarCadEmailRecAnexo(pTipo);
 
@@ -98535,6 +98548,9 @@ fCriarCadCnaeLc(0);
 fCriarCadCnaeXLc(0);
 
 fCriarCadcbsCst(0);
+fCriarCadcbs(0);
+fCriarCadnbs(0);
+
 fCriarCadclassTrib(0);
 fCriarCadcbsCstXClassif(0);
 
@@ -107504,7 +107520,485 @@ if (marqsol='') or (marqatual=marqsol) then
    mtotcam:=mlinha;
    fstruverarq(ptipo);
    end;
+
+
+
+marqatual:='CADCV';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   mlinha:=0;
+   Frm_Stru.STG1.RowCount:=1;
+   mdesc    :='Tabela de convênios';
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCODEMP';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='NOT NULL';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Convenios-Código da empresa';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCODCV';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='NOT NULL';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código Convenio';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVRAZAO';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='30';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Mes de Referencia da Folha';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVFANTASIA';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='30';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Nome fantasia';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVDIAV';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Dia do vencimento';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVNLOG';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='40';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Logradouro';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVNUM';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Numero';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCOMPL';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='30';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Complemento';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCODBAI';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do Bairro';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVBAIRRO';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='30';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Bairro';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCEP';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='9';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Cep';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCODLOC';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código da Cidade';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCIDADE';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='30';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Cidade';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVUF';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='2';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Estado';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVFONE';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='20';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Fone';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVFAX';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='20';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Fax';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVEMAIL';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='E-mail';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVRESP';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='40';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Responsável';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCPF';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='14';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Cpf';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCVRG';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='40';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Registro geral';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCGC';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='14';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Cgc';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVIE';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='20';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Inscrição estadual';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCONT01';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='40';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Contato 01';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVFONC01';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='20';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Fone Contato 01';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCONT02';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='40';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Contato 02';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVFONC02';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='20';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Fone contato 02';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCONT03';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='40';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Contato 03';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVFONC03';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='20';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Fone contato 03';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVOBS';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='500';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Observação';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVTABPV';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='2';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Tabela do Plano de vendas';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVCODPV';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Codigo do plano de vendas';
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CVACFIN';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10,3';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='% Acrescimo inanceiro';
+   mlinha:=mlinha+1;
+   mtotcam:=mlinha;
+   fstruverarq(ptipo);
+
+   if ptipo=0 then
+      begin
+      marqatual:='OLD_CADCV';
+      Frm_Stru.STG1.RowCount:=mlinha+1;
+      Frm_Stru.STG1.Cells[0,mlinha]:='CVCODNOV';
+      Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+      Frm_Stru.STG1.Cells[2,mlinha]:='';
+      Frm_Stru.STG1.Cells[3,mlinha]:='';
+      Frm_Stru.STG1.Cells[4,mlinha]:='';
+      Frm_Stru.STG1.Cells[5,mlinha]:='Código novo do Cadastro do registro';
+
+      mlinha:=mlinha+1;
+      Frm_Stru.STG1.RowCount:=mlinha+1;
+      Frm_Stru.STG1.Cells[0,mlinha]:='CVDATHOR';
+      Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+      Frm_Stru.STG1.Cells[2,mlinha]:='';
+      Frm_Stru.STG1.Cells[3,mlinha]:='';
+      Frm_Stru.STG1.Cells[4,mlinha]:='';
+      Frm_Stru.STG1.Cells[5,mlinha]:='Data e Hora do Evento';
+
+      mlinha:=mlinha+1;
+      Frm_Stru.STG1.RowCount:=mlinha+1;
+      Frm_Stru.STG1.Cells[0,mlinha]:='CVCODUSR';
+      Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+      Frm_Stru.STG1.Cells[2,mlinha]:='';
+      Frm_Stru.STG1.Cells[3,mlinha]:='';
+      Frm_Stru.STG1.Cells[4,mlinha]:='';
+      Frm_Stru.STG1.Cells[5,mlinha]:='Usuário';
+
+      mlinha:=mlinha+1;
+      Frm_Stru.STG1.RowCount:=mlinha+1;
+      Frm_Stru.STG1.Cells[0,mlinha]:='CVSTATUS';
+      Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+      Frm_Stru.STG1.Cells[2,mlinha]:='';
+      Frm_Stru.STG1.Cells[3,mlinha]:='';
+      Frm_Stru.STG1.Cells[4,mlinha]:='';
+      Frm_Stru.STG1.Cells[5,mlinha]:='8-Alteração 9-Exclusao';
+
+      mlinha:=mlinha+1;
+      mtotcam:=mlinha;
+      fstruverarq(ptipo);
+
+      end;
+   end;
+
+
+marqatual:='CADP02_SOBRAS';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   mlinha:=0;
+   Frm_Stru.STG1.RowCount:=1;
+   mdesc    :='Tabela de Pedidos 02 Sobras e Devoluções';
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_CODEMP';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Codigo da empresa';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_LOTSEQ';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Lote de Sequencia';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_CHAVE';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Chave do Pedido da Venda';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_ID_NEW';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Chave id do CADP02S';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_ID_PED01_NEW';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Chave id do CADP01';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_CHAVE_NIVEL';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Nivel da hierarquia exemplo: 0-Master(pai) 1,2,3,etc pedidos segundarios';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_ORIGEM';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Origem 1-Pedido 2-Digitado';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_ITEM';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Item';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_CODPRO';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do Produto';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_PRECO_ORI';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Preço Unitário sem Acrescimo';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_PRECO_UNI';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Preço Unitário do Produto na hora da venda.';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_PRECO_CUS';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Preço Custo do Produto na hora da venda.';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_PRECO_VEN';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Preço que produto foi vendido.';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_QTD_VEN';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Quantidade Vendida';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_QTD_SOBRA';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Quantidade SOBRA';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_QTD_DEV';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Quantidade Devolvida';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2S_QTD_QUE';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Quantidade Quebrada';
+
+   mlinha:=mlinha+1;
+   mtotcam:=mlinha;
+   fstruverarq(ptipo);
+   end;
+
    
+
 end;
 
 
@@ -120049,6 +120543,19 @@ if (marqsol='') or (marqatual=marqsol) then
    end;
 
 
+marqatual:='CADCBS';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   fIndexCadcbs(pTipo);
+   end;
+
+marqatual:='CADNBS';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   fIndexCadnbs(pTipo);
+   end;
+
+
 marqatual:='CAD_CTSN_NBS_IBS_CBS';
 if (marqsol='') or (marqatual=marqsol) then
    begin
@@ -120133,6 +120640,38 @@ marqatual:='CADUF_ST';
 if (marqsol='') or (marqatual=marqsol) then
    begin
    fIndexCadUfSt(pTipo);
+   end;
+
+marqatual:='CADINDOP_IBSCBS';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   fIndexCadindopIbsCbs(pTipo);
+   end;
+
+marqatual:='CADCORRELATO_DADOS_NFSE';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   fIndexCadCorrelatoDadosNfe(pTipo);
+   end;
+
+marqatual:='CADTRIB_MUN';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   fIndexCadCadtribNac(pTipo);
+   end;
+
+
+
+marqatual:='CADCST_PISCOFINS';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   fIndexCadCadcstPisCofins(pTipo);
+   end;
+
+marqatual:='CADEMP_CNAE';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   fIndexCadempCnae(pTipo);
    end;
 
 
@@ -143515,6 +144054,154 @@ end;
 
 // inicio
 
+procedure Tfrm_stru.fIndexCadcbs(pTipo: Integer);
+begin
+
+
+Frm_Stru.STG1.RowCount:=1;
+mlinha:=0;
+Frm_Stru.STG1.Cells[0,mlinha]:='CBS_ID';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCB_PK';
+Frm_Stru.STG1.Cells[2,mlinha]:='PRIMARY';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='CBS_NOME';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCBS_UK';
+Frm_Stru.STG1.Cells[2,mlinha]:='UNIQUE';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='CBS_CODIGO';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCBS_COD_INX';
+Frm_Stru.STG1.Cells[2,mlinha]:='UNIQUE';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='CBS_CODUSR_INC';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCBS_CODUSR_INC';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='CBS_DATHOR_INC';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCBS_DATHOR_INC';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='CBS_CODUSR_INC';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCBS_CODUSR_INC';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='CBS_CODUSR_UEVE';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCBS_CODUSR_UEVE';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='CBS_DATHOR_UEVE';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCBS_DATHOR_UEVE';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+mtotcam:=mlinha;
+findex(ptipo,'CADCBS');
+
+end;
+
+
+// TERMINO
+
+// INICIO NBS
+
+
+procedure Tfrm_stru.fIndexCadnbs(pTipo: Integer);
+begin
+
+
+Frm_Stru.STG1.RowCount:=1;
+mlinha:=0;
+Frm_Stru.STG1.Cells[0,mlinha]:='NBS_ID';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADNBS_PK';
+Frm_Stru.STG1.Cells[2,mlinha]:='PRIMARY';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='NBS_NOME';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADNBS_CST_UK';
+Frm_Stru.STG1.Cells[2,mlinha]:='UNIQUE';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='NBS_CODIGO';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADNBS_CST_COD_INX';
+Frm_Stru.STG1.Cells[2,mlinha]:='UNIQUE';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='NBS_CODUSR_INC';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADNBS_CST_CODUSR_INC';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='NBS_DATHOR_INC';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADNBS_CST_DATHOR_INC';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='NBS_CODUSR_INC';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADNBS_CST_CODUSR_INC';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='NBS_CODUSR_UEVE';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADNBS_CST_CODUSR_UEVE';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+mlinha:=mlinha+1;
+Frm_Stru.STG1.RowCount:=mlinha+1;
+Frm_Stru.STG1.Cells[0,mlinha]:='NBS_DATHOR_UEVE';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADNBS_CST_DATHOR_UEVE';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+mtotcam:=mlinha;
+findex(ptipo,'CADNBS_CST');
+
+end;
+
+
+// TERMINO NBS
 
 procedure Tfrm_stru.fIndexCadCtsnNbsIbsCbs(pTipo: Integer);
 begin
@@ -144149,6 +144836,1089 @@ end;
 // termino cadufst
 
 
+// cadindopIbsCbs
+
+function  tfrm_stru.fCriarCadindopIbsCbs(pTipo: Integer): boolean;
+var
+mTabelaExiste: boolean;
+mTabelaExiste_old: boolean;
+
+begin
+result:=true;
+marqatual:='CADINDOP_IBSCBS';
+
+
+
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   mTabelaExiste := fTabelaExiste(marqatual);
+
+   mlinha:=0;
+   Frm_Stru.STG1.RowCount:=1;
+   mdesc    :='Tabela de Unidades de Produtos do Foods';
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_ID';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Chave id';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_NOME';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Nome do Campo ou tipo da operação';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_dathor_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_dathor_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_codusr_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_codusr_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_id_emp_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_id_emp_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CIOP_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_dathor_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CIOP_dathor_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_codusr_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_codusr_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_id_emp_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_id_emp_origem_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CIOP_origem_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_ART11';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='190';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CIOP ARTIGO 11';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_LOCAL_OPERACAO';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='190';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CIOP ARTIGO 11';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_CARACTERISTICA';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='190';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CARACTERISTICA';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_CODIGO';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULt '+QUOTEDSTR('000000');
+   Frm_Stru.STG1.Cells[5,mlinha]:='CARACTERISTICA';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_LOCAL_FORN';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='190';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='LOCAL FORN';
+
+   mlinha:=mlinha+1;
+   mtotcam:=mlinha;
+   fstruverarq(ptipo);
+   if not mTabelaExiste then
+      begin
+      if not fExisteSequence(marqatual+'_SEQ') then
+         begin
+         fcriarSequence(marqatual+'_SEQ');
+         end;
+      fIndexCadindopIbsCbs(0);
+      end;
+
+
+   end;
+
+
+end;
+
+// cadindopIbsCbs termino
+
+// cadcorrelatoDadosNfe inicio
+
+function  tfrm_stru.fCriarCadCorrelatoDadosNfe(pTipo: Integer): boolean;
+var
+mTabelaExiste: boolean;
+mTabelaExiste_old: boolean;
+
+begin
+result:=true;
+
+marqatual:='CADCORRELATO_DADOS_NFSE';
+
+
+
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   mTabelaExiste := fTabelaExiste(marqatual);
+
+   mlinha:=0;
+   Frm_Stru.STG1.RowCount:=1;
+   mdesc    :='Tabela de Correlatos dados da nfse ';
+   Frm_Stru.STG1.Cells[0,mlinha]:='TC_ID';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='PRIMARY KEY';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Chave id';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_c_trib_nac';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('010101')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Nome do Campo ou tipo da operação';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_x_trib_nac';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='254';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_x_trib_nac';
+
+
+{
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_c_cbs';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('115024000')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_c_cbs';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_x_cbs';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='254';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_x_cbs';
+
+
+
+ ^}
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_c_nbs';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='9';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('0')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_c_nbs';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_x_nbs';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='254';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_x_nbs';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_c_classtrib';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('000001')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_c_classtrib';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_x_classtrib';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='254';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_x_classtrib';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_c_st_ibs_cbs';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='3';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('000')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_c_st_ibs_cbs';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_x_st_ibs_cst';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='254';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_x_st_ibs_cst';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_c_ind_op';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('100301')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_c_ind_op';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tc_x_ind_op';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='254';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tc_x_ind_op';
+
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_ps_onerosa';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 1  not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_ps_onerosa';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_adquirida_exterior';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0  not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_adquirida_exterior';
+
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_local_incid_cbs';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='500';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_local_incid_cbs';
+
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_dathor_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_dathor_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_codusr_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_codusr_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_id_emp_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_id_emp_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_dathor_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_dathor_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_codusr_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_codusr_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_id_emp_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_id_emp_origem_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ts_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ts_origem_ueve';
+
+
+
+   mlinha:=mlinha+1;
+   mtotcam:=mlinha;
+   fstruverarq(ptipo);
+   if not mTabelaExiste then
+      begin
+      if not fExisteSequence(marqatual+'_SEQ') then
+         begin
+         fcriarSequence(marqatual+'_SEQ');
+         end;
+      fIndexCadCorrelatoDadosNfe(0);
+      end;
+
+
+   end;
+
+
+end;
+
+// cadindopIbsCbs termino
+
+//cadtrib nac inicio
+
+
+function  tfrm_stru.fCriarCadTribNac(pTipo: Integer): boolean;
+var
+mTabelaExiste: boolean;
+mTabelaExiste_old: boolean;
+
+begin
+result:=true;
+
+marqatual:='CADTRIB_MUN';
+
+
+
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   mTabelaExiste := fTabelaExiste(marqatual);
+
+   mlinha:=0;
+   Frm_Stru.STG1.RowCount:=1;
+   mdesc    :='Tabela de Correlatos dados da nfse ';
+   Frm_Stru.STG1.Cells[0,mlinha]:='TM_ID';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='PRIMARY KEY';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Chave id';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='TM_CODIGO';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('0')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Nome ';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='TM_NOME';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='254';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Nome ';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='TM_dathor_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tn_dathor_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='TM_codusr_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='TM_codusr_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='TM_ID_emp_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='TM_ID_emp_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='TM_ORIGEM_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='TM_ORIGEM_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='tn_dathor_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='tn_dathor_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='TM_codusr_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='TM_codusr_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='TM_ID_emp_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='TM_ID_emp_origem_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='TM_ORIGEM_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='TM_ORIGEM_ueve';
+
+
+
+   mlinha:=mlinha+1;
+   mtotcam:=mlinha;
+   fstruverarq(ptipo);
+   if not mTabelaExiste then
+      begin
+      if not fExisteSequence(marqatual+'_SEQ') then
+         begin
+         fcriarSequence(marqatual+'_SEQ');
+         end;
+      fIndexCadCadtribNac(0);
+      end;
+
+
+   end;
+
+
+end;
+
+
+
+// catrib nac termino
+
+
+// cadcst pis cofins inicio
+
+
+function  tfrm_stru.fCriarCadcstPisCofins(pTipo: Integer): boolean;
+var
+mTabelaExiste: boolean;
+mTabelaExiste_old: boolean;
+
+begin
+result:=true;
+
+marqatual:='CADCST_PISCOFINS';
+
+
+
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   mTabelaExiste := fTabelaExiste(marqatual);
+
+   mlinha:=0;
+   Frm_Stru.STG1.RowCount:=1;
+   mdesc    :='Tabela de Correlatos dados da nfse ';
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_ID';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='PRIMARY KEY';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Chave id';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_CODIGO';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='2';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('00')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código ';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_NOME';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='254';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Nome ';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_DESCRICAO';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcMemoNovo;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Descricao';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_dathor_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CSTC_dathor_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_codusr_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CSTC_codusr_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_id_emp_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CSTC_id_emp_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CSTC_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_dathor_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CSTC_dathor_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_codusr_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CSTC_codusr_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_id_emp_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CSTC_id_emp_origem_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='CSTC_origem_ueve';
+
+
+
+   mlinha:=mlinha+1;
+   mtotcam:=mlinha;
+   fstruverarq(ptipo);
+   if not mTabelaExiste then
+      begin
+      if not fExisteSequence(marqatual+'_SEQ') then
+         begin
+         fcriarSequence(marqatual+'_SEQ');
+         end;
+      fIndexCadCadcstPisCofins(0);
+      end;
+
+
+   end;
+
+
+end;
+
+// cadcst pis cofins termino
+
+//cademp cnae
+
+
+function  tfrm_stru.fCriarCadempCnae(pTipo: Integer): boolean;
+var
+mTabelaExiste: boolean;
+mTabelaExiste_old: boolean;
+
+begin
+result:=true;
+
+marqatual:='CADEMP_CNAE';
+
+
+
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   mTabelaExiste := fTabelaExiste(marqatual);
+
+   mlinha:=0;
+   Frm_Stru.STG1.RowCount:=1;
+   mdesc    :='Tabela de Correlatos dados da nfse ';
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_id';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='PRIMARY KEY';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Chave id';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_id_emp';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código DA EMPRESA ';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_id_cnae';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='20';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='codigo do cnae ';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_principal';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cnae principal 0-nao 1-sim';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_codlc_serv';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='8';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='codigo lc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_cod_serv';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='codigo do servico';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_ind_op';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_ind_op';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_codnbs';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_codnbs';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_cst_pis_cofins';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='3';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_cst_pis_cofins';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_cst_ibs_cbs';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='3';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_cst_ibs_cbs';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_cadclasstrib';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_cadclasstrib';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_pinss';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_pinss';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_pcofins';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_pcofins';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_ppis';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_ppis';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_pclss';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_pclss';
+
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_pir';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_pir';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_pissqn';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcFloat;
+   Frm_Stru.STG1.Cells[2,mlinha]:='6';
+   Frm_Stru.STG1.Cells[3,mlinha]:='2';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default 0 not null ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_pissqn';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_cod_ativ';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_cod_ativ';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_trib_nac';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_trib_nac';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_reg_ap_trib_sn';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_reg_ap_trib_sn';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_reg_esp_trib';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_reg_esp_trib';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_tp_oper';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_tp_oper';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_p_ente_gov';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_p_ente_gov';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_tp_ret_pis_cofins';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_tp_ret_pis_cofins';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_ind_dest';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_ind_dest';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_fin_nfse';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_fin_nfse';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_ind_final';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_ind_final';
+
+
+
+
+   mlinha:=mlinha+1;
+   mtotcam:=mlinha;
+   fstruverarq(ptipo);
+   if not mTabelaExiste then
+      begin
+      if not fExisteSequence(marqatual+'_SEQ') then
+         begin
+         fcriarSequence(marqatual+'_SEQ');
+         end;
+      fIndexCadempCnae(0);
+      end;
+
+
+   end;
+
+
+end;
+
+// cademp cnae
+
+
+// cadcorrelatoDadosnfe Final
+
+
 // inicio
 
 //CademailRecebido
@@ -144729,6 +146499,149 @@ mtotcam:=mlinha;
 findex(ptipo,'CADUF_ST');
 end;
 
+
+// CADINDOP_IBSCBS INICIO
+
+procedure Tfrm_stru.fIndexCadindopIbsCbs(pTipo: Integer);
+begin
+
+
+Frm_Stru.STG1.RowCount:=1;
+mlinha:=0;
+Frm_Stru.STG1.Cells[0,mlinha]:='CIOP_ID';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADINDOP_IBS_CBS_PK';
+Frm_Stru.STG1.Cells[2,mlinha]:='PRIMARY';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+
+
+mlinha:=mlinha+1;
+mtotcam:=mlinha;
+findex(ptipo,'CADINDOP_IBS_CBS');
+end;
+
+
+
+// CADINDOP_IBSCBS TERMINO
+
+
+// CADCORRELATO DADOS NFSE
+
+procedure Tfrm_stru.fIndexCadCorrelatoDadosNfe(pTipo: Integer);
+begin
+
+
+Frm_Stru.STG1.RowCount:=1;
+mlinha:=0;
+Frm_Stru.STG1.Cells[0,mlinha]:='TC_COD_USR_UEVE';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCORRELATO_DN_USR_UEVE';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+
+
+mlinha:=mlinha+1;
+mtotcam:=mlinha;
+findex(ptipo,'CADCORRELATO_DADOS_NFSE');
+end;
+
+
+// CADCORRELATO DADOS NFSE
+
+
+// INDEX CADTRIB_MUN INICIO
+
+procedure Tfrm_stru.fIndexCadCadtribNac(pTipo: Integer);
+begin
+
+
+Frm_Stru.STG1.RowCount:=1;
+mlinha:=0;
+Frm_Stru.STG1.Cells[0,mlinha]:='TN_COD_USR_UEVE';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADTRIB_MUN_USR_UEVE';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+
+mlinha:=mlinha+1;
+mtotcam:=mlinha;
+
+Frm_Stru.STG1.Cells[0,mlinha]:='TM_CODIGO';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADTRIB_MUN_CODIGO';
+Frm_Stru.STG1.Cells[2,mlinha]:='UNIQUE';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+
+mlinha:=mlinha+1;
+mtotcam:=mlinha;
+findex(ptipo,'CADTRIB_MUN');
+end;
+
+// INDEX CADTRIB_MUN FINAL
+
+// INDEX CADCST_PISCOFINS INICIO
+
+procedure Tfrm_stru.fIndexCadCadcstPisCofins(pTipo: Integer);
+begin
+
+
+Frm_Stru.STG1.RowCount:=1;
+mlinha:=0;
+Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_COD_USR_UEVE';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCST_PISCOFINS_USR_UEVE';
+Frm_Stru.STG1.Cells[2,mlinha]:='';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+mlinha:=mlinha+1;
+mtotcam:=mlinha;
+
+Frm_Stru.STG1.Cells[0,mlinha]:='CSTC_CODIGO';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADCST_PISCOFINS_CODIGO';
+Frm_Stru.STG1.Cells[2,mlinha]:='UNIQUE';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+mlinha:=mlinha+1;
+mtotcam:=mlinha;
+findex(ptipo,'CADCST_PISCOFINS');
+end;
+
+// CADEMP CNAE
+
+
+procedure Tfrm_stru.fIndexCadempCnae(pTipo: Integer);
+begin
+
+
+Frm_Stru.STG1.RowCount:=1;
+mlinha:=0;
+Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_id_emp, ecnae_id_cnae';
+Frm_Stru.STG1.Cells[1,mlinha]:='CADEMP_CNAE_UK';
+Frm_Stru.STG1.Cells[2,mlinha]:='UNIQUE';
+Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ECNAE_ID';
+   Frm_Stru.STG1.Cells[1,mlinha]:='CADCNAE_PK';
+   Frm_Stru.STG1.Cells[2,mlinha]:='PRIMARY';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+
+
+
+
+mlinha:=mlinha+1;
+mtotcam:=mlinha;
+findex(ptipo,'CADEMP_CNAE');
+end;
+
+
+
+// INDEX CADCST_PISCOFINS TERMINO
 
 
 procedure Tfrm_stru.fIndexCadTitCaucaoCab(pTipo: Integer);
@@ -145376,6 +147289,317 @@ if (marqsol='') or (marqatual=marqsol) then
 end;
 
 
+// cadnbs inicio
+
+// INICIO CADCBS
+
+function Tfrm_stru.fCriarCadcbs(pTipo: Integer): boolean;
+var
+mTabelaExiste: boolean;
+mTabelaExiste_old: boolean;
+
+begin
+
+marqatual:='CADCBS';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   mTabelaExiste := fTabelaExiste(marqatual);
+
+   mlinha:=0;
+   Frm_Stru.STG1.RowCount:=1;
+   mdesc    :='Tabela de CBS';
+
+
+
+
+   Frm_Stru.STG1.Cells[0,mlinha]:='cbs_id';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Chave Id do CBS';
+
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='cbs_codigo';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='10';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT '+QuotedStr('115024000')+' NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do CBS';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='cbs_nome';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='150';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT '+QuotedStr('_')+' NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Nome do CBS';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='cbs_codusr_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_codusr_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='cbs_id_emp_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_id_emp_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='cbs_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='cbs_dathor_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_dathor_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='cbs_codusr_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_codusr_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='cbs_id_emp_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_id_emp_origem_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='cbs_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='cbs_origem_ueve';
+
+
+// termina
+
+   mlinha:=mlinha+1;
+   mtotcam:=mlinha;
+   fstruverarq(ptipo);
+
+
+
+
+
+
+
+   if not mTabelaExiste then
+      begin
+      marqatual:='CADCBS';
+
+      if not fExisteSequence(marqatual+'_SEQ') then
+         begin
+         fcriarSequence(marqatual+'_SEQ');
+         end;
+      fIndexCadcbs(0);
+      end;
+
+
+   end;
+end;
+
+
+
+// TERMION CADCBS
+
+
+function Tfrm_stru.fCriarCadnbs(pTipo: Integer): boolean;
+var
+mTabelaExiste: boolean;
+mTabelaExiste_old: boolean;
+
+begin
+
+marqatual:='CADNBS';
+if (marqsol='') or (marqatual=marqsol) then
+   begin
+   mTabelaExiste := fTabelaExiste(marqatual);
+
+   mlinha:=0;
+   Frm_Stru.STG1.RowCount:=1;
+   mdesc    :='Tabela de NBS';
+
+
+
+
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_id';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Chave Id do CBS';
+
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_codigo';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='15';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT '+QuotedStr('000')+' NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do CBS';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_nome';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT '+QuotedStr('_')+' NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Nome do CBS';
+
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_dathor_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='NBS_dathor_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_codusr_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='NBS_codusr_inc';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_id_emp_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='NBS_id_emp_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_origem_inc';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='NBS_origem_inc';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_dathor_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcDataHora;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='NBS_dathor_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_codusr_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='NBS_codusr_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_id_emp_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='DEFAULT 0 NOT NULL ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='NBS_id_emp_origem_ueve';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='NBS_origem_ueve';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='100';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:=' ';
+   Frm_Stru.STG1.Cells[5,mlinha]:='NBS_origem_ueve';
+
+
+// termina
+
+   mlinha:=mlinha+1;
+   mtotcam:=mlinha;
+   fstruverarq(ptipo);
+
+
+
+
+
+
+
+   if not mTabelaExiste then
+      begin
+      marqatual:='CADNBS';
+
+      if not fExisteSequence(marqatual+'_SEQ') then
+         begin
+         fcriarSequence(marqatual+'_SEQ');
+         end;
+      fIndexCadnbs(0);
+      end;
+
+
+   end;
+end;
+
+
+// cadnbs termino
 
 
 function Tfrm_stru.fCriarCadclasstrib(pTipo: Integer): boolean;

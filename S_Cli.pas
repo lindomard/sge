@@ -904,6 +904,7 @@ var
   Frm_Cli: TFrm_Cli;
   cli_ori: String;
   moper_cli: Integer;
+
   bbcalt_true : Boolean=True;
   bbcinc_true : Boolean=True;
   bbcexc_true : Boolean=True;

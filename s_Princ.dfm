@@ -3955,6 +3955,41 @@ object Frm_Princ: TFrm_Princ
           Caption = 'Cred Pres'
         end
       end
+      object Servicos1: TMenuItem
+        Caption = 'Servicos'
+        object ributosNacionais1: TMenuItem
+          Caption = 'Tributos Nunicipais'
+          OnClick = ributosNacionais1Click
+        end
+        object CSTCBS1: TMenuItem
+          Caption = 'CST CBS'
+          OnClick = CSTCBS1Click
+        end
+        object CBS1: TMenuItem
+          Caption = 'CBS'
+          OnClick = CBS1Click
+        end
+        object IndOpCbs1: TMenuItem
+          Caption = 'Ind Op Cbs'
+          OnClick = IndOpCbs1Click
+        end
+        object CstPisCofins1: TMenuItem
+          Caption = 'Cst Pis Cofins'
+          OnClick = CstPisCofins1Click
+        end
+        object ClasseTributaria1: TMenuItem
+          Caption = 'Classe Tributaria'
+          OnClick = ClasseTributaria1Click
+        end
+        object Nbs1: TMenuItem
+          Caption = 'Nbs'
+          OnClick = Nbs1Click
+        end
+        object CorrelatoNbsibscbs1: TMenuItem
+          Caption = 'Correlato Nbs/ibs/cbs'
+          OnClick = CorrelatoNbsibscbs1Click
+        end
+      end
     end
     object Financeiro1: TMenuItem
       Caption = 'Fina&nceiro'

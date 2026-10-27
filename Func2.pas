@@ -18009,9 +18009,9 @@ mTotVCbsMonoRet: Real;
                     mXmlString.Add('<card>');
                     mXmlString.Add(fGeraXMLReal(0,'tpIntegra',1));
 
-//                    mXmlString.Add(fGeraXMLstring(0,'CNPJ',insere( fdeixanum( query_pfp.FieldByName('calc_cnpj').AsString),'0',14) ));
+                    mXmlString.Add(fGeraXMLstring(0,'CNPJ',insere( fdeixanum( query_pfp.FieldByName('calc_cnpj').AsString),'0',14) ));
                     mXmlString.Add(fGeraXMLstring(0,'tBand',Formatfloat('00',  query_pfp.FieldByName('bandeira_cartao_sefaz').AsInteger)));
-  //                  mXmlString.Add(fGeraXMLstring(0,'cAut', query_pfp.FieldByName('PFPNSU_NUMERO_AUTORIZACAO').AsString));
+                    mXmlString.Add(fGeraXMLstring(0,'cAut', query_pfp.FieldByName('PFPNSU_NUMERO_AUTORIZACAO').AsString));
                     mXmlString.Add('</card>');
 
 
@@ -18713,9 +18713,9 @@ else
 }
 
 if (DM2.Qr_CabP1CFO1.AsInteger)>5000 then
-   mtipo_entsai:=0
+   mtipo_entsai:=0   //saida   1
 else
-   mtipo_entsai:=1;
+   mtipo_entsai:=1; // entrada  0
 
 
 //mtipo_entsai:=DM2.Qr_CabP1TIPO_ENTSAI.AsInteger;

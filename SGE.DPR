@@ -902,7 +902,13 @@ uses
   s_verificar_tabelas in 's_verificar_tabelas.pas',
   s_CancelarTef in 's_CancelarTef.pas' {Frm_CancelarTef},
   s_vendas_pos in 's_vendas_pos.pas',
-  UPagamentoModel in 'UPagamentoModel.pas';
+  UPagamentoModel in 'UPagamentoModel.pas',
+  s_trib_mun in 's_trib_mun.pas' {Frm_trib_mun},
+  s_cbs in 's_cbs.pas' {frm_cbs},
+  s_IndOpIbsCbs in 's_IndOpIbsCbs.pas' {Frm_IndOpIbsCbs},
+  s_CstPisCofins in 's_CstPisCofins.pas' {frm_CstPisCofins},
+  s_nbs in 's_nbs.pas' {frm_nbs},
+  s_CorrelatoNfse in 's_CorrelatoNfse.pas' {frm_CorrelatoNfse};
 
 //  S_RelNsCliXNcm in 'S_RelNsCliXNcm.pas' {Frm_RelNsCliXNcm};
 

@@ -649,6 +649,13 @@ function fConfirmaEmissaoNFCE(pCodCli: Real; pMensagem: String): Boolean;
 function fTestarVendaMaximaPorCliente(pDadosValidarVdaMax: DadosValidarVdaMax): DadosValidarVdaMaxResultado;
 procedure fCorrigirObs;
 
+function fChamaPesqCstPis(pCodSol: Integer; pFormOri,pCarDig: String): String;
+function fChamaPesqCbs(pCodSol: Integer; pFormOri,pCarDig: String): String;
+function fChamaPesqTribNac(pCodSol: Integer; pFormOri,pCarDig: String): String;
+
+function fChamaIndOpIbsCbs(pCodSol: Integer; pFormOri,pCarDig,pFiltrosExtras: String): String;
+
+function fChamaNbs(pCodSol: Integer; pFormOri,pCarDig: String; pFiltrosExtras: String): String;
 
 
 {
@@ -968,8 +975,8 @@ function fTabelaExiste(pNomeTabela: String): boolean;
 function fCriarSequence(pNomeSequence: String): boolean;
 procedure fExecutarAlterTable(pComando: String);
 procedure verificarQrTid;
-function fChamaCbsCst(pCodSol: Integer; pFormOri,pCarDig: String): String;
-function fChamaclasstrib(pCodSol: Integer; pFormOri,pCarDig: String): String;
+function fChamaCbsCst(pCodSol: Integer; pFormOri,pCarDig, pFiltrosExtras: String): String;
+function fChamaclasstrib(pCodSol: Integer; pFormOri,pCarDig, pFiltrosExtras: String): String;
 function fLiberadoVendaDoGrupoDeProdutosParaOCliente(pCodcli,pCodpro: Real; pMensagem: boolean; out pResposta: String): boolean;
 
 
@@ -1040,7 +1047,8 @@ uses S_DM4, S_SI,S_DM5, func_excecoes,
   s_erros, s_Executar_Igestao, s_nfce, func_emitir_notas,
   s_impressora_escolher, s_NFCE_Impressao, s_validar_altped,
   corrigir_cadped,funcoes_especificas, s_cnae, s_cnae_lc, s_cbsCst,
-  S_ClassTrib, StrUtils;
+  S_ClassTrib, StrUtils, s_CstPisCofins, s_cbs, s_IndOpIbsCbs, s_trib_mun,
+  s_nbs;
 
 var
 
@@ -1059,6 +1067,12 @@ form_PlanoCtaEfd: tFrm_PlanoCtaEfd;
 
 form_turno: TFrm_Turnos;
 form_for: tFrm_for;
+form_nbs: tFrm_nbs;
+form_trib_mun: TFrm_trib_mun;
+form_cbs: TFrm_Cbs;
+form_IndOpIbsCbs: TFrm_IndOpIbsCbs;
+
+form_CstPisCofins: TFrm_CstPisCofins;
 form_loc: tFrm_loc;
 
 form_bai: tFrm_bai;
@@ -13373,7 +13387,8 @@ end;
 
 
 
-function fChamaCbsCst(pCodSol: Integer; pFormOri,pCarDig: String): String;
+function fChamaCbsCst(pCodSol: Integer; pFormOri,pCarDig, pFiltrosExtras: String): String;
+
 {
 Parametros
 PCodSol: Solicitou o Seguinte Codigo: 0-Codigo do Vendedor
@@ -13407,6 +13422,16 @@ if pCarDig<>'' then
    form_CbsCst.Edit1.SelLength:=1;
    end;
 form_cbsCst.cbs_cst_ori:=pFormOri;
+if trim(pFiltrosExtras)<>'' then
+   begin
+   form_cbsCst.edt_filtros_extras.Text:=pFiltrosExtras;
+   form_cbsCst.edt_filtros_extras.Visible:=true;
+   form_cbsCst.lbl_filtros_extras.Visible:=true;
+
+
+   end;
+
+
 if form_cbsCst.ShowModal=mrOk then
    begin
    if pcodsol=0 then
@@ -33089,7 +33114,7 @@ if pTipoEvento=3 then   // balanco
                  +',CMP_SALDO_ANT,CMP_SALDO_ATU,CMP_RESERVADO_ANT ,CMP_RESERVADO_ATU'
                  +',CMP_ESTNOR,CMP_ESTRESERVADO,CMP_CHAVE,CMP_ID_ANO '
                  +',CMP_LOTE'
-                 +',CMP_FAB'
+                 +',CMP_DTFAB'
                  +',CMP_DTVCTO'
                  +',CMP_TIPOPROD'
                  +',CMP_ID'
@@ -33112,7 +33137,7 @@ if pTipoEvento=3 then   // balanco
                  +',max(B2CHAVE) AS CMP_CHAVE '
                  +',EXTRACT(YEAR FROM max(B1DATAAJU))     AS CMP_ID_ANO '
                  +',max(B2NUMERO) AS CMP_LOTE '
-                 +',max(B2DTFAB) AS CMP_DTFAB, '
+                 +',max(B2DTFAB) AS CMP_DTFAB '
                  +',max(B2DTVCTO) AS CMP_DTVCTO, '
                  +iif(Log_TipoLote=1,'3','0')+' as CMP_TIPOPROD'
                  +' FROM CADBAL02,CADBAL01 '
@@ -33155,7 +33180,7 @@ else // zerar estoque
                  +',max(B2CHAVE) AS CMP_CHAVE '
                  +',EXTRACT(YEAR FROM max(B1DATAAJU))     AS CMP_ID_ANO '
                  +',max(B2NUMERO) AS CMP_LOTE '
-                 +',max(B2DTFAB) AS CMP_DTFAB, '
+                 +',max(B2DTFAB) AS CMP_DTFAB '
                  +',max(B2DTVCTO) AS CMP_DTVCTO, '
                  +iif(Log_TipoLote=1,'3','0')+' as CMP_TIPOPROD'
 
@@ -33230,7 +33255,7 @@ if pTipoEvento=3 then   // balanco
                  +',0 AS CMP_CHAVE '
                  +',EXTRACT(YEAR FROM max(IGDATAEMI))     AS CMP_ID_ANO '
                  +',max(IGGRADE) AS CMP_LOTE '
-                 +',max(IGDTFAB) AS CMP_DTFAB, '
+                 +',max(IGDTFAB) AS CMP_DTFAB '
                  +',max(IGDTVCTO) AS CMP_DTVCTO, '
                  +iif(Log_TipoLote=1,'3','0')+' as CMP_TIPOPROD'
 
@@ -33274,7 +33299,7 @@ else // zerar estoque
                  +',0 AS CMP_CHAVE '
                  +',EXTRACT(YEAR FROM max(IGDATAEMI))     AS CMP_ID_ANO '
                  +',max(IGGRADE) AS CMP_LOTE '
-                 +',max(IGDTFAB) AS CMP_DTFAB, '
+                 +',max(IGDTFAB) AS CMP_DTFAB '
                  +',max(IGDTVCTO) AS CMP_DTVCTO, '
                  +iif(Log_TipoLote=1,'3','0')+' as CMP_TIPOPROD'
 
@@ -39800,7 +39825,7 @@ end;
 
 
 
-function fChamaclasstrib(pCodSol: Integer; pFormOri,pCarDig: String): String;
+function fChamaclasstrib(pCodSol: Integer; pFormOri,pCarDig, pFiltrosExtras: String): String;
 {
 Parametros
 PCodSol: Solicitou o Seguinte Codigo: 0-Codigo do Vendedor
@@ -39833,6 +39858,15 @@ if pCarDig<>'' then
    form_ClassTrib.Edit1.SelStart:=1;
    form_ClassTrib.Edit1.SelLength:=1;
    end;
+if trim(pFiltrosExtras)<>'' then
+   begin
+   form_ClassTrib.edt_filtros_extras.Text:=pFiltrosExtras;
+   form_ClassTrib.edt_filtros_extras.Visible:=true;
+   form_ClassTrib.lbl_filtros_extras.Visible:=true;
+
+
+   end;
+
 form_classtrib.classTrib_ori:=pFormOri;
 if form_classtrib.ShowModal=mrOk then
    begin
@@ -39903,6 +39937,256 @@ freeandnil(query_cli_blq_gru);
 
 
 
+end;
+
+
+
+
+function fChamaPesqCstPis(pCodSol: Integer; pFormOri,pCarDig: String): String;
+{
+Parametros
+PCodSol: Solicitou o Seguinte Codigo: 0-Codigo do Vendedor
+
+
+
+pFormOri = Formulario de Origem da Chamada
+pCarDig  = Caractere Digitado
+}
+begin
+
+
+mtipo:=0;
+result:='';
+if form_CstPisCofins=nil then
+   Application.CreateForm(TFrm_CstPisCofins, form_CstPisCofins)
+else
+   begin
+   form_CstPisCofins.Free;
+   form_CstPisCofins:=nil;
+   Application.CreateForm(Tfrm_CstPisCofins, form_CstPisCofins)
+   end;
+form_CstPisCofins.FormStyle:=fsNormal;
+form_CstPisCofins.Visible:=false;
+
+if pCarDig<>'' then
+   begin
+   form_CstPisCofins.Edit1.Text:=PCarDig;
+   form_CstPisCofins.Edit1.SelStart:=1;
+   form_CstPisCofins.Edit1.SelLength:=1;
+   end;
+form_CstPisCofins.PC1.ActivePage:=form_CstPisCofins.tsTab;
+form_CstPisCofins.cst_ori:=pFormOri;
+if form_CstPisCofins.ShowModal=mrOk then
+   begin
+   if pcodsol=0 then
+      Result:=form_CstPisCofins.Tb_CstPisCofinsCSTC_CODIGO.AsString
+   end;
+form_CstPisCofins.Free;
+form_CstPisCofins:=nil;
+end;
+
+// inicio
+
+function fChamaPesqCbs(pCodSol: Integer; pFormOri,pCarDig: String): String;
+{
+Parametros
+PCodSol: Solicitou o Seguinte Codigo: 0-Codigo do Vendedor
+
+
+
+pFormOri = Formulario de Origem da Chamada
+pCarDig  = Caractere Digitado
+}
+begin
+
+
+mtipo:=0;
+result:='';
+if form_Cbs=nil then
+   Application.CreateForm(TFrm_cbs, form_cbs)
+else
+   begin
+   form_cbs.Free;
+   form_cbs:=nil;
+   Application.CreateForm(TFrm_Cbs, form_cbs)
+   end;
+form_cbs.FormStyle:=fsNormal;
+form_cbs.Visible:=false;
+
+if pCarDig<>'' then
+   begin
+   form_cbs.Edit1.Text:=PCarDig;
+   form_cbs.Edit1.SelStart:=1;
+   form_cbs.Edit1.SelLength:=1;
+   end;
+form_cbs.PC1.ActivePage:=form_cbs.tsTab;
+form_cbs.cbs_ori:=pFormOri;
+if form_cbs.ShowModal=mrOk then
+   begin
+   if pcodsol=0 then
+      Result:=form_cbs.Tb_CbsCBS_CODIGO.AsString
+   end;
+form_cbs.Free;
+form_cbs:=nil;
+end;
+
+
+
+
+
+function fChamaIndOpIbsCbs(pCodSol: Integer; pFormOri,pCarDig,pFiltrosExtras: String): String;
+{
+Parametros
+PCodSol: Solicitou o Seguinte Codigo: 0-Codigo do Vendedor
+
+
+
+pFormOri = Formulario de Origem da Chamada
+pCarDig  = Caractere Digitado
+}
+begin
+
+
+mtipo:=0;
+result:='';
+if form_Cbs=nil then
+   Application.CreateForm(TFrm_IndOpIbsCbs, form_IndOpIbsCbs)
+else
+   begin
+   form_IndOpIbsCbs.Free;
+   form_IndOpIbsCbs:=nil;
+   Application.CreateForm(TFrm_IndOpIbsCbs, form_IndOpIbsCbs)
+   end;
+form_IndOpIbsCbs.FormStyle:=fsNormal;
+form_IndOpIbsCbs.Visible:=false;
+
+if pCarDig<>'' then
+   begin
+   form_IndOpIbsCbs.Edit1.Text:=PCarDig;
+   form_IndOpIbsCbs.Edit1.SelStart:=1;
+   form_IndOpIbsCbs.Edit1.SelLength:=1;
+   end;
+form_IndOpIbsCbs.PC1.ActivePage:=form_IndOpIbsCbs.tsTab;
+form_IndOpIbsCbs.indop_ori:=pFormOri;
+
+if trim(pFiltrosExtras)<>'' then
+   begin
+   form_IndOpIbsCbs.edt_filtros_extras.Text:=pFiltrosExtras;
+   form_IndOpIbsCbs.edt_filtros_extras.Visible:=true;
+   form_IndOpIbsCbs.lbl_filtros_extras.Visible:=true;
+
+
+   end;
+
+if form_IndOpIbsCbs.ShowModal=mrOk then
+   begin
+   if pcodsol=0 then
+      Result:=form_IndOpIbsCbs.Tb_IndOpCIOP_CODIGO.AsString;
+   end;
+form_IndOpIbsCbs.Free;
+form_IndOpIbsCbs:=nil;
+end;
+
+
+
+
+function fChamaPesqTribNac(pCodSol: Integer; pFormOri,pCarDig: String): String;
+{
+Parametros
+PCodSol: Solicitou o Seguinte Codigo: 0-Codigo do Vendedor
+
+
+
+pFormOri = Formulario de Origem da Chamada
+pCarDig  = Caractere Digitado
+}
+begin
+
+
+mtipo:=0;
+result:='';
+if form_trib_mun=nil then
+   Application.CreateForm(TFrm_trib_mun, form_trib_mun)
+else
+   begin
+   form_trib_mun.Free;
+   form_trib_mun:=nil;
+   Application.CreateForm(TFrm_trib_mun, form_trib_mun)
+   end;
+form_trib_mun.FormStyle:=fsNormal;
+form_trib_mun.Visible:=false;
+
+if pCarDig<>'' then
+   begin
+   form_trib_mun.Edit1.Text:=PCarDig;
+   form_trib_mun.Edit1.SelStart:=1;
+   form_trib_mun.Edit1.SelLength:=1;
+   end;
+form_trib_mun.PC1.ActivePage:=form_trib_mun.tsTab;
+form_trib_mun.trib_ori:=pFormOri;
+if form_trib_mun.ShowModal=mrOk then
+   begin
+   if pcodsol=0 then
+      Result:=form_trib_mun.Tb_TribMunTM_CODIGO.AsString
+   end;
+form_trib_mun.Free;
+form_trib_mun:=nil;
+end;
+
+
+
+
+function fChamaNbs(pCodSol: Integer; pFormOri,pCarDig: String; pFiltrosExtras: String): String;
+
+{
+Parametros
+PCodSol: Solicitou o Seguinte Codigo: 0-Codigo do Vendedor
+
+
+
+pFormOri = Formulario de Origem da Chamada
+pCarDig  = Caractere Digitado
+}
+begin
+
+
+mtipo:=0;
+result:='';
+if form_nbs=nil then
+   Application.CreateForm(TFrm_nbs, form_nbs)
+else
+   begin
+   form_nbs.Free;
+   form_nbs:=nil;
+   Application.CreateForm(TFrm_nbs, form_nbs)
+   end;
+form_nbs.FormStyle:=fsNormal;
+form_nbs.Visible:=false;
+
+if pCarDig<>'' then
+   begin
+   form_nbs.Edit1.Text:=PCarDig;
+   form_nbs.Edit1.SelStart:=1;
+   form_nbs.Edit1.SelLength:=1;
+   end;
+form_nbs.PC1.ActivePage:=form_nbs.tsTab;
+form_nbs.nbs_ori:=pFormOri;
+if trim(pFiltrosExtras)<>'' then
+   begin
+   form_nbs.edt_filtros_extras.Text:=pFiltrosExtras;
+   form_nbs.edt_filtros_extras.Visible:=true;
+   form_nbs.lbl_filtros_extras.Visible:=true;
+
+
+   end;
+if form_nbs.ShowModal=mrOk then
+
+   begin
+   if pcodsol=0 then
+      Result:=form_nbs.Tb_NbsNBS_CODIGO.AsString
+   end;
+form_nbs.Free;
+form_nbs:=nil;
 end;
 
 end.

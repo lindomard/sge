@@ -1836,7 +1836,7 @@ object frm_stru: Tfrm_stru
         Top = 355
         Width = 1116
         Height = 193
-        ActivePage = tsCADPF
+        ActivePage = tsCadp02_NR
         Align = alBottom
         TabOrder = 2
         object tsCADPF: TTabSheet
@@ -8532,6 +8532,22 @@ object frm_stru: Tfrm_stru
               ''
               '                          ,P2SPCOMIS'
               ''
+              '                          ,P2SCBS_CST'
+              '                          ,p2SCODCLASSTRIB'
+              '                          ,P2SCBS_ALIQ'
+              '                          ,P2SIBS_UF_ALIQ'
+              '                          ,P2SIBS_MUN_ALIQ'
+              '                          ,P2SINDOP_IBSCBS'
+              '                          ,P2SCST_PIS'
+              ''
+              '                          ,P2SCODTRIB_MUN'
+              '                          ,P2SCODTRIB_NAC'
+              '                          ,P2SCODNBS'
+              ''
+              '                          ,P2SPCSLL'
+              '                          ,P2SPISSQN'
+              '                          ,P2SPIR'
+              '                          ,P2SPCOFINS'
               ''
               '                          ) values ('
               ''
@@ -8539,11 +8555,11 @@ object frm_stru: Tfrm_stru
               '                          :NEW.P2T_CODEMP'
               ''
               '                          , :NEW.P2T_CHAVE'
-              #9#9#9#9#9#9'  '
+              ''
               '                          , :NEW.P2T_ID_PED02_NEW'
               ''
               '                          , :NEW.P2T_ID_PED01_NEW'
-              #9#9#9#9#9#9'  '
+              ''
               ''
               '                          , 01'
               ''
@@ -8616,6 +8632,22 @@ object frm_stru: Tfrm_stru
               '                          ,:NEW.P2T_SITUACAO'
               ''
               '                          ,:NEW.P2T_COMISV01_PERC'
+              ''
+              '                          ,:NEW.P2T_CBS_CST'
+              '                          ,:NEW.P2T_CODCLASSTRIB'
+              '                          ,:NEW.P2T_CBS_ALIQ'
+              '                          ,:NEW.P2T_IBS_UF_ALIQ'
+              '                          ,:NEW.P2T_IBS_MUN_ALIQ'
+              '                          ,:NEW.P2T_INDOP_IBSCBS'
+              '                          ,:NEW.P2T_PIS_CST'
+              ''
+              '                          ,:NEW.P2T_CODTRIB_MUN'
+              '                          ,:NEW.P2T_CODTRIB_NAC'
+              '                          ,:NEW.P2T_CODNBS'
+              '                          ,:NEW.P2T_PCSLL'
+              '                          ,:NEW.P2T_PISSQN'
+              '                          ,:NEW.P2T_PIR'
+              '                          ,:NEW.P2T_PCOFINS'
               ''
               '                          );'
               ''
@@ -8934,7 +8966,7 @@ object frm_stru: Tfrm_stru
                 'VODESONERACAO'
               
                 '                             ,P2CODCLASSTRIB = :NEW.P2T_CODCLASS' +
-                'TRIB '
+                'TRIB'
               '                             ,P2CBS_ALIQ = :NEW.P2T_CBS_ALIQ '
               
                 '                             ,P2IBS_UF_ALIQ = :NEW.P2T_IBS_UF_AL' +
@@ -8942,6 +8974,7 @@ object frm_stru: Tfrm_stru
               
                 '                             ,P2IBS_MUN_ALIQ = :NEW.P2T_IBS_MUN_' +
                 'ALIQ'
+              ''
               ''
               ''
               '      where P2CODEMP=:NEW.P2T_CODEMP'
@@ -9017,6 +9050,30 @@ object frm_stru: Tfrm_stru
               '                          ,P2SSITUACAO=:NEW.P2T_SITUACAO'
               ''
               '                          ,P2SPCOMIS=  :NEW.P2T_COMISV01_PERC'
+              '                          ,P2SCBS_CST = :NEW.P2T_CBS_CST'
+              
+                '                          ,P2SCODCLASSTRIB = :NEW.P2T_CODCLASSTR' +
+                'IB'
+              '                          ,P2SCBS_ALIQ = :NEW.P2T_CBS_ALIQ'
+              '                          ,P2SIBS_UF_ALIQ = :NEW.P2T_IBS_UF_ALIQ'
+              
+                '                          ,P2SIBS_MUN_ALIQ = :NEW.P2T_IBS_MUN_AL' +
+                'IQ'
+              
+                '                          ,P2SINDOP_IBSCBS = :NEW.P2T_INDOP_IBSC' +
+                'BS'
+              '                          ,P2SCST_PIS      = :NEW.P2T_PIS_CST'
+              ''
+              '                          ,P2SCODTRIB_MUN = :NEW.P2T_CODTRIB_MUN'
+              '                          ,P2SCODTRIB_NAC = :NEW.P2T_CODTRIB_NAC'
+              '                          ,P2SCODNBS = :NEW.P2T_CODNBS'
+              '                          ,P2SPCSLL = :NEW.P2T_PCSLL'
+              '                          ,P2SPISSQN = :NEW.P2T_PISSQN'
+              '                          ,P2SPIR = :NEW.P2T_PIR'
+              '                          ,P2SPCOFINS = :NEW.P2T_PCOFINS'
+              ''
+              ''
+              ''
               ''
               '                          WHERE'
               ''
@@ -22022,8 +22079,8 @@ object frm_stru: Tfrm_stru
   object Tabela_Ant: TTable
     DatabaseName = 'SG_ASSOC'
     TableName = 'CADP02'
-    Left = 776
-    Top = 248
+    Left = 720
+    Top = 240
   end
   object Tb_Help: TTable
     DatabaseName = 'C:\SGE'

@@ -158,6 +158,60 @@ type
     Label62: TLabel;
     edtTextToNr: TEdit;
     lblNumber: TLabel;
+    TsNfse: TTabSheet;
+    Label61: TLabel;
+    DBE_EMP_CODTRIB_MUN: TDBEdit;
+    Label63: TLabel;
+    DBE_EMP_CODTRIB_NAC: TDBEdit;
+    Label64: TLabel;
+    RxDBCB_EMP_REG_AP_TRIB_SN: TRxDBComboBox;
+    Label65: TLabel;
+    RxDBCb_EMP_REG_ESP_TRIB: TRxDBComboBox;
+    Label66: TLabel;
+    RxDBCb_EMP_IBS_CBS_TP_OPER: TRxDBComboBox;
+    Label67: TLabel;
+    RxDBCB_EMP_IBS_CBS_TP_ENTE_GOV: TRxDBComboBox;
+    Label68: TLabel;
+    RxDBCB_EMP_IBS_CBS_IND_DEST: TRxDBComboBox;
+    Label69: TLabel;
+    RxDBCB_EMP_TP_RET_PIS_COFINS: TRxDBComboBox;
+    Label70: TLabel;
+    RxDBCB_EMP_IBS_CBS_FIN_NFSE: TRxDBComboBox;
+    Label71: TLabel;
+    RxDBCB_EMP_INDFINAL: TRxDBComboBox;
+    tsCadcnae: TTabSheet;
+    Src_EmpCnae: TDataSource;
+    U_EmpCnae: TUpdateSQL;
+    Tb_EmpCnae: TQuery;
+    Tb_EmpCnaeECNAE_ID: TFloatField;
+    Tb_EmpCnaeECNAE_ID_EMP: TFloatField;
+    Tb_EmpCnaeECNAE_ID_CNAE: TStringField;
+    Tb_EmpCnaeECNAE_PRINCIPAL: TFloatField;
+    Tb_EmpCnaeECNAE_CODLC_SERV: TStringField;
+    Tb_EmpCnaeECNAE_COD_SERV: TStringField;
+    Tb_EmpCnaeECNAE_IND_OP: TStringField;
+    Tb_EmpCnaeECNAE_CODNBS: TStringField;
+    Tb_EmpCnaeECNAE_CST_PIS_COFINS: TStringField;
+    Tb_EmpCnaeECNAE_CST_IBS_CBS: TStringField;
+    Tb_EmpCnaeECNAE_PINSS: TFloatField;
+    Tb_EmpCnaeECNAE_PCOFINS: TFloatField;
+    Tb_EmpCnaeECNAE_PPIS: TFloatField;
+    Tb_EmpCnaeECNAE_PCLSS: TFloatField;
+    Tb_EmpCnaeECNAE_PIR: TFloatField;
+    Tb_EmpCnaeECNAE_PISSQN: TFloatField;
+    Panel2: TPanel;
+    DBGrid2: TDBGrid;
+    Tb_EmpCnaeECNAE_CADCLASSTRIB: TStringField;
+    Tb_EmpCnaeECNAE_COD_ATIV: TStringField;
+    Tb_EmpCnaeECNAE_TRIB_NAC: TStringField;
+    Tb_EmpCnaeECNAE_REG_AP_TRIB_SN: TStringField;
+    Tb_EmpCnaeECNAE_REG_ESP_TRIB: TStringField;
+    Tb_EmpCnaeECNAE_TP_OPER: TStringField;
+    Tb_EmpCnaeECNAE_P_ENTE_GOV: TStringField;
+    Tb_EmpCnaeECNAE_TP_RET_PIS_COFINS: TStringField;
+    Tb_EmpCnaeECNAE_IND_DEST: TStringField;
+    Tb_EmpCnaeECNAE_FIN_NFSE: TStringField;
+    Tb_EmpCnaeECNAE_IND_FINAL: TStringField;
     procedure BBnAtuClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure INCLUIRClick(Sender: TObject);
@@ -194,8 +248,13 @@ type
     procedure edt_fone_destExit(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
     procedure btnTextToNrClick(Sender: TObject);
+    procedure DBE_EMP_CODTRIB_NACKeyPress(Sender: TObject; var Key: Char);
+    procedure DBE_EMP_CODTRIB_NACExit(Sender: TObject);
   private
     { Private declarations }
+
+         function fExisteCodTributo(pCodTrib: String): boolean;
+
   public
     { Public declarations }
   end;
@@ -208,7 +267,7 @@ var
   emp_oper: Integer=0;
 implementation
 
-uses Math;
+uses Math, func_excecoes;
 
 
 {$R *.dfm}
@@ -289,6 +348,7 @@ procedure TFrm_Emp.INCLUIRClick(Sender: TObject);
 begin
   inherited;
 tsContador.Enabled:=true;
+TsNfse.Enabled:=true;
 DM2.Tb_Emp.Append;
 DM2.Tb_EmpDATACAD.Value:=pdatasis;
 DBEdit1.Enabled:=True;
@@ -313,6 +373,8 @@ PC1.ActivePageIndex:=0;
 
    DBEdit8.Enabled := True;
 tsContador.Enabled:=true;
+
+TsNfse.Enabled:=true;
 DM2.Tb_Emp.Edit;
 DM2.Tb_EmpDATAALT.Value:=pdatasis;
 DBEdit1.Enabled:=False;
@@ -347,6 +409,7 @@ if emp_oper=0 then
    bbCriarParam.Click;
    
 tsContador.Enabled:=false;
+TsNfse.Enabled    :=false;
 cancelar.Click;
 end;
 
@@ -990,6 +1053,7 @@ begin
   inherited;
 DM2.Tb_Emp.Cancel;
 tsContador.Enabled:=false;
+TsNfse.Enabled    :=false;
 emp_oper:=0;
 end;
 
@@ -1549,6 +1613,69 @@ begin
 
    lblNumber.Caption := output;
  End;
+
+procedure TFrm_Emp.DBE_EMP_CODTRIB_NACKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%')) then
+  begin
+  if (dm2.Tb_Emp.State in [dsEdit,dsInsert]) then
+     begin
+     dm2.Tb_EmpEMP_CODTRIB_NAC.AsString:=fChamaPesqTribNac(0,'_venda',key);
+     key:=#0;
+     if (dm2.Tb_EmpEMP_CODTRIB_NAC.AsString)<>'' then
+        begin
+        keybd_event(VK_RETURN,0,0,0);
+        end;
+     end;
+  end
+
+end;
+
+procedure TFrm_Emp.DBE_EMP_CODTRIB_NACExit(Sender: TObject);
+begin
+  inherited;
+ if not fExisteCodTributo(DM2.Tb_EmpEMP_CODTRIB_NAC.AsString) then
+    begin
+    MessageDlg('Codigo do Tribudo '+ DM2.Tb_EmpEMP_CODTRIB_NAC.AsString ,mtWarning,[mbOk],0);
+    DBE_EMP_CODTRIB_NAC.SetFocus;
+    end;
+
+
+end;
+
+
+
+
+function TFrm_Emp.fExisteCodTributo(pCodTrib: String): boolean;
+var
+query_tributo: tQuery;
+begin
+result:=true;
+if trim(pCodTrib)<>'' then
+   begin
+   query_tributo:=tQuery.create(nil);
+   query_tributo.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_tributo.sql.add('select count(*) from CADTRIB_MUN where TM_CODIGO=:CODIGO ');
+   query_tributo.parambyname('CODIGO').AsString:=pCodTrib;
+   try
+      query_tributo.Open;
+      if query_tributo.fields[0].AsInteger<1 then
+         begin
+         MessageDlg('Código do Tributo '+pCodTrib+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_tributo,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_tributo.close;
+   freeandnil(query_tributo);
+   end;
+end;
+
 
 end.
 

@@ -167,6 +167,20 @@ object Frm_FatPedOnline: TFrm_FatPedOnline
         Title.Alignment = taCenter
         Width = 161
         Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'P1FPGTO'
+        Title.Alignment = taCenter
+        Title.Caption = 'Fpgto'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'CODPV'
+        Title.Alignment = taCenter
+        Title.Caption = 'C'#243'digo PV'
+        Visible = True
       end>
   end
   object Panel1: TPanel
@@ -715,6 +729,9 @@ object Frm_FatPedOnline: TFrm_FatPedOnline
     end
     object cds_cabFRETE: TIntegerField
       FieldName = 'FRETE'
+    end
+    object cds_cabP1FPGTO: TFloatField
+      FieldName = 'P1FPGTO'
     end
   end
   object tb_ped02_pre: TClientDataSet

@@ -653,6 +653,14 @@ type
     procedure tb_ped02s_preAfterInsert(DataSet: TDataSet);
   private
     { Private declarations }
+
+     bbcalt_true : Boolean;
+     bbcinc_true : Boolean;
+     bbcexc_true : Boolean;
+     bbcrel_true : Boolean;
+     bbcadic_true : Boolean;
+
+
     function fManOsTotais(pTipo: Integer): Boolean;
     function leros01(pcodemp, plotseq,pchave: Real): Boolean;
     function fLerOsDetalhe(ptipo: Integer;pcodemp, plotseq,pchave: Real): Boolean;
@@ -673,6 +681,9 @@ type
     function fBuscarProximoItem(pNomeCampo: String; pTabela: tClientDataSet): integer;
 
     procedure fDisplayFormat;
+
+
+    procedure fVerificarAcessos;
 
   public
     { Public declarations }
@@ -709,6 +720,9 @@ uses S_Agde, S_DM3, func_excecoes, S_DM4, s_manos_relatorio;
 
 procedure TFrm_ManOs.FormCreate(Sender: TObject);
 begin
+
+fVerificarAcessos;
+
 os_origem:='';
 Application.CreateForm(TFrm_ManOS_SerAlt, Frm_ManOS_SerAlt);
 cds_os02.CreateDataSet;
@@ -1975,16 +1989,16 @@ if (mchaveos>0) or (os_origem='consulta') then
 
    if os_origem<>'consulta' then
       begin
-      BBINCLUIR.Enabled  :=True;
-      bbImportaPed.Enabled  :=true;
+      BBINCLUIR.Enabled    :=bbcinc_true;
+      bbImportaPed.Enabled  :=bbcadic_true;
 
       BBLOCALIZAR.Enabled:=True;
-      BBALTERAR.Enabled  :=true;
-      BBEXCLUIR.Enabled  :=true;
+      BBALTERAR.Enabled  :=bbcalt_true;
+      BBEXCLUIR.Enabled  :=bbcexc_true;
       BBGRAVAR.Enabled   :=False;
-      BBIMPRIMIR.Enabled :=true;
-      BBFATURAR.Enabled  :=True;
-      bbBaixar.Enabled   :=True;
+      BBIMPRIMIR.Enabled :=bbcrel_true;
+      BBFATURAR.Enabled  :=bbcadic_true;
+      bbBaixar.Enabled   :=bbcadic_true;
       end;
    TabSheet5.Enabled  :=False;
    TabSheet6.Enabled  :=False;
@@ -2412,16 +2426,16 @@ fGravarOS01(0,codemp);
 
 
 CHAVE.Text:=Inttostr(mchaveos);
-BBINCLUIR.Enabled  :=True;
-bbImportaPed.Enabled  :=true;
+BBINCLUIR.Enabled  :=bbcinc_true;
+bbImportaPed.Enabled  :=bbcadic_true;
 
 BBLOCALIZAR.Enabled:=True;
 BBALTERAR.Enabled  :=False;
 BBEXCLUIR.Enabled  :=False;
 BBGRAVAR.Enabled   :=False;
-BBIMPRIMIR.Enabled :=true;
-BBFATURAR.Enabled  :=true;
-bbBaixar.Enabled   :=True;
+BBIMPRIMIR.Enabled :=bbcrel_true;
+BBFATURAR.Enabled  :=bbcadic_true;
+bbBaixar.Enabled   :=bbcadic_true;
 
 TabSheet5.Enabled  :=False;
 TabSheet6.Enabled  :=False;
@@ -3185,8 +3199,8 @@ cds_os04.EmptyDataSet;
 cds_os05.EmptyDataSet;
 mManOs_Oper:=0;
 
-BBINCLUIR.Enabled  :=True;
-bbImportaPed.Enabled  :=true;
+BBINCLUIR.Enabled  :=bbcinc_true;
+bbImportaPed.Enabled  :=bbcadic_true;
 
 BBLOCALIZAR.Enabled:=True;
 BBALTERAR.Enabled  :=False;
@@ -5011,6 +5025,40 @@ end;
 procedure TFrm_ManOs.tb_ped02s_preAfterInsert(DataSet: TDataSet);
 begin
 tb_ped02S_preP2SID_NEW.AsFloat:=fBuscarProximoId('CADP02S_SEQ');
+end;
+
+
+procedure tFrm_ManOs.fVerificarAcessos;
+begin
+
+bbcalt_true  :=True;
+bbcinc_true  :=True;
+bbcexc_true  :=True;
+bbcrel_true  :=True;
+bbcadic_true :=True;
+
+if flcadactab(0,0,IntToStr(codcar),'CADOS') then
+   begin
+   if DM4.Tb_AcTabAT_INC.Value=1 then
+      bbcinc_true:=False;
+   if DM4.Tb_AcTabAT_ALT.Value=1 then
+      bbcalt_true:=False;
+   if DM4.Tb_AcTabAT_EXC.Value=1 then
+      bbcexc_true:=False;
+   if DM4.Tb_AcTabAT_REL.Value=1 then
+      bbcrel_true:=False;
+   if DM4.Tb_AcTabAT_ADIC.Value=1 then
+      bbcadic_true:=False;
+   end;
+BBINCLUIR.Enabled    := bbcinc_true;
+BBALTERAR.Enabled    := bbcalt_true;
+BBIMPRIMIR.Enabled   := bbcrel_true;
+BBFATURAR.Enabled    := bbcadic_true;
+bbBaixar.Enabled     := bbcadic_true;
+bbImportaPed.Enabled := bbcadic_true;
+BBEXCLUIR.Enabled    := bbcexc_true;
+
+
 end;
 
 end.

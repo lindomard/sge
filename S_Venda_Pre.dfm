@@ -716,8 +716,8 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
       OnClick = sbnOrdemProducaoClick
     end
     object bbSitOrdemProducao: TSpeedButton
-      Left = 4
-      Top = 528
+      Left = -4
+      Top = 568
       Width = 100
       Height = 30
       Caption = 'Situa'#231#227'o Produ'#231#227'o'
@@ -872,7 +872,7 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
       Top = 1
       Width = 898
       Height = 160
-      ActivePage = Ts_Adicionais
+      ActivePage = tsProcessos
       Align = alTop
       TabOrder = 0
       TabStop = False
@@ -2138,7 +2138,7 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
             object Label32: TLabel
               Left = 1
               Top = 1
-              Width = 735
+              Width = 129
               Height = 13
               Align = alTop
               Alignment = taCenter
@@ -5835,7 +5835,7 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
       Top = 161
       Width = 898
       Height = 292
-      ActivePage = tsProdutos
+      ActivePage = tsServicos
       Align = alClient
       TabOrder = 1
       TabStop = False
@@ -6966,7 +6966,7 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
         ImageIndex = 1
         object Panel2: TPanel
           Left = 0
-          Top = 193
+          Top = 228
           Width = 890
           Height = 36
           Align = alBottom
@@ -7030,7 +7030,7 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
           Left = 0
           Top = 0
           Width = 890
-          Height = 193
+          Height = 228
           Align = alClient
           DataSource = src_ped02s_pre
           ParentShowHint = False
@@ -7041,6 +7041,7 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
           TitleFont.Height = -11
           TitleFont.Name = 'Tahoma'
           TitleFont.Style = []
+          OnColEnter = DBGrid_servicosColEnter
           OnColExit = DBGrid_servicosColExit
           OnExit = DBGrid_servicosExit
           OnKeyDown = DBGrid_servicosKeyDown
@@ -7072,6 +7073,54 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
               FieldName = 'PDUND'
               Title.Alignment = taCenter
               Width = 31
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'P2SCODTRIB_MUN'
+              Title.Alignment = taCenter
+              Width = 116
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'P2SCODTRIB_NAC'
+              Title.Alignment = taCenter
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'P2SCODNBS'
+              Title.Alignment = taCenter
+              Width = 88
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'P2SCBS_CST'
+              Title.Alignment = taCenter
+              Width = 42
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'P2SCST_PIS'
+              Title.Alignment = taCenter
+              Width = 43
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'P2SCODCLASSTRIB'
+              Title.Alignment = taCenter
+              Width = 84
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'P2SINDOP_IBSCBS'
+              Title.Alignment = taCenter
+              Width = 115
               Visible = True
             end
             item
@@ -7130,6 +7179,96 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
               Title.Alignment = taCenter
               Visible = True
             end>
+        end
+        object CB_P2SINDOP_IBSCBS: TComboBox
+          Left = 704
+          Top = 104
+          Width = 145
+          Height = 21
+          Style = csDropDownList
+          ItemHeight = 13
+          TabOrder = 2
+          Visible = False
+          OnExit = CB_P2SINDOP_IBSCBSExit
+        end
+        object CB_P2SCST_PIS: TComboBox
+          Left = 480
+          Top = 112
+          Width = 145
+          Height = 21
+          Style = csDropDownList
+          ItemHeight = 13
+          ItemIndex = 0
+          TabOrder = 3
+          Text = '01 Opera'#231#227'o Tribut'#225'vel com Al'#237'quota B'#225'sica'
+          Visible = False
+          OnExit = CB_P2SCST_PISExit
+          Items.Strings = (
+            '01 Opera'#231#227'o Tribut'#225'vel com Al'#237'quota B'#225'sica'
+            '02 Opera'#231#227'o Tribut'#225'vel com Al'#237'quota Diferenciada'
+            
+              '03 Opera'#231#227'o Tribut'#225'vel com Al'#237'quota por Unidade de Medida de Pro' +
+              'duto'
+            '04 Opera'#231#227'o Tribut'#225'vel Monof'#225'sica - Revenda a Al'#237'quota Zero'
+            '05 Opera'#231#227'o Tribut'#225'vel por Substitui'#231#227'o Tribut'#225'ria'
+            '06 Opera'#231#227'o Tribut'#225'vel a Al'#237'quota Zero'
+            '07 Opera'#231#227'o Isenta da Contribui'#231#227'o'
+            '08 Opera'#231#227'o sem Incid'#234'ncia da Contribui'#231#227'o'
+            '09 Opera'#231#227'o com Suspens'#227'o da Contribui'#231#227'o'
+            '49 Outras Opera'#231#245'es de Sa'#237'da'
+            
+              '50 Opera'#231#227'o com Direito a Cr'#233'dito - Vinculada Exclusivamente a R' +
+              'eceita Tributada no Mercado Interno'
+            
+              '51 Opera'#231#227'o com Direito a Cr'#233'dito - Vinculada Exclusivamente a R' +
+              'eceita N'#227'o Tributada no Mercado Interno'
+            
+              '52 Opera'#231#227'o com Direito a Cr'#233'dito - Vinculada Exclusivamente a R' +
+              'eceita de Exporta'#231#227'o'
+            
+              '53 Opera'#231#227'o com Direito a Cr'#233'dito - Vinculada a Receitas Tributa' +
+              'das e N'#227'o-Tributadas no Mercado Interno'
+            
+              '54 Opera'#231#227'o com Direito a Cr'#233'dito - Vinculada a Receitas Tributa' +
+              'das no Mercado Interno e de Exporta'#231#227'o'
+            
+              '55 Opera'#231#227'o com Direito a Cr'#233'dito - Vinculada a Receitas N'#227'o-Tri' +
+              'butadas no Mercado Interno e de Exporta'#231#227'o'
+            
+              '56 Opera'#231#227'o com Direito a Cr'#233'dito - Vinculada a Receitas Tributa' +
+              'das e N'#227'o-Tributadas no Mercado Interno, e de Exporta'#231#227'o'
+            
+              '60 Cr'#233'dito Presumido - Opera'#231#227'o de Aquisi'#231#227'o Vinculada Exclusiva' +
+              'mente a Receita Tributada no Mercado Interno'
+            
+              '61 Cr'#233'dito Presumido - Opera'#231#227'o de Aquisi'#231#227'o Vinculada Exclusiva' +
+              'mente a Receita N'#227'o-Tributada no Mercado Interno'
+            
+              '62 Cr'#233'dito Presumido - Opera'#231#227'o de Aquisi'#231#227'o Vinculada Exclusiva' +
+              'mente a Receita de Exporta'#231#227'o'
+            
+              '63 Cr'#233'dito Presumido - Opera'#231#227'o de Aquisi'#231#227'o Vinculada a Receita' +
+              's Tributadas e N'#227'o-Tributadas no Mercado Interno'
+            
+              '64 Cr'#233'dito Presumido - Opera'#231#227'o de Aquisi'#231#227'o Vinculada a Receita' +
+              's Tributadas no Mercado Interno e de Exporta'#231#227'o'
+            
+              '65 Cr'#233'dito Presumido - Opera'#231#227'o de Aquisi'#231#227'o Vinculada a Receita' +
+              's N'#227'o-Tributadas no Mercado Interno e de Exporta'#231#227'o'
+            
+              '66 Cr'#233'dito Presumido - Opera'#231#227'o de Aquisi'#231#227'o Vinculada a Receita' +
+              's Tributadas e N'#227'o-Tributadas no Mercado Interno, e de Exporta'#231#227 +
+              'o'
+            '67 Cr'#233'dito Presumido - Outras Opera'#231#245'es'
+            '70 Opera'#231#227'o de Aquisi'#231#227'o sem Direito a Cr'#233'dito'
+            '71 Opera'#231#227'o de Aquisi'#231#227'o com Isen'#231#227'o'
+            '72 Opera'#231#227'o de Aquisi'#231#227'o com Suspens'#227'o'
+            '73 Opera'#231#227'o de Aquisi'#231#227'o a Al'#237'quota Zero'
+            '74 Opera'#231#227'o de Aquisi'#231#227'o sem Incid'#234'ncia da Contribui'#231#227'o'
+            '75 Opera'#231#227'o de Aquisi'#231#227'o por Substitui'#231#227'o Tribut'#225'ria'
+            '98 Outras Opera'#231#245'es de Entrada'
+            '99 Outras Opera'#231#245'es'
+            '')
         end
       end
       object tsPendencias: TTabSheet
@@ -9182,7 +9321,7 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
       '')
     UpdateObject = U_FP_pre
     Left = 622
-    Top = 183
+    Top = 223
     object Tb_FP_prePFPCODEMP: TFloatField
       FieldName = 'PFPCODEMP'
     end
@@ -10035,9 +10174,6 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
       DisplayLabel = '% ISS'
       FieldName = 'P2SALIQISSQN'
     end
-    object Tb_ped02S_preP2SSITUACAO: TFloatField
-      FieldName = 'P2SSITUACAO'
-    end
     object Tb_ped02S_preP2SPCOTAB: TFloatField
       FieldName = 'P2SPCOTAB'
     end
@@ -10083,6 +10219,9 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
     object Tb_ped02S_preVALOR_TOTAL: TFloatField
       DisplayLabel = 'Valor Total'
       FieldName = 'VALOR_TOTAL'
+    end
+    object Tb_ped02S_preP2SSITUACAO: TFloatField
+      FieldName = 'P2SSITUACAO'
     end
     object Tb_ped02S_preP2SCFOP_NF: TFloatField
       DisplayLabel = 'Valor Total'
@@ -10148,6 +10287,75 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
     end
     object Tb_ped02S_preP2SID_NEW_101: TFloatField
       FieldName = 'P2SID_NEW_101'
+    end
+    object Tb_ped02S_preP2SCBS_CST: TStringField
+      DisplayLabel = 'Cst Cbs'
+      FieldName = 'P2SCBS_CST'
+      Size = 3
+    end
+    object Tb_ped02S_preP2SCODCLASSTRIB: TStringField
+      DisplayLabel = 'C'#243'd Class Trib'
+      FieldName = 'P2SCODCLASSTRIB'
+      Size = 6
+    end
+    object Tb_ped02S_preP2SCBS_ALIQ: TFloatField
+      FieldName = 'P2SCBS_ALIQ'
+    end
+    object Tb_ped02S_preP2SCBS_BC: TFloatField
+      FieldName = 'P2SCBS_BC'
+    end
+    object Tb_ped02S_preP2SCBS_VALOR: TFloatField
+      FieldName = 'P2SCBS_VALOR'
+    end
+    object Tb_ped02S_preP2SIBS_UF_ALIQ: TFloatField
+      FieldName = 'P2SIBS_UF_ALIQ'
+    end
+    object Tb_ped02S_preP2SIBS_UF_VALOR: TFloatField
+      FieldName = 'P2SIBS_UF_VALOR'
+    end
+    object Tb_ped02S_preP2SIBS_MUN_ALIQ: TFloatField
+      FieldName = 'P2SIBS_MUN_ALIQ'
+    end
+    object Tb_ped02S_preP2SIBS_MUN_VALOR: TFloatField
+      FieldName = 'P2SIBS_MUN_VALOR'
+    end
+    object Tb_ped02S_preP2SCBS_DEV_TRIB: TFloatField
+      FieldName = 'P2SCBS_DEV_TRIB'
+    end
+    object Tb_ped02S_preP2SINDOP_IBSCBS: TStringField
+      DisplayLabel = 'Ind Op Ibs Cbs'
+      FieldName = 'P2SINDOP_IBSCBS'
+      Size = 6
+    end
+    object Tb_ped02S_preP2SCST_PIS: TStringField
+      DisplayLabel = 'Cst Pis'
+      FieldName = 'P2SCST_PIS'
+      Size = 2
+    end
+    object Tb_ped02S_preP2SCODNBS: TStringField
+      DisplayLabel = 'C'#243'digo NBS'
+      FieldName = 'P2SCODNBS'
+      Size = 15
+    end
+    object Tb_ped02S_preP2SPCSLL: TFloatField
+      FieldName = 'P2SPCSLL'
+    end
+    object Tb_ped02S_preP2SPISSQN: TFloatField
+      FieldName = 'P2SPISSQN'
+    end
+    object Tb_ped02S_preP2SPIR: TFloatField
+      FieldName = 'P2SPIR'
+    end
+    object Tb_ped02S_preP2SPCOFINS: TFloatField
+      FieldName = 'P2SPCOFINS'
+    end
+    object Tb_ped02S_preP2SCODTRIB_MUN: TStringField
+      DisplayLabel = 'C'#243'd Atividade Mun/Nac'
+      FieldName = 'P2SCODTRIB_MUN'
+    end
+    object Tb_ped02S_preP2SCODTRIB_NAC: TStringField
+      DisplayLabel = 'C'#243'd Trib Nac'
+      FieldName = 'P2SCODTRIB_NAC'
     end
   end
   object U_ped02S_pre: TUpdateSQL
@@ -11041,7 +11249,7 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
     end
   end
   object U_itens_pedori: TUpdateSQL
-    Left = 310
+    Left = 318
     Top = 201
   end
   object Timer_alteracao: TTimer
@@ -11156,8 +11364,8 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
   end
   object src_nfref: TDataSource
     DataSet = mem_nfref
-    Left = 539
-    Top = 193
+    Left = 523
+    Top = 265
   end
   object mem_nfref: TRxMemoryData
     FieldDefs = <>
@@ -11195,7 +11403,7 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
       ' where  RI_ROWID=:ROWID'
       ' order by RI_SEQ '
       '')
-    Left = 392
+    Left = 376
     Top = 359
     object Tb_Ped_AnexosP1A_CODEMP: TFloatField
       FieldName = 'P1A_CODEMP'

@@ -519,6 +519,7 @@ object Frm_Venda_PayGo: TFrm_Venda_PayGo
               Expanded = False
               FieldName = 'codigoAutorizacao'
               Title.Alignment = taCenter
+              Width = 64
               Visible = True
             end
             item

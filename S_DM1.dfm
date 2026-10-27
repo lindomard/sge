@@ -433,6 +433,23 @@ object DM1: TDM1
       Origin = 'SG_ASSOC.CADEMP.EMP_WHATSAPP_ID'
       Size = 30
     end
+    object Tb_EmpEMP_CODTRIB_MUN: TStringField
+      FieldName = 'EMP_CODTRIB_MUN'
+      Origin = 'SG_ASSOC.CADEMP.EMP_CODTRIB_MUN'
+      Size = 10
+    end
+    object Tb_EmpEMP_CODTRIB_NAC: TStringField
+      FieldName = 'EMP_CODTRIB_NAC'
+      Size = 10
+    end
+    object Tb_EmpEMP_REG_AP_TRIB_SN: TStringField
+      FieldName = 'EMP_REG_AP_TRIB_SN'
+      Size = 1
+    end
+    object Tb_EmpEMP_REG_ESP_TRIB: TStringField
+      FieldName = 'EMP_REG_ESP_TRIB'
+      Size = 1
+    end
   end
   object SG_ASSOC: TDatabase
     AliasName = 'ORACLE1'
@@ -19631,21 +19648,21 @@ object DM1: TDM1
         'LR, CFCODALI, '
       
         '   CFSERIE, CFMODDOC, CFARRED, CFMAPARES, CFDADSINT, CFFPGTO, CF' +
-        'SUP, CFSANGRIA, '
+        'SUP, CFSANGRIA,'
       '   CFABERTSIS, CFDTULTMOV, CFDTULTREDZ, CFMODPROGPAD)'
       'values'
       
         '  (:CFCODEMP, :CFCAIXA, :CFNOME, :CFMODELO, :CFPORTA, :CFREDE, :' +
-        'CFMENS1, '
+        'CFMENS1,'
       
         '   :CFMENS2, :CFMENS3, :CFMENS4, :CFCRITS, :CFSENHA, :CFLOCAL, :' +
-        'CFCODALN, '
+        'CFCODALN,'
       
         '   :CFCODALR, :CFCODALI, :CFSERIE, :CFMODDOC, :CFARRED, :CFMAPAR' +
-        'ES, :CFDADSINT, '
+        'ES, :CFDADSINT,'
       
         '   :CFFPGTO, :CFSUP, :CFSANGRIA, :CFABERTSIS, :CFDTULTMOV, :CFDT' +
-        'ULTREDZ, '
+        'ULTREDZ,'
       '   :CFMODPROGPAD)')
     DeleteSQL.Strings = (
       'delete from CADECF'
@@ -19729,6 +19746,11 @@ object DM1: TDM1
       '  ,EMP_AUTXML_CNPJCPF = :EMP_AUTXML_CNPJCPF'
       '  ,EMP_WHATSAPP_AUTO = :EMP_WHATSAPP_AUTO'
       '  ,EMP_WHATSAPP_ID = :EMP_WHATSAPP_ID'
+      '  ,EMP_CODTRIB_MUN = :EMP_CODTRIB_MUN'
+      '  ,EMP_CODTRIB_NAC = :EMP_CODTRIB_NAC'
+      '  ,EMP_REG_AP_TRIB_SN = :EMP_REG_AP_TRIB_SN'
+      '  ,EMP_REG_ESP_TRIB = :EMP_REG_ESP_TRIB'
+      ''
       ''
       'where'
       '  CODEMP = :OLD_CODEMP and'
@@ -19764,7 +19786,11 @@ object DM1: TDM1
         ' EMP_CONT_FAX, '
       '   EMP_CONT_EMAIL, EMP_IND_NAT_PJ, EMP_IND_ATIV, EMP_CPF_RESPONS'
       '   ,EMP_AUTXML_CNPJCPF'
-      ',EMP_WHATSAPP_AUTO,EMP_WHATSAPP_ID'
+      
+        ',EMP_WHATSAPP_AUTO,EMP_WHATSAPP_ID,EMP_CODTRIB_MUN,EMP_CODTRIB_N' +
+        'AC'
+      ', EMP_REG_AP_TRIB_SN ,EMP_REG_ESP_TRIB'
+      ''
       ')'
       'values'
       
@@ -19799,7 +19825,10 @@ object DM1: TDM1
         ' :EMP_IND_NAT_PJ,'
       '   :EMP_IND_ATIV, :EMP_CPF_RESPONS'
       '   ,:EMP_AUTXML_CNPJCPF'
-      ',:EMP_WHATSAPP_AUTO,:EMP_WHATSAPP_ID'
+      
+        ',:EMP_WHATSAPP_AUTO,:EMP_WHATSAPP_ID,:EMP_CODTRIB_MUN,:EMP_CODTR' +
+        'IB_NAC'
+      ', :EMP_REG_AP_TRIB_SN, :EMP_REG_ESP_TRIB'
       ')')
     DeleteSQL.Strings = (
       'delete from CADEMP'
@@ -28502,7 +28531,7 @@ object DM1: TDM1
   object cds_retorno: TClientDataSet
     Aggregates = <>
     Params = <>
-    Left = 808
+    Left = 792
     Top = 400
     object cds_retornoce_motivo: TMemoField
       FieldName = 'ce_motivo'

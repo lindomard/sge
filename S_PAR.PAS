@@ -1346,7 +1346,18 @@ if not (DM1.Tb_PargerPFCORP_ESTMIN_GER.IsNull) and (DM1.Tb_PargerPFCORP_ESTMIN_G
 {if not (DM1.Tb_PargerPFCORP_ESTMIN_GER.IsNull) and (DM1.Tb_PargerPFCORP_ESTMIN_GER.Value<>0) then
    Frm_Par.lbl_EstMin_Ger.Color:=DM1.Tb_PargerPFCORP_ESTMIN_GER.AsInteger;}
 
+//
 
+if flfilpad(0,'_NF_SERVICO','NF_TIPO') then
+   begin
+   cb_ambiente_nf_servico.ItemIndex := valint(DM4.Tb_FilPad2FPVALOR.AsString)-1;
+
+   cb_ambiente_nf_servico.Text := cb_ambiente_nf_servico.Items[cb_ambiente_nf_servico.itemindex];
+
+   end;
+
+
+//
 
 Frm_Par.CB_CALCPPRO.ItemIndex :=DM1.Tb_PargerPCALCPPRO.AsInteger;
 if (DM1.Tb_PargerPQTDCASARRED.IsNull) or (DM1.Tb_PargerPQTDCASARRED.Value<0)
@@ -4076,13 +4087,10 @@ if cb_log_gerar_tag_cbenef.Checked=true then
 
 // termino
 
-if (lbl_ambiente_nf_servico.Visible=true) then
-   begin
-   if flfilpad(0,'_NF_SERVICO','NF_TIPO') then
-      begin
-      cb_ambiente_nf_servico.ItemIndex := valint(DM4.Tb_FilPad2FPVALOR.AsString);
-      end;
-   end;
+fDeletaPadroes(0,'_NF_SERVICO','NF_TIPO');
+fGravaPadroes(0,'NF_TIPO'    ,'text'   ,'_NF_SERVICO',inttostr(cb_ambiente_nf_servico.ItemIndex+1));
+
+
 
 
 

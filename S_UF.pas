@@ -291,7 +291,7 @@ type
     bbExportarCadUFTrib: TBitBtn;
     bbExpCadUfTpPed: TBitBtn;
     bbExpDifal: TBitBtn;
-    bbExpSitTrib: TBitBtn;
+    bbExpTipoPedido: TBitBtn;
     bbExpCadUf: TBitBtn;
     procedure BBnAtuClick(Sender: TObject);
     procedure INCLUIRClick(Sender: TObject);
@@ -361,6 +361,7 @@ type
     procedure cb_PREQUER_PEDORIClick(Sender: TObject);
     procedure bbExportarCadUFTribClick(Sender: TObject);
     procedure bbExpCadUfClick(Sender: TObject);
+    procedure bbExpCadUfTpPedClick(Sender: TObject);
   private
     { Private declarations }
     mTexto_Retorno: String;
@@ -810,7 +811,7 @@ bbExpCadUf.Visible          :=codusr=1111;
 bbExportarCadUFTrib.Visible :=bbExpCadUf.Visible;
 bbExpCadUfTpPed.Visible     :=bbExpCadUf.Visible;
 bbExpDifal.Visible          :=bbExpCadUf.Visible;
-bbExpSitTrib.Visible        :=bbExpCadUf.Visible;
+bbExpTipoPedido.Visible     :=bbExpCadUf.Visible;
 
 pc_cfopaliq.ActivePageIndex:=0;
   DM2.Tb_UF_TPPED.Close;
@@ -2915,75 +2916,380 @@ end;
 
 procedure TFrm_UF.bbExportarCadUFTribClick(Sender: TObject);
 var
-mExpCadUf: tStrings;
+mExpCadUfTrib: tStrings;
 mLinha: String;
-Query_uf: tQuery;
+Query_uf_trib: tQuery;
 mNomePasta: String;
 mNomeSaida: String;
 mQtdTent: integer;
 begin
   inherited;
 
-Query_uf := tQuery.create(nil);
-query_uf.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-query_uf.sql.add('select * from caduf_fpped ');
+  
+mExpCadUfTrib :=TStringList.Create;
+
+Query_uf_trib := tQuery.create(nil);
+query_uf_trib.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+query_uf_trib.sql.add('SELECT PUF AS UFT_UF '
+                     +','+quotedstr('A')+' AS UFT_TABELA '
+                     +',PICMSC_SN AS uft_st_icmscred_sn '
+                     +',PICMSD_SN AS uft_st_icmsdeb_sn '
+                     +',PIVAPOS_SN as uft_st_iva_pos_sn '
+                     +',PIVANEG_SN as uft_st_iva_neg_sn '
+                     +',PIVAINA_SN as uft_st_iva_ina_sn '
+                     +',PREDUTRA_SN as uft_st_icms_pred_sn '
+                     +',CASE WHEN PTIPCAL='+quotedstr('S')+' THEN 4 ELSE 0 end as uft_st_modbc '
+                     +',PICMSC as uft_st_icmscred_nor '
+                     +',PICMSD as uft_st_icmsdeb_nor '
+                     +',PIVAPOS as uft_st_iva_pos_nor '
+                     +',PIVANEG as uft_st_iva_neg_nor '
+                     +',PIVAINA as uft_st_iva_ina_nor '
+                     +',PREDUTRA as uft_st_icms_pred_nor '
+                     +',PCALCRET AS uft_st_sob_vlr_liquido '
+                     +',PICMSA as uft_icms_aliq_nor '
+                     +',PREDUTNA AS uft_icms_pred_rev '
+                     +',PREDUTNA_CF AS uft_icms_pred_cf '
+
+
+
+                     +',0 AS uft_icms_modbc '
+                     +', PALIQ_CBA as uft_compob_aliquota '
+                     +', PIBS_ALIQA AS uft_ibs_aliq '
+                     +', PCBS_ALIQA as uft_cbs_aliq '
+                     +',PICMSPART_CRED as utf_icms_part_cred '
+                     +',PICMSPART_DEB as utf_icms_part_deb '
+
+                     +' from caduf '
+                     +' union all '
+                     +'SELECT PUF AS UFT_UF '
+                     +','+quotedstr('B')+' AS UFT_TABELA '
+                     +',PICMSC_SN AS uft_st_icmscred_sn '
+                     +',PICMSD_SN AS uft_st_icmsdeb_sn '
+                     +',PIVAPOS_SN as uft_st_iva_pos_sn '
+                     +',PIVANEG_SN as uft_st_iva_neg_sn '
+                     +',PIVAINA_SN as uft_st_iva_ina_sn '
+                     +',PREDUTRB_SN as uft_st_icms_pred_sn '
+                     +',CASE WHEN PTIPCAL='+quotedstr('S')+' THEN 4 ELSE 0 end as uft_st_modbc '
+                     +',PICMSC as uft_st_icmscred_nor '
+                     +',PICMSD as uft_st_icmsdeb_nor '
+                     +',PIVAPOS as uft_st_iva_pos_nor '
+                     +',PIVANEG as uft_st_iva_neg_nor '
+                     +',PIVAINA as uft_st_iva_ina_nor '
+                     +',PREDUTRB as uft_st_icms_pred_nor '
+                     +',PCALCRET AS uft_st_sob_vlr_liquido '
+                     +',PICMSB as uft_icms_aliq_nor '
+                     +',PREDUTNB AS uft_icms_pred_rev '
+                     +',PREDUTNB_CF AS uft_icms_pred_cf '
+                     +',0 AS uft_icms_modbc '
+                     +', PALIQ_CBB as uft_compob_aliquota '
+                     +', PIBS_ALIQB AS uft_ibs_aliq '
+                     +', PCBS_ALIQB as uft_cbs_aliq '
+                     +',PICMSPART_CRED as utf_icms_part_cred '
+                     +',PICMSPART_DEB as utf_icms_part_deb '
+
+                     +'from caduf '
+                     +' union all '
+                     +'SELECT PUF AS UFT_UF '
+                     +','+quotedstr('C')+' AS UFT_TABELA '
+                     +',PICMSC_SN AS uft_st_icmscred_sn '
+                     +',PICMSD_SN AS uft_st_icmsdeb_sn '
+                     +',PIVAPOS_SN as uft_st_iva_pos_sn  '
+                     +',PIVANEG_SN as uft_st_iva_neg_sn '
+                     +',PIVAINA_SN as uft_st_iva_ina_sn '
+                     +',PREDUTRC_SN as uft_st_icms_pred_sn '
+                     +',CASE WHEN PTIPCAL='+quotedstr('S')+' THEN 4 ELSE 0 end as uft_st_modbc '
+                     +',PICMSC as uft_st_icmscred_nor '
+                     +',PICMSD as uft_st_icmsdeb_nor '
+                     +',PIVAPOS as uft_st_iva_pos_nor '
+                     +',PIVANEG as uft_st_iva_neg_nor '
+                     +',PIVAINA as uft_st_iva_ina_nor '
+                     +',PREDUTRC as uft_st_icms_pred_nor '
+                     +',PCALCRET AS uft_st_sob_vlr_liquido '
+                     +',PICMSC as uft_icms_aliq_nor '
+                     +',PREDUTNC AS uft_icms_pred_rev '
+                     +',PREDUTNC_CF AS uft_icms_pred_cf '
+                     +',0 AS uft_icms_modbc '
+                     +', PALIQ_CBC as uft_compob_aliquota '
+                     +', PIBS_ALIQC AS uft_ibs_aliq '
+                     +', PCBS_ALIQC as uft_cbs_aliq   '
+                     +',PICMSPART_CRED as utf_icms_part_cred '
+                     +',PICMSPART_DEB as utf_icms_part_deb '
+
+                     +'from caduf                       '
+                     +' union all '
+                     +'SELECT PUF AS UFT_UF '
+                     +','+quotedstr('D')+' AS UFT_TABELA '
+                     +',PICMSC_SN AS uft_st_icmscred_sn '
+                     +',PICMSD_SN AS uft_st_icmsdeb_sn '
+                     +',PIVAPOS_SN as uft_st_iva_pos_sn  '
+                     +',PIVANEG_SN as uft_st_iva_neg_sn    '
+                     +',PIVAINA_SN as uft_st_iva_ina_sn      '
+                     +',PREDUTRD_SN as uft_st_icms_pred_sn '
+                     +',CASE WHEN PTIPCAL='+quotedstr('S')+' THEN 4 ELSE 0 end as uft_st_modbc '
+                     +',PICMSC as uft_st_icmscred_nor '
+                     +',PICMSD as uft_st_icmsdeb_nor '
+                     +',PIVAPOS as uft_st_iva_pos_nor '
+                     +',PIVANEG as uft_st_iva_neg_nor '
+                     +',PIVAINA as uft_st_iva_ina_nor '
+                     +',PREDUTRD as uft_st_icms_pred_nor '
+                     +',PCALCRET AS uft_st_sob_vlr_liquido '
+                     +',PICMSD as uft_icms_aliq_nor '
+                     +',PREDUTND AS uft_icms_pred_rev '
+                     +',PREDUTND_CF AS uft_icms_pred_cf '
+                     +',0 AS uft_icms_modbc '
+                     +', PALIQ_CBD as uft_compob_aliquota '
+                     +', PIBS_ALIQD AS uft_ibs_aliq '
+                     +', PCBS_ALIQD as uft_cbs_aliq '
+                     +',PICMSPART_CRED as utf_icms_part_cred '
+                     +',PICMSPART_DEB as utf_icms_part_deb '
+
+                     +' from caduf '
+                     +' union all '
+                     +' SELECT PUF AS UFT_UF '
+                     +','+quotedstr('E')+' AS UFT_TABELA '
+                     +',PICMSC_SN AS uft_st_icmscred_sn '
+                     +',PICMSD_SN AS uft_st_icmsdeb_sn '
+                     +',PIVAPOS_SN as uft_st_iva_pos_sn '
+                     +',PIVANEG_SN as uft_st_iva_neg_sn '
+                     +',PIVAINA_SN as uft_st_iva_ina_sn '
+                     +',PREDUTRE_SN as uft_st_icms_pred_sn '
+                     +',CASE WHEN PTIPCAL='+quotedstr('S')+' THEN 4 ELSE 0 end as uft_st_modbc '
+                     +',PICMSC as uft_st_icmscred_nor '
+                     +',PICMSD as uft_st_icmsdeb_nor '
+                     +',PIVAPOS as uft_st_iva_pos_nor '
+                     +',PIVANEG as uft_st_iva_neg_nor '
+                     +',PIVAINA as uft_st_iva_ina_nor '
+                     +',PREDUTRE as uft_st_icms_pred_nor '
+                     +',PCALCRET AS uft_st_sob_vlr_liquido '
+                     +',PICMSNF as uft_icms_aliq_nor '
+                     +',PREDUTNE AS uft_icms_pred_rev '
+                     +',PREDUTNE_CF AS uft_icms_pred_cf '
+                     +',0 AS uft_icms_modbc '
+                     +', PALIQ_CBE as uft_compob_aliquota '
+                     +', PIBS_ALIQE AS uft_ibs_aliq '
+                     +', PCBS_ALIQE as uft_cbs_aliq '
+                     +',PICMSPART_CRED as utf_icms_part_cred '
+                     +',PICMSPART_DEB as utf_icms_part_deb '
+
+                     +' from caduf '
+
+
+
+                     +' union all '
+                     +' SELECT PUF AS UFT_UF '
+                     +','+quotedstr('F')+' AS UFT_TABELA '
+                     +',PICMSC_SN AS uft_st_icmscred_sn '
+                     +',PICMSD_SN AS uft_st_icmsdeb_sn '
+                     +',PIVAPOS_SN as uft_st_iva_pos_sn '
+                     +',PIVANEG_SN as uft_st_iva_neg_sn '
+                     +',PIVAINA_SN as uft_st_iva_ina_sn '
+                     +',PREDUTRF_SN as uft_st_icms_pred_sn '
+                     +',CASE WHEN PTIPCAL='+quotedstr('S')+' THEN 4 ELSE 0 end as uft_st_modbc '
+                     +',PICMSC as uft_st_icmscred_nor '
+                     +',PICMSD as uft_st_icmsdeb_nor '
+                     +',PIVAPOS as uft_st_iva_pos_nor '
+                     +',PIVANEG as uft_st_iva_neg_nor '
+                     +',PIVAINA as uft_st_iva_ina_nor '
+                     +',PREDUTRF as uft_st_icms_pred_nor '
+                     +',PCALCRET AS uft_st_sob_vlr_liquido '
+                     +',PICMSNF as uft_icms_aliq_nor '
+                     +',PREDUTNF AS uft_icms_pred_rev '
+                     +',PREDUTNF_CF AS uft_icms_pred_cf '
+                     +',0 AS uft_icms_modbc '
+                     +', PALIQ_CBF as uft_compob_aliquota '
+                     +', PIBS_ALIQF AS uft_ibs_aliq '
+                     +', PCBS_ALIQF as uft_cbs_aliq '
+                     +',PICMSPART_CRED as utf_icms_part_cred '
+                     +',PICMSPART_DEB as utf_icms_part_deb '
+
+                     +' from caduf '
+                     +' union all '
+                     +' SELECT PUF AS UFT_UF '
+                     +','+quotedstr('G')+' AS UFT_TABELA '
+                     +',PICMSC_SN AS uft_st_icmscred_sn '
+                     +',PICMSD_SN AS uft_st_icmsdeb_sn '
+                     +',PIVAPOS_SN as uft_st_iva_pos_sn '
+                     +',PIVANEG_SN as uft_st_iva_neg_sn '
+                     +',PIVAINA_SN as uft_st_iva_ina_sn '
+                     +',PREDUTRG_SN as uft_st_icms_pred_sn '
+                     +',CASE WHEN PTIPCAL='+quotedstr('S')+' THEN 4 ELSE 0 end as uft_st_modbc '
+                     +',PICMSC as uft_st_icmscred_nor '
+                     +',PICMSD as uft_st_icmsdeb_nor '
+                     +',PIVAPOS as uft_st_iva_pos_nor '
+                     +',PIVANEG as uft_st_iva_neg_nor '
+                     +',PIVAINA as uft_st_iva_ina_nor '
+                     +',PREDUTRG as uft_st_icms_pred_nor '
+                     +',PCALCRET AS uft_st_sob_vlr_liquido '
+                     +',PICMSNG as uft_icms_aliq_nor '
+                     +',PREDUTNG AS uft_icms_pred_rev '
+                     +',PREDUTNG_CF AS uft_icms_pred_cf '
+                     +',0 AS uft_icms_modbc '
+                     +', PALIQ_CBG as uft_compob_aliquota '
+                     +', PIBS_ALIQG AS uft_ibs_aliq '
+                     +', PCBS_ALIQG as uft_cbs_aliq '
+                     +',PICMSPART_CRED as utf_icms_part_cred '
+                     +',PICMSPART_DEB as utf_icms_part_deb '
+
+                     +' from caduf '
+                     +' union all '
+                     +' SELECT PUF AS UFT_UF '
+                     +','+quotedstr('H')+' AS UFT_TABELA '
+                     +',PICMSC_SN AS uft_st_icmscred_sn '
+                     +',PICMSD_SN AS uft_st_icmsdeb_sn '
+                     +',PIVAPOS_SN as uft_st_iva_pos_sn '
+                     +',PIVANEG_SN as uft_st_iva_neg_sn '
+                     +',PIVAINA_SN as uft_st_iva_ina_sn '
+                     +',PREDUTRH_SN as uft_st_icms_pred_sn '
+                     +',CASE WHEN PTIPCAL='+quotedstr('S')+' THEN 4 ELSE 0 end as uft_st_modbc '
+                     +',PICMSC as uft_st_icmscred_nor '
+                     +',PICMSD as uft_st_icmsdeb_nor '
+                     +',PIVAPOS as uft_st_iva_pos_nor '
+                     +',PIVANEG as uft_st_iva_neg_nor '
+                     +',PIVAINA as uft_st_iva_ina_nor '
+                     +',PREDUTRH as uft_st_icms_pred_nor '
+                     +',PCALCRET AS uft_st_sob_vlr_liquido '
+                     +',PICMSNH as uft_icms_aliq_nor '
+                     +',PREDUTNH AS uft_icms_pred_rev '
+                     +',PREDUTNH_CF AS uft_icms_pred_cf '
+                     +',0 AS uft_icms_modbc '
+                     +', PALIQ_CBH as uft_compob_aliquota '
+                     +', PIBS_ALIQH AS uft_ibs_aliq '
+                     +', PCBS_ALIQH as uft_cbs_aliq '
+                     +',PICMSPART_CRED as utf_icms_part_cred '
+                     +',PICMSPART_DEB as utf_icms_part_deb '
+
+                     +' from caduf '
+                     +' union all '
+                     +' SELECT PUF AS UFT_UF '
+                     +' ,'+quotedstr('I')+' AS UFT_TABELA '
+                     +' ,PICMSC_SN AS uft_st_icmscred_sn '
+                     +',PICMSD_SN AS uft_st_icmsdeb_sn '
+                     +',PIVAPOS_SN as uft_st_iva_pos_sn '
+                     +',PIVANEG_SN as uft_st_iva_neg_sn '
+                     +',PIVAINA_SN as uft_st_iva_ina_sn '
+                     +',PREDUTRI_SN as uft_st_icms_pred_sn '
+                     +',CASE WHEN PTIPCAL='+quotedstr('S')+' THEN 4 ELSE 0 end as uft_st_modbc '
+                     +',PICMSC as uft_st_icmscred_nor '
+                     +',PICMSD as uft_st_icmsdeb_nor '
+                     +',PIVAPOS as uft_st_iva_pos_nor '
+                     +',PIVANEG as uft_st_iva_neg_nor '
+                     +',PIVAINA as uft_st_iva_ina_nor '
+                     +',PREDUTRF as uft_st_icms_pred_nor '
+                     +',PCALCRET AS uft_st_sob_vlr_liquido '
+                     +',PICMSNH as uft_icms_aliq_nor '
+                     +',PREDUTNI AS uft_icms_pred_rev '
+                     +',PREDUTNI_CF AS uft_icms_pred_cf '
+                     +',0 AS uft_icms_modbc '
+                     +', PALIQ_CBH as uft_compob_aliquota '
+                     +', PIBS_ALIQI AS uft_ibs_aliq '
+                     +', PCBS_ALIQI as uft_cbs_aliq '
+                     +',PICMSPART_CRED as utf_icms_part_cred '
+                     +',PICMSPART_DEB as utf_icms_part_deb '
+
+                     +' from caduf ');
 try
-   query_uf.open;
+   query_uf_trib.open;
 except ON E: Exception do
    begin
-   ex_erroSql_Novo(query_uf,2928,'_stru'+e.message,'user');
+   ex_erroSql_Novo(query_uf_trib,2934,'_stru'+e.message,'user');
    end;
    end;
 
+   // inicio
 
 
-mExpCadUf :=TStringList.Create;
-Query_uf.First;
-While not Query_uf.eof do
+mLinha:='UFT_UF;';
+mLinha:=mLinha+'UFT_TABELA;';
+mLinha:=mLinha+'uft_st_icmscred_sn;';
+mLinha:=mLinha+'uft_st_icmsdeb_sn;';
+mLinha:=mLinha+'uft_st_iva_pos_sn;';
+mLinha:=mLinha+'uft_st_iva_neg_sn;';
+mLinha:=mLinha+'uft_st_iva_ina_sn;';
+mLinha:=mLinha+'uft_st_icms_pred_sn;';
+mLinha:=mLinha+'uft_st_modbc;';
+mLinha:=mLinha+'uft_st_icmscred_nor;';
+mLinha:=mLinha+'uft_st_icmsdeb_nor;';
+mLinha:=mLinha+'uft_st_iva_pos_nor;';
+mLinha:=mLinha+'uft_st_iva_neg_nor;';
+mLinha:=mLinha+'uft_st_iva_ina_nor;';
+mLinha:=mLinha+'uft_st_icms_pred_nor;';
+mLinha:=mLinha+'uft_st_sob_vlr_liquido;';
+mLinha:=mLinha+'uft_icms_aliq_nor;';
+mLinha:=mLinha+'uft_icms_pred_rev;';
+mLinha:=mLinha+'uft_icms_pred_cf;';
+
+mLinha:=mLinha+'uft_icms_modbc;';
+mLinha:=mLinha+'uft_compob_aliquota;';
+mLinha:=mLinha+'uft_ibs_aliq;';
+mLinha:=mLinha+'uft_cbs_aliq;';
+mLinha:=mLinha+'utf_icms_part_cred;';
+mLinha:=mLinha+'utf_icms_part_deb;';
+
+
+mExpCadUfTrib.Add(mLinha);
+
+
+   // termino
+
+
+
+Query_uf_trib.First;
+While not Query_uf_trib.eof do
    begin
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_UF').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CODTPPED').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CFOP_RV_ST').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CFOP_RV_TRIB').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CFOP_RV_ISENTO').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CALCIMP_RV').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CFOP_RVCP_ST').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CFOP_RVCP_TRIB').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CFOP_RVCP_ISENTO').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CALCIMP_RVCP').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CFOP_CF_ST').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CFOP_CF_TRIB').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CFOP_CF_ISENTO').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_CALCIMP_CF').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_SUBST_CFOP_ST').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_SUBST_CFOP_TRIB').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_SUBST_CFOP_ISENTO').AsString+';';
-   mLinha:=mLinha+Query_uf.FieldByName('UFTP_REQUER_PEDORI').AsString+';';
+   mLinha:=Query_uf_trib.FieldByName('UFT_UF').AsString+';';
+   mLinha:=mLinha+Query_uf_trib.FieldByName('UFT_TABELA').AsString+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_icmscred_sn').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_icmsdeb_sn').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_iva_pos_sn').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_iva_neg_sn').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_iva_ina_sn').AsString)+';';
+
+
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_icms_pred_sn').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_modbc').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_icmscred_nor').AsString)+';';
+
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_icmsdeb_nor').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_iva_pos_nor').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_iva_neg_nor').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_iva_ina_nor').AsString)+';';
+
+
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_icms_pred_nor').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_st_sob_vlr_liquido').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_icms_aliq_nor').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_icms_pred_rev').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_icms_pred_cf').AsString)+';';
+
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_icms_modbc').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_compob_aliquota').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_ibs_aliq').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('uft_cbs_aliq').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('utf_icms_part_cred').AsString)+';';
+   mLinha:=mLinha+mudavp(Query_uf_trib.FieldByName('utf_icms_part_deb').AsString)+';';
 
 
 
 
 
-
-
-   mExpCadUf.Add(mLinha);
-   Query_uf.Next;
+   mExpCadUfTrib.Add(mLinha);
+   Query_uf_trib.Next;
    end;
 mQtdTent:=0;
 mNomePasta:=ExtractFilePath(Application.ExeName);
 while true do
    begin
-   mNomeSaida:=mNomePasta+ mNomeSaida+'exp_caduf'+IIF(mQtdTent<1,'',inttostr(mQtdTent))+'.csv';
+   mNomeSaida:=mNomePasta+ mNomeSaida+'exp_caduf_trib'+IIF(mQtdTent<1,'',inttostr(mQtdTent))+'.csv';
    try
-      mExpCadUf.SaveToFile(mNomeSaida);
+      mExpCadUfTrib.SaveToFile(mNomeSaida);
       break;
    except
       mQtdTent:=mQtdTent+1;
       end;
    end;
 
-query_uf.close;
-freeandnil(query_uf);
+Query_uf_trib.close;
+freeandnil(Query_uf_trib);
 
 MessageDlg('Arquivo Salvo Como '+mNomeSaida,mtWarning,[mbOk],0);
 
@@ -3004,13 +3310,14 @@ begin
 
 Query_uf := tQuery.create(nil);
 query_uf.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-query_uf.sql.add('SELECT PNOM AS uf_nome_estado, '
+query_uf.sql.add('SELECT (PNOM) AS uf_nome_estado, '
                 +' PUF as uf_sigla, '
                 +' PCID as uf_nome_capital, '
-                +' PCODUF_IBGE as uf_codigo_ibge, '
-                +' PCODREG_IBGE as uf_codigo_regiao, '
+                +' (PCODUF_IBGE) as uf_codigo_ibge, '
+                +' (PCODREG_IBGE) as uf_codigo_regiao, '
                 +' 1058 AS uf_codigo_pais '
-                +' FROM CADUF '
+                +' FROM CADUF WHERE PCODEMP=1 '
+
                 +' ');
 try
    query_uf.open;
@@ -3053,6 +3360,130 @@ while true do
 
 query_uf.close;
 freeandnil(query_uf);
+
+MessageDlg('Arquivo Salvo Como '+mNomeSaida,mtWarning,[mbOk],0);
+
+
+end;
+
+
+procedure TFrm_UF.bbExpCadUfTpPedClick(Sender: TObject);
+var
+
+mExpCadUfTpPed: tStrings;
+mLinha: String;
+Query_ufTpPed: tQuery;
+mNomePasta: String;
+mNomeSaida: String;
+mQtdTent: integer;
+
+
+begin
+  inherited;
+
+
+Query_ufTpPed := tQuery.create(nil);
+query_ufTpPed.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+query_ufTpPed.sql.add('select UFTP_UF AS uftp_uf, '
+                +'uftp_codtpped , '
+                +'uftp_cfop_rv_st, '
+                +'uftp_cfop_rv_trib, '
+                +'uftp_cfop_rv_isento, '
+                +'uftp_calcimp_rv, '
+                +'uftp_cfop_cf_st, '
+                +'uftp_cfop_cf_trib, '
+                +'uftp_cfop_cf_isento, '
+                +'uftp_calcimp_cf, '
+                +'uftp_subst_cfop_st as uftp_cfop_subs_st, '
+                +'uftp_subst_cfop_trib as uftp_cfop_subs_trib, '
+                +'uftp_subst_cfop_isento as uftp_cfop_subs_isento, '
+                +'uftp_requer_pedori '
+
+
+                +',uftp_cfop_rv_st as uftp_cfop_ind_rv_st '
+                +',uftp_cfop_rv_trib as uftp_cfop_ind_rv_trib '
+                +',uftp_cfop_rv_isento as uftp_cfop_ind_rv_isento '
+                +',uftp_calcimp_rv as uftp_calcimp_ind_rv '
+
+                +',uftp_cfop_cf_st as uftp_cfop_ind_cf_st '
+                +',uftp_cfop_cf_trib as uftp_cfop_ind_cf_trib '
+                +',uftp_cfop_cf_isento as uftp_cfop_ind_cf_isento '
+                +',uftp_calcimp_cf as uftp_calcimp_ind_cf '
+
+
+                +'from caduf_tpped where uftp_codemp=1 '
+
+                +' ');
+try
+   query_ufTpPed.open;
+except ON E: Exception do
+   begin
+   ex_erroSql_Novo(query_ufTpPed,3408,'_stru'+e.message,'user');
+   end;
+   end;
+
+
+
+mExpCadUfTpPed :=TStringList.Create;
+
+mLinha:='uftp_uf;uftp_codtpped ;uftp_cfop_rv_st;uftp_cfop_rv_trib;uftp_cfop_rv_isento;uftp_calcimp_rv;uftp_cfop_cf_st;uftp_cfop_cf_trib;'
+       +'uftp_cfop_cf_isento;uftp_calcimp_cf;uftp_cfop_subs_st;uftp_cfop_subs_trib;uftp_cfop_subs_isento;uftp_requer_pedori'
+       +';uftp_cfop_ind_rv_st;uftp_cfop_ind_rv_trib;uftp_cfop_ind_rv_isento;uftp_calcimp_ind_rv '
+       +';uftp_cfop_ind_cf_st;uftp_cfop_ind_cf_trib;uftp_cfop_ind_cf_isento;uftp_calcimp_ind_cf ';
+
+
+
+mExpCadUfTpPed.Add(mLinha);
+Query_ufTpPed.First;
+While not Query_ufTpPed.eof do
+   begin
+   mLinha:=Query_ufTpPed.FieldByName('uftp_uf').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_codtpped').AsString+';';
+
+
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_rv_st').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_rv_trib').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_rv_isento').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_calcimp_rv').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_cf_st').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_cf_trib').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_cf_isento').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_calcimp_cf').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_subs_st').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_subs_trib').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_subs_isento').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_requer_pedori').AsString+';';
+
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_ind_rv_st').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_ind_rv_trib').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_ind_rv_isento').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_calcimp_ind_rv').AsString+';';
+
+
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_ind_cf_st').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_ind_cf_trib').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_cfop_ind_cf_isento').AsString+';';
+   mLinha:=mLinha+Query_ufTpPed.FieldByName('uftp_calcimp_ind_cf').AsString+';';
+
+
+   mExpCadUfTpPed.Add(mLinha);
+   Query_ufTpPed.Next;
+   end;
+mQtdTent:=0;
+mNomePasta:=ExtractFilePath(Application.ExeName);
+while true do
+   begin
+   mNomeSaida:=mNomePasta+'exp_caduf_tpped'+IIF(mQtdTent<1,'',inttostr(mQtdTent))+'.csv';
+   try
+      mExpCadUfTpPed.SaveToFile(mNomeSaida);
+      break;
+   except
+      mQtdTent:=mQtdTent+1;
+      end;
+   end;
+
+Query_ufTpPed.close;
+freeandnil(Query_ufTpPed);
 
 MessageDlg('Arquivo Salvo Como '+mNomeSaida,mtWarning,[mbOk],0);
 

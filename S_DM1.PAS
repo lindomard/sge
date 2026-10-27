@@ -4204,6 +4204,10 @@ type
     Tb_ProPDSERV_IRRF_ALIQ: TFloatField;
     Tb_ProPDSERV_IRRF_RED: TFloatField;
     Tb_FPFPVINCULO_TPAG: TFloatField;
+    Tb_EmpEMP_CODTRIB_MUN: TStringField;
+    Tb_EmpEMP_CODTRIB_NAC: TStringField;
+    Tb_EmpEMP_REG_AP_TRIB_SN: TStringField;
+    Tb_EmpEMP_REG_ESP_TRIB: TStringField;
     procedure Tb_FuncaoBeforeInsert(DataSet: TDataSet);
     procedure Tb_CliAfterInsert(DataSet: TDataSet);
     procedure Tb_CliBeforeInsert(DataSet: TDataSet);

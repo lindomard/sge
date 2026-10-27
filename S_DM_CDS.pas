@@ -64,6 +64,7 @@ type
     cds_config_tefcf_pos_ambiente: TStringField;
     cds_config_tefcf_pos_ativo: TIntegerField;
     cds_config_tefcf_pos_url: TStringField;
+    cds_recebvalorVenda: TFloatField;
     procedure cds_recebCalcFields(DataSet: TDataSet);
     procedure DataModuleCreate(Sender: TObject);
     procedure cds_seqtefAfterPost(DataSet: TDataSet);
@@ -109,7 +110,7 @@ type
 const
    mCasas        = '#,##0.00';
    mCadtef       = 'cadtef.dbf';
-   mCadReceb     = 'cadreceb.dbf';
+   mCadReceb     = 'cadreceb_v02.dbf';
    mCadConfig    = 'cadconfig_tef.dbf';
    mPedido_Cab   = 'pedido_cab.dbf';
    mPedidoFormas = 'pedido_formas.dbf';
@@ -150,6 +151,8 @@ begin
   cds_pedido_cabvalor_tef.DisplayFormat         :=mCasas;
 
   pathConfig := 'C:\PAYGO\CONFIG';
+  if not DirectoryExists(pathConfig) then
+     CreateDir(pathConfig); 
   pathConfig := IncludeTrailingPathDelimiter(pathConfig);
 
 

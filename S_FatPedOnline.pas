@@ -194,6 +194,7 @@ type
     tb_ped02_preP2IBS_UF_ALIQ: TFloatField;
     tb_ped02_preP2IBS_MUN_ALIQ: TFloatField;
     tb_ped02_preP2NRECEITUARIO: TStringField;
+    cds_cabP1FPGTO: TFloatField;
     procedure DBGrid_cabDblClick(Sender: TObject);
     procedure Qry_ItensCalcFields(DataSet: TDataSet);
     procedure FormCreate(Sender: TObject);
@@ -460,7 +461,17 @@ While not cds_cab.Eof do
       flcadpv(0,1,'','');
     mVenda_GP.mPed1_CodPV:=DM1.Tb_PVPVCODPV.AsInteger;
     mVenda_GP.mPed1_PvaCtd:=DM1.Tb_PVPVACTD.AsFloat;
-    mVenda_GP.mPed1_TabPV:=DM1.Tb_PVPVCODTIP.asString;
+
+    if length(cds_cabCODPV.AsString)>1 then
+       begin
+       mVenda_GP.mPed1_TabPV:=copy(cds_cabCODPV.asstring,1,2);
+       mVenda_GP.mPed1_CodFP :=valint(cds_cabCODPV.AsString);
+       end
+    else
+       begin
+       mVenda_GP.mPed1_TabPV:=DM1.Tb_PVPVCODTIP.asString;
+       mVenda_GP.mPed1_CodFP :=cds_cabP1FPGTO.AsInteger;
+       end;
     mVenda_GP.mPed1_TpComis:=DM1.Tb_PVPVTPC.AsInteger;
     mVenda_GP.mPed1_Frete_CIFFOB:=cds_cabFRETE.AsInteger; // preco extra;
     mVenda_GP.mPed1_CodBco101:=cds_cabCODBCO.AsInteger; // preco extra;

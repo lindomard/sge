@@ -350,7 +350,7 @@ begin
 
 if (key in ['A'..'Z']) or (key in ['a'..'z']) or (key = '%') then
    begin
-   tb_cbs_cst_x_classtribICC_CODCBS.Value:=fChamaCbsCst(0,'frmCBSCSTXcadclasstrib',Key);
+   tb_cbs_cst_x_classtribICC_CODCBS.Value:=fChamaCbsCst(0,'frmCBSCSTXcadclasstrib',Key,'');
    DBE_ICC_CODCBSExit(Self);
    key:=#0;
    end
@@ -365,7 +365,7 @@ begin
   inherited;
 if (key in ['A'..'Z']) or (key in ['a'..'z']) or (key = '%') then
    begin
-   tb_cbs_cst_x_classtribICC_CODCLASSTRIB.Value:=fChamaclasstrib(0,'frmCBSCSTXcadclasstrib',Key);
+   tb_cbs_cst_x_classtribICC_CODCLASSTRIB.Value:=fChamaclasstrib(0,'frmCBSCSTXcadclasstrib',Key,'');
    DBE_ICC_CODCLASSTRIBExit(Self);
    key:=#0;
    end

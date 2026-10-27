@@ -4189,6 +4189,47 @@ object DM2: TDM2
       Origin = 'SG_ASSOC.CADEMP.EMP_WHATSAPP_ID'
       Size = 30
     end
+    object Tb_EmpEMP_CODTRIB_MUN: TStringField
+      FieldName = 'EMP_CODTRIB_MUN'
+      Origin = 'SG_ASSOC.CADEMP.EMP_CODTRIB_MUN'
+      Size = 10
+    end
+    object Tb_EmpEMP_CODTRIB_NAC: TStringField
+      FieldName = 'EMP_CODTRIB_NAC'
+      Size = 10
+    end
+    object Tb_EmpEMP_REG_AP_TRIB_SN: TStringField
+      FieldName = 'EMP_REG_AP_TRIB_SN'
+      Size = 1
+    end
+    object Tb_EmpEMP_REG_ESP_TRIB: TStringField
+      FieldName = 'EMP_REG_ESP_TRIB'
+      Size = 1
+    end
+    object Tb_EmpEMP_IBS_CBS_TP_OPER: TStringField
+      FieldName = 'EMP_IBS_CBS_TP_OPER'
+      Size = 1
+    end
+    object Tb_EmpEMP_IBS_CBS_TP_ENTE_GOV: TStringField
+      FieldName = 'EMP_IBS_CBS_TP_ENTE_GOV'
+      Size = 1
+    end
+    object Tb_EmpEMP_IBS_CBS_IND_DEST: TStringField
+      FieldName = 'EMP_IBS_CBS_IND_DEST'
+      Size = 1
+    end
+    object Tb_EmpEMP_TP_RET_PIS_COFINS: TStringField
+      FieldName = 'EMP_TP_RET_PIS_COFINS'
+      Size = 1
+    end
+    object Tb_EmpEMP_IBS_CBS_FIN_NFSE: TStringField
+      FieldName = 'EMP_IBS_CBS_FIN_NFSE'
+      Size = 1
+    end
+    object Tb_EmpEMP_INDFINAL: TStringField
+      FieldName = 'EMP_INDFINAL'
+      Size = 1
+    end
   end
   object Src_Emp: TDataSource
     DataSet = Tb_Emp
@@ -8428,6 +8469,16 @@ object DM2: TDM2
       '  ,EMP_AUTXML_CNPJCPF=:EMP_AUTXML_CNPJCPF'
       '  ,EMP_WHATSAPP_AUTO = :EMP_WHATSAPP_AUTO'
       '  ,EMP_WHATSAPP_ID = :EMP_WHATSAPP_ID'
+      '  ,EMP_CODTRIB_MUN = :EMP_CODTRIB_MUN'
+      '  ,EMP_CODTRIB_NAC = :EMP_CODTRIB_NAC'
+      '  ,EMP_REG_AP_TRIB_SN = :EMP_REG_AP_TRIB_SN'
+      '  ,EMP_REG_ESP_TRIB = :EMP_REG_ESP_TRIB'
+      '  ,EMP_IBS_CBS_TP_OPER = :EMP_IBS_CBS_TP_OPER'
+      '  ,EMP_IBS_CBS_TP_ENTE_GOV = :EMP_IBS_CBS_TP_ENTE_GOV'
+      '  ,EMP_IBS_CBS_IND_DEST = :EMP_IBS_CBS_IND_DEST'
+      '  ,EMP_TP_RET_PIS_COFINS =:EMP_TP_RET_PIS_COFINS'
+      '  ,EMP_IBS_CBS_FIN_NFSE = :EMP_IBS_CBS_FIN_NFSE'
+      '  ,EMP_INDFINAL = :EMP_INDFINAL'
       'where'
       '  CODEMP = :OLD_CODEMP and'
       '  RAZAO = :OLD_RAZAO')
@@ -8463,7 +8514,16 @@ object DM2: TDM2
       
         '   EMP_CONT_EMAIL, EMP_IND_NAT_PJ, EMP_IND_ATIV, EMP_CPF_RESPONS' +
         ',EMP_AUTXML_CNPJCPF'
-      '   ,EMP_WHATSAPP_AUTO,EMP_WHATSAPP_ID)'
+      
+        '   ,EMP_WHATSAPP_AUTO,EMP_WHATSAPP_ID,EMP_CODTRIB_MUN,EMP_CODTRI' +
+        'B_NAC'
+      '  ,EMP_REG_AP_TRIB_SN ,EMP_REG_ESP_TRIB ,EMP_IBS_CBS_TP_OPER'
+      
+        '  ,EMP_IBS_CBS_TP_ENTE_GOV,EMP_IBS_CBS_IND_DEST,EMP_TP_RET_PIS_C' +
+        'OFINS'
+      '  ,EMP_IBS_CBS_FIN_NFSE,EMP_INDFINAL'
+      ''
+      '   )'
       'values'
       
         '  (:CODEMP, :RAZAO, :FANTASIA, :ENDERECO, :NUMERO, :RESPONS, :BA' +
@@ -8496,7 +8556,17 @@ object DM2: TDM2
         '   :EMP_CONT_UF, :EMP_CONT_FONE, :EMP_CONT_FAX, :EMP_CONT_EMAIL,' +
         ' :EMP_IND_NAT_PJ,'
       '   :EMP_IND_ATIV, :EMP_CPF_RESPONS,:EMP_AUTXML_CNPJCPF'
-      '   ,:EMP_WHATSAPP_AUTO,:EMP_WHATSAPP_ID)')
+      
+        '   ,:EMP_WHATSAPP_AUTO,:EMP_WHATSAPP_ID,:EMP_CODTRIB_MUN,:EMP_CO' +
+        'DTRIB_NAC'
+      '   ,:EMP_REG_AP_TRIB_SN, :EMP_REG_ESP_TRIB,:EMP_IBS_CBS_TP_OPER'
+      
+        '   ,:EMP_IBS_CBS_TP_ENTE_GOV,:EMP_IBS_CBS_IND_DEST,EMP_TP_RET_PI' +
+        'S_COFINS'
+      '   ,:EMP_IBS_CBS_FIN_NFSE,:EMP_INDFINAL'
+      ''
+      ''
+      '   )')
     DeleteSQL.Strings = (
       'delete from CADEMP'
       'where'
@@ -9163,7 +9233,7 @@ object DM2: TDM2
       'Select CECODPRO,sum(CESALDO) as Estoque from cadest where '
       'CECODEMP is null'
       'group by CECODPRO')
-    Left = 735
+    Left = 711
     Top = 273
     object Tb_EstMesCECODPRO: TFloatField
       FieldName = 'CECODPRO'
@@ -9184,7 +9254,7 @@ object DM2: TDM2
       ' P2CODEMP is null'
       ' and P1CODEMP=P2CODEMP and P1CHAVE=P2CHAVE and P1ORDEM=P2ORDEM'
       'group by P2CODPRO,P1TIPO')
-    Left = 735
+    Left = 719
     Top = 319
     object Tb_VenMesP2CODPRO: TFloatField
       FieldName = 'P2CODPRO'

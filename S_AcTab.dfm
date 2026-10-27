@@ -36,7 +36,7 @@ object Frm_AcTab: TFrm_AcTab
     Left = 0
     Top = 41
     Width = 731
-    Height = 259
+    Height = 262
     Align = alClient
     Caption = 'Programas:'
     Font.Charset = DEFAULT_CHARSET
@@ -62,7 +62,7 @@ object Frm_AcTab: TFrm_AcTab
       Left = 2
       Top = 15
       Width = 727
-      Height = 242
+      Height = 245
       Align = alClient
       DataSource = DM4.Src_AcTab
       TabOrder = 1
@@ -181,7 +181,7 @@ object Frm_AcTab: TFrm_AcTab
   end
   object Panel2: TPanel
     Left = 0
-    Top = 300
+    Top = 303
     Width = 731
     Height = 41
     Align = alBottom

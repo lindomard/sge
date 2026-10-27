@@ -93,7 +93,9 @@ type
 
 
 
-    function fGravarReceb(pTransacao: String; pRetorno: TRetornoPayGo; pIdPedidoForma, pIdPedidoCab: integer): integer;
+
+    function fGravarReceb(pTransacao: String; pRetorno: TRetornoPayGo; pIdPedidoForma, pIdPedidoCab: integer; pValorVenda: Real): integer;
+
 
 
 
@@ -106,7 +108,9 @@ type
     procedure fAbrirPedidoCab;
 
 
-    procedure fAtualizarPedidoFormas(pChaveIdForma: integer; pConfirmaRecebimento: boolean);
+
+
+    procedure fAtualizarPedidoFormas(pChaveIdForma: integer;  pConfirmaRecebimento,pDeixarPendente: boolean);
     procedure fAtualizarPedidoCab(pChaveIdCab: integer; pValor: Real; pConfirmaRecebimento: boolean);
 
   end;
@@ -301,8 +305,7 @@ begin
         else if Chave = '013-000' then
           Result.CodigoAutorizacao := Valor
         else if Chave = '030-000' then
-          Result.MensagemTrasacao := Valor
-
+          Result.MensagemTrasacao := StringReplace(Valor, 'Transa o','Transacao', [rfReplaceAll, rfIgnoreCase])
         else if Chave = '028-000' then
           Result.ComprovanteCliente := Result.ComprovanteCliente + Valor + #13#10;
       end;
@@ -564,7 +567,7 @@ if DM_CDS.cds_pedido_cab.active=false then
 end;
 
 
-function TPayGoAPI.fGravarReceb(pTransacao: String; pRetorno: TRetornoPayGo; pIdPedidoForma, pIdPedidoCab: integer): integer;
+function TPayGoAPI.fGravarReceb(pTransacao: String; pRetorno: TRetornoPayGo; pIdPedidoForma, pIdPedidoCab: integer; pValorVenda: Real): integer;
 begin
 //DM_CDS.fTestarReceb;
 
@@ -581,6 +584,7 @@ try
       DM_CDS.cds_recebcomprovante.Value         :=pRetorno.Itens.Text;
 Except
    end;
+DM_CDS.cds_recebvalorVenda.AsFloat        :=pValorVenda;
 
 DM_CDS.cds_recebnomeRede.AsString         :=pRetorno.NomeRede;
 DM_CDS.cds_recebNSU.AsString              :=pRetorno.NSUTransacao;
@@ -588,6 +592,7 @@ DM_CDS.cds_recebcodigoAutorizacao.AsString:=pRetorno.CodigoAutorizacao;
 DM_CDS.cds_recebchaveId.Value             :=DM_CDS.fBuscarChaveIdReceb;
 DM_CDS.cds_recebchave_id_forma.Value      :=pIdPedidoForma;
 DM_CDS.cds_recebchave_id_cab.Value        :=pIdPedidoCab;
+DM_CDS.cds_recebvalorVenda.Value          :=pValorVenda;
 result:=DM_CDS.cds_recebchaveId.Value;
 DM_CDS.cds_receb.post;
 
@@ -628,7 +633,7 @@ if DM_CDS.cds_receb.Locate('chaveId',pChaveId,[]) then
 end;
 
 
-procedure TPayGoAPI.fAtualizarPedidoFormas(pChaveIdForma: integer; pConfirmaRecebimento: boolean);
+procedure TPayGoAPI.fAtualizarPedidoFormas(pChaveIdForma: integer;  pConfirmaRecebimento,pDeixarPendente : boolean );
 
 
 
@@ -640,9 +645,9 @@ DM_CDS.cds_pedido_formas.First;
 if DM_CDS.cds_pedido_formas.Locate('chave_Id',pChaveIdForma,[]) then
    begin
    DM_CDS.cds_pedido_formas.Edit;
-   DM_CDS.cds_pedido_formassituacao_venda.value := iif(pConfirmaRecebimento=true,'RECEBIDA','AGUARDANDO');
+   DM_CDS.cds_pedido_formassituacao_venda.value := iif(pConfirmaRecebimento,iif(pDeixarPendente,'PENDENTE','RECEBIDA'),'AGUARDANDO');
    DM_CDS.cds_pedido_formas.Post;
-   fAtualizarPedidoCab(DM_CDS.cds_pedido_formaschave_id_cab.AsInteger,DM_CDS.cds_pedido_formasvalor.AsFloat, pConfirmaRecebimento);
+   fAtualizarPedidoCab(DM_CDS.cds_pedido_formaschave_id_cab.AsInteger,DM_CDS.cds_pedido_formasvalor.AsFloat, iif(pDeixarPendente,false,pConfirmaRecebimento));
    end;
 
 
@@ -651,7 +656,8 @@ end;
 
 
 
-procedure TPayGoAPI.fAtualizarPedidoCab(pChaveIdCab: integer; pValor: Real; pConfirmaRecebimento: boolean);
+procedure TPayGoAPI.fAtualizarPedidoCab(pChaveIdCab: integer; pValor: Real;  pConfirmaRecebimento: boolean);
+
 
 begin
 //DM_CDS.fTestarPedidoCab;

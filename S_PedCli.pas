@@ -761,6 +761,7 @@ type
     Tb_Ped02P2ID_NEW: TFloatField;
     Tb_Ped02P2ID_PED01_NEW: TFloatField;
     BitBtn4: TBitBtn;
+    bbGerarXMLNFECE: TBitBtn;
     procedure MDT1Exit(Sender: TObject);
     procedure MDT2Exit(Sender: TObject);
     procedure bbAtualizarClick(Sender: TObject);
@@ -840,6 +841,7 @@ type
     procedure bbImprimirNFCEClick(Sender: TObject);
     procedure bbFormasXTitulosClick(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
+    procedure bbGerarXMLNFECEClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -1292,6 +1294,8 @@ if codusr=1111 then
    bbGerarXML.Visible:=true
 else
    bbGerarXML.Visible:=true;
+BitBtn4.Visible:=bbGerarXML.Visible;
+bbGerarXMLNFECE.Visible:=bbGerarXML.Visible;
 
 
 if DM1.Tb_PargerPLS_NUMPED.Value=1 then
@@ -3993,6 +3997,7 @@ ParametrosNfce.pChave := Tb_PedP1CHAVE.AsInteger;
 ParametrosNfce.pChave_ano := Tb_PedP1LOTSEQ.AsInteger;
 ParametrosNfce.pCodemp := Tb_PedP1CODEMP.AsInteger;
 ParametrosNfce.pAceita_confirmacao := false;
+parametrosNfce.pAmbiente := iif(DM4.Tb_ParGer02PG2USANFE.AsInteger<2,2,1);
 
 
 fEmitirNotadeServico(ParametrosNfce);
@@ -4948,6 +4953,15 @@ ParametrosNfce.pChave:=Tb_PedP1CHAVE.AsInteger;
 ParametrosNfce.pChave_ano:=Tb_PedP1LOTSEQ.AsInteger;
 ParametrosNfce.pNomeSaida:=pNomeSaida;
 ParametrosNfce.pSoSalvar:=true;
+if flfilpad(0,'_NF_SERVICO','NF_TIPO') then
+   begin
+   parametrosNfce.pAmbiente := valint(DM4.Tb_FilPad2FPVALOR.AsString);
+   end
+else
+   begin
+   MessageDlg('Configurar o Ambiente da Nota Fiscal de Serviços Sistema->parametros->notas/duplicatas->Ambiente Nf Servico',mtInformation,[mbOk],0);
+   exit;
+   end;
 
 
 
@@ -4958,6 +4972,41 @@ if fGerarXmlNotadeServico(ParametrosNfce).pOk then
 else
    MessageDlg('Nao foi Possivel Salvar o Arquivo!'+pNomeSaida,mtError,[mbOk],0);
 
+
+end;
+
+procedure TFrm_PedCli.bbGerarXMLNFECEClick(Sender: TObject);
+var
+mDadosNFCEChvAcesso: tDadosNFCEChvAcesso;
+mNfceVT: tNfce;
+
+pNomeSaida: String;
+begin
+
+
+mNfceVT :=tNfce.create;
+
+
+mDadosNFCEChvAcesso.pStatusPed:=-1;
+mDadosNFCEChvAcesso.p1Cupom   :=1;
+
+mDadosNFCEChvAcesso.pNumdoc   := Tb_PedP1NFCE_NUMERO.AsInteger;
+
+mDadosNFCEChvAcesso.pchv_acesso :=Tb_PedP1NFCE_CHV_ACESSO.AsString;
+
+mNfceVT.mParamNFCeEnvio.pChave     := Tb_PedP1CHAVE.AsInteger;
+mNfceVT.mParamNFCeEnvio.pChave_ano := Tb_PedP1LOTSEQ.AsInteger;
+mNfceVT.mParamNFCeEnvio.pCodemp    := Tb_PedP1CODEMP.AsInteger;
+
+mNfceVT.mParamNFCeRetorno:=mNfceVT.fGerarXMLNFCE(mNfceVT.mParamNFCeEnvio);
+mDadosNFCEChvAcesso.pXml:=mNfceVT.mParamNFCeRetorno.pXmlNFCe.Text;
+
+pNomeSaida:='C:\SGE\NFSE'+Tb_PedP1CHAVE.AsString+'.XML';
+if FileExists(pNomeSaida) then
+   DeleteFile(pNomeSaida);
+mNfceVT.mParamNFCeRetorno.pXmlNFCe.SaveToFile(pNomeSaida);
+messageDlg('Arquivo salvo como '+pNomeSaida,mtinformation,[mbOk],0);
+freeandnil(mNfceVT);
 
 end;
 

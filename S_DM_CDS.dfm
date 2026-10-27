@@ -69,6 +69,9 @@ object DM_CDS: TDM_CDS
     object cds_recebsequencia_forma: TIntegerField
       FieldName = 'sequencia_forma'
     end
+    object cds_recebvalorVenda: TFloatField
+      FieldName = 'valorVenda'
+    end
   end
   object src_receb: TDataSource
     DataSet = cds_receb

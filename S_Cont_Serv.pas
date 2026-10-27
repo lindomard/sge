@@ -1439,11 +1439,13 @@ While not query_temp.eof do
       ParametrosNfce.pChave     :=  query_temp.fieldbyname('DP_CHAVE_PED').asinteger;
       ParametrosNfce.pChave_ano := query_temp.fieldbyname('DP_CHAVE_PED_ANO').asinteger;
       ParametrosNfce.pCodemp    := query_temp.fieldbyname('DP_CODEMP').asinteger;
+      parametrosNfce.pAmbiente := iif(DM4.Tb_ParGer02PG2USANFE.AsInteger<2,2,1);
 
 
       if fEmitirNotadeServico(ParametrosNfce).pOk then
          begin
-         fConfirmarEmissaoDcoumento('DP_ANEXO_NF',mArqGerar);
+         fConfirmarEmissaoDcoumento('DP_ANEXO_NF','');
+//         fConfirmarEmissaoDcoumento('DP_ANEXO_NF',mArqGerar);
 
          // atualizar data da competencia
          query_atu_comp.Close;

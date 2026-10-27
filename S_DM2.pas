@@ -2607,6 +2607,16 @@ type
     Qr_CorP2IBS_MUN_VALOR: TFloatField;
     Qr_CorP2CBS_DEV_TRIB: TFloatField;
     Qr_CorP2NRECEITUARIO: TStringField;
+    Tb_EmpEMP_CODTRIB_MUN: TStringField;
+    Tb_EmpEMP_CODTRIB_NAC: TStringField;
+    Tb_EmpEMP_REG_AP_TRIB_SN: TStringField;
+    Tb_EmpEMP_REG_ESP_TRIB: TStringField;
+    Tb_EmpEMP_IBS_CBS_TP_OPER: TStringField;
+    Tb_EmpEMP_IBS_CBS_TP_ENTE_GOV: TStringField;
+    Tb_EmpEMP_IBS_CBS_IND_DEST: TStringField;
+    Tb_EmpEMP_TP_RET_PIS_COFINS: TStringField;
+    Tb_EmpEMP_IBS_CBS_FIN_NFSE: TStringField;
+    Tb_EmpEMP_INDFINAL: TStringField;
     procedure Tb_OPAfterDelete(DataSet: TDataSet);
     procedure Tb_EmpBeforeInsert(DataSet: TDataSet);
     procedure Tb_EmpAfterInsert(DataSet: TDataSet);

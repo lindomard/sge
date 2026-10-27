@@ -236,6 +236,14 @@ mqtd:=STG1.RowCount-1;
 STG1.Cells[0,mqtd]:='CADEMP';
 STG1.Cells[1,mqtd]:='Manutenção no Cadastro de Empresas';
 STG1.RowCount:=STG1.RowCount+1;
+
+
+mqtd:=STG1.RowCount-1;
+STG1.Cells[0,mqtd]:='CADOS';
+STG1.Cells[1,mqtd]:='Manutenção no Cadastro de Ordem de Serviços';
+STG1.RowCount:=STG1.RowCount+1;
+
+
 ftestaarq(0);
 flcadactab(0,0,IntToStr(cargo),'');
 end;
