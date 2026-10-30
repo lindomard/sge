@@ -28531,7 +28531,7 @@ object DM1: TDM1
   object cds_retorno: TClientDataSet
     Aggregates = <>
     Params = <>
-    Left = 792
+    Left = 800
     Top = 400
     object cds_retornoce_motivo: TMemoField
       FieldName = 'ce_motivo'

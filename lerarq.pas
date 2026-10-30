@@ -776,6 +776,8 @@ function fAjustarPedidosdeOrigem_codemp(pOri_Codemp,pOri_Chave,pOri_LotSeq, pNov
 function fIncluirCadcliPedeleUsuario: boolean;
 
 function fExisteSequence(pNomeSequence: String): boolean;
+function fExisteCadIndOpIbsCbs(pCodigo: String; pMensagem: boolean; out pNome: String): boolean;
+
 function fParametrosAliquotas(pCodCli: Real;
 
 
@@ -978,6 +980,16 @@ procedure verificarQrTid;
 function fChamaCbsCst(pCodSol: Integer; pFormOri,pCarDig, pFiltrosExtras: String): String;
 function fChamaclasstrib(pCodSol: Integer; pFormOri,pCarDig, pFiltrosExtras: String): String;
 function fLiberadoVendaDoGrupoDeProdutosParaOCliente(pCodcli,pCodpro: Real; pMensagem: boolean; out pResposta: String): boolean;
+function fExisteCadcstPis(pCodigo: String; pMensagem: boolean; out pNome: String): boolean;
+function fExisteCadcnae(pCodigo: String; pMensagem: boolean; out pNome: String): boolean;
+
+function fExisteCodNbs(pCodigo: String; pMensagem: boolean; out pNome: string): boolean;
+
+function fExisteCodTributo(pCodTrib: String; pMensagem: boolean; out pNome: String): boolean;
+
+function fExisteCadClassTrib(pCodigo: String; pMensagem: boolean; out pNome: String): boolean;
+
+function fExisteCodCbsCst(pCodigo: String; pMensagem: boolean; out pNome: String): boolean;
 
 
 var
@@ -2611,6 +2623,7 @@ ptipo=0-Número  da nota
       5-Data Cupom
       6-numero nfce
       7-Data nfce
+      9-id new
 
 
 0-Número Nota
@@ -2700,7 +2713,13 @@ else if ptipo=7 then
          ShowMessage('Data Invalida. Favor digitar no formato dd/mm/yyyy digitando tambem as barras');
          end;
       end;
+   end
+else if ptipo=9 then
+   begin
+   if trim(pvalor1)<>'' then
+      DM1.Tb_Ns.SQL.Add(' and NSID_NEW=0'+Pvalor1);
    end;
+
 
 
 if trim(pfiltros)<>'' then
@@ -40188,5 +40207,239 @@ if form_nbs.ShowModal=mrOk then
 form_nbs.Free;
 form_nbs:=nil;
 end;
+
+
+
+function fExisteCadcstPis(pCodigo: String; pMensagem: boolean; out pNome: String): boolean;
+var
+query_cstpis: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_cstpis:=tQuery.create(nil);
+   query_cstpis.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_cstpis.sql.add('select cstc_nome from Cadcst_Piscofins where CSTC_CODIGO=:CODIGO ');
+   query_cstpis.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_cstpis.Open;
+      if query_cstpis.isempty then
+         begin
+         if pMensagem then
+            MessageDlg('Código do cst pis '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end
+      else
+         pNome:= query_cstpis.Fields[0].AsString;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_cstpis,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_cstpis.close;
+   freeandnil(query_cstpis);
+   end;
+end;
+
+
+
+function fExisteCadcnae(pCodigo: String; pMensagem: boolean; out pNome: String): boolean;
+var
+query_cnae: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_cnae:=tQuery.create(nil);
+   query_cnae.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_cnae.sql.add('select cnae_nome from cadcnae where cnae_codcnae=:CODIGO ');
+   query_cnae.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_cnae.Open;
+      if query_cnae.isempty then
+         begin
+         if pMensagem then
+            MessageDlg('Código do cnae '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end
+      else
+         pNome:= query_cnae.Fields[0].AsString;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_cnae,40252,'_stru '+e.message,'user');
+      end;
+      end;
+   query_cnae.close;
+   freeandnil(query_cnae);
+   end;
+end;
+
+
+function fExisteCodNbs(pCodigo: String; pMensagem: boolean; out pNome: string): boolean;
+var
+query_nbs: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_nbs:=tQuery.create(nil);
+   query_nbs.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_nbs.sql.add('select nbs_nome from CADNBS where NBS_CODIGO=:CODIGO ');
+   query_nbs.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_nbs.Open;
+      if query_nbs.isEmpty then
+         begin
+         if pMensagem then
+             MessageDlg('Código do nbs '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end
+      else
+         pnome:=query_nbs.fieldbyname('nbs_nome').asstring;
+
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_nbs,40286,'_stru '+e.message,'user');
+      end;
+      end;
+   query_nbs.close;
+   freeandnil(query_nbs);
+   end;
+end;
+
+
+
+function fExisteCodTributo(pCodTrib: String; pMensagem: boolean; out pNome: String): boolean;
+var
+query_tributo: tQuery;
+begin
+result:=true;
+if trim(pCodTrib)<>'' then
+   begin
+   query_tributo:=tQuery.create(nil);
+   query_tributo.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_tributo.sql.add('select tm_nome from CADTRIB_MUN where TM_CODIGO=:CODIGO ');
+   query_tributo.parambyname('CODIGO').AsString:=pCodTrib;
+   try
+      query_tributo.Open;
+      if query_tributo.isEmpty then
+         begin
+         if pMensagem then
+            MessageDlg('Código do Tributo '+pCodTrib+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end
+      else
+         pnome:=query_tributo.fields[0].Asstring;   
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_tributo,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_tributo.close;
+   freeandnil(query_tributo);
+   end;
+end;
+
+
+
+function fExisteCadIndOpIbsCbs(pCodigo: String; pMensagem: boolean; out pNome: String): boolean;
+var
+query_indOpIbsCbs: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_indOpIbsCbs:=tQuery.create(nil);
+   query_indOpIbsCbs.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_indOpIbsCbs.sql.add('select CIOP_NOME from CADINDOP_IBSCBS where CIOP_CODIGO=:CODIGO ');
+   query_indOpIbsCbs.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_indOpIbsCbs.Open;
+      if query_indOpIbsCbs.isEmpty then
+         begin
+         MessageDlg('Código do Ind Op '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end
+      else
+         pNome := query_indopIbsCbs.fields[0].asstring;   
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_indOpIbsCbs,40351,'_stru '+e.message,'user');
+      end;
+      end;
+   query_indOpIbsCbs.close;
+   freeandnil(query_indOpIbsCbs);
+   end;
+end;
+
+
+
+function fExisteCadClassTrib(pCodigo: String; pMensagem: boolean; out pNome: String): boolean;
+var
+query_classtrib: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_classtrib:=tQuery.create(nil);
+   query_classtrib.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_classtrib.sql.add('select CT_NOME from CADCLASSTRIB where CT_CODIGO=:CODIGO ');
+   query_classtrib.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_classtrib.Open;
+      if query_classtrib.isEmpty then
+         begin
+         MessageDlg('Código do classe tributaria '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end
+      else
+         pNome:=query_classtrib.fields[0].asstring;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_classtrib,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_classtrib.close;
+   freeandnil(query_classtrib);
+   end;
+end;
+
+
+
+function fExisteCodCbsCst(pCodigo: String; pMensagem: boolean; out pNome: String): boolean;
+var
+query_cbs: tQuery;
+begin
+result:=true;
+if trim(pCodigo)<>'' then
+   begin
+   query_cbs:=tQuery.create(nil);
+   query_cbs.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+   query_cbs.sql.add('select cbs_nome from CADCBS_CST where CBS_CODIGO=:CODIGO ');
+   query_cbs.parambyname('CODIGO').AsString:=pCodigo;
+   try
+      query_cbs.Open;
+      if query_cbs.IsEmpty then
+         begin
+         MessageDlg('Código do CST/CBS '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
+         result:=false;
+         end
+      else
+         pNome:= query_cbs.fields[0].asstring;   
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(query_cbs,36638,'_stru '+e.message,'user');
+      end;
+      end;
+   query_cbs.close;
+   freeandnil(query_cbs);
+   end;
+end;
+
+
+
+
+
+
 
 end.

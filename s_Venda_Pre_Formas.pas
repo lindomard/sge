@@ -82,12 +82,13 @@ if cds_formas_pagamentos.active = false then
 ParametrosNfce.pCodemp := pCodEmp;
 ParametrosNfce.pCodemp := pChave;
 ParametrosNfce.pCodemp := pLotSeq;
-
+{
 if not fGerarOutrasOpcoesDePagamentos(ParametrosNfce,cds_formas_pagamentos).pOk then
    begin
    MessageDlg('Erro ao Procurar Outras Formas de Pagamentos!',mtWarning,[mbOk],0);
    result:=false;
    end;
+   }
 result:=true;
 
 

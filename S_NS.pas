@@ -1,4 +1,4 @@
-unit S_NS;
+  unit S_NS;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs,db,dbtables,func,S_DM1, S_C, DBCtrls, StdCtrls, Grids, DBGrids,
   ComCtrls, Mask, Buttons, ExtCtrls,lerarq,S_VisNF,s_NFE,
-  xmldom, XMLIntf, msxmldom, ADODB,XMLDoc, RxDBComb, ToolEdit;
+  xmldom, XMLIntf, msxmldom, ADODB,XMLDoc, RxDBComb, ToolEdit,ShellAPI;
 
 type
   TFrm_NS = class(TFrm_C)
@@ -299,6 +299,33 @@ type
     BitBtn1: TBitBtn;
     bbSalvarNfceEve020: TBitBtn;
     bbSalvarNfceAutorizacao: TBitBtn;
+    tsConsultas: TTabSheet;
+    BitBtn2: TBitBtn;
+    Memo1: TMemo;
+    Label109: TLabel;
+    edt_numnf: TEdit;
+    cb_ambiente: TComboBox;
+    bbCancelar: TBitBtn;
+    Memo_cancelar: TMemo;
+    Label110: TLabel;
+    edt_evento: TEdit;
+    Label111: TLabel;
+    edt_chNfse: TEdit;
+    Label112: TLabel;
+    edt_xMotivo: TEdit;
+    Label113: TLabel;
+    edt_nomesaida: TEdit;
+    BitBtn3: TBitBtn;
+    tsBaixar: TTabSheet;
+    bbConsNfce: TBitBtn;
+    Memo_consnfe: TMemo;
+    Label114: TLabel;
+    edt_url_numnfse: TEdit;
+    cb_url_amb: TComboBox;
+    Memo_link: TMemo;
+    bbBaixarNfse: TBitBtn;
+    bbVisualiarNFSe: TBitBtn;
+    bbSalvarNFSe: TBitBtn;
     procedure BBnAtuClick(Sender: TObject);
     procedure INCLUIRClick(Sender: TObject);
     procedure ALTERARClick(Sender: TObject);
@@ -344,6 +371,13 @@ type
     procedure BitBtn1Click(Sender: TObject);
     procedure bbSalvarXmlNfseClick(Sender: TObject);
     procedure bbSalvarNfceAutorizacaoClick(Sender: TObject);
+    procedure BitBtn2Click(Sender: TObject);
+    procedure bbCancelarClick(Sender: TObject);
+    procedure BitBtn3Click(Sender: TObject);
+    procedure bbConsNfceClick(Sender: TObject);
+    procedure bbBaixarNfseClick(Sender: TObject);
+    procedure bbVisualiarNFSeClick(Sender: TObject);
+    procedure bbSalvarNFSeClick(Sender: TObject);
   private
     { Private declarations }
     mIdNewBotoes: integer;
@@ -368,6 +402,12 @@ type
 
     procedure fAtualizarBotoes(pIdNew: Integer);
 
+    procedure fBaixarNfseDoSite(pMensagem: boolean);
+
+
+    procedure fAtualizarDadosNFSe(pIdNewns: Integer);
+
+
   public
     { Public declarations }
 
@@ -383,7 +423,7 @@ implementation
 
 uses S_DM4, S_CFO, S_DM2, Func2, S_DM1_ADO, S_NFE_Impressao, S_PedCli,
   S_EnviarEmail, S_Agde, S_Ocorrencias, S_Informacoes, func_emitir_notas,
-  func_excecoes, S_EmitirNF;
+  func_excecoes, S_EmitirNF, s_nfse;
 
 {$R *.dfm}
 
@@ -559,6 +599,9 @@ begin
   PC1.ActivePageIndex:=0;
   CAMPO.ItemIndex:=2;
   Edit1.text:=formatdatetime(fdt2, date);
+
+  tsBaixar.Visible:=false;
+  tsConsultas.Visible:=false;
 
   DBNavigator1.DataSource := DM1.Src_NS;
   DBGrid1.DataSource := DM1.Src_NS;
@@ -1487,6 +1530,10 @@ if not (DM1.Tb_Ns.state in [dsedit,dsinsert]) then
    begin
    fatualizadatehota(DM1.Tb_nsNSDTEMIS.AsDateTime,edt_dtemis_data,edt_dtemis_hora);
    end;
+bbBaixarNfse.Visible   :=DM1.Tb_NsNSTIPO.AsInteger=2;
+bbVisualiarNFSe.Visible:=DM1.Tb_NsNSTIPO.AsInteger=2;
+bbSalvarNFSe.Visible   :=DM1.Tb_NsNSTIPO.AsInteger=2;
+
 fAtualizarBotoes(DM1.Tb_NSNSID_NEW.Asinteger);
 
 
@@ -2424,6 +2471,347 @@ begin
 SaveDialog2.FileName:= mpastadefault+'NFCE_AUTORIZACAO'+DM1.Tb_NsNSNFCE_NUMERO.AsString+'.xml';
 IF SaveDialog2.Execute then
    fSalvarXMLdoEvento(DM1.Tb_NsNSID_NEW.AsInteger,'65AUTORIZACAO',SaveDialog2.FileName);
+
+
+end;
+
+procedure TFrm_NS.BitBtn2Click(Sender: TObject);
+var
+  mResposta: TResposta;
+  mNfse: tNfse;
+begin
+  inherited;
+mNfse :=tNfse.create;;
+
+mResposta:=mNfse.fConsultarNfse(valint(edt_numnf.text),inttostr(cb_ambiente.itemindex+1),false);
+Memo1.Lines.clear;
+memo1.Lines.Add(mResposta.codigoResp);
+memo1.Lines.Add(mResposta.motivoResp);
+
+
+
+freeandnil(mNfse);
+end;
+
+procedure TFrm_NS.bbCancelarClick(Sender: TObject);
+var
+  mResposta: TResposta;
+  mNfse: tNfse;
+begin
+  inherited;
+mNfse :=tNfse.create;;
+
+mResposta:=mNfse.fCancelarNfse(edt_chNfse.text,inttostr(cb_ambiente.itemindex+1),edt_xmotivo.text,edt_evento.text);
+Memo1.Lines.clear;
+memo1.Lines.Add(mResposta.codigoResp);
+memo1.Lines.Add(mResposta.motivoResp);
+freeandnil(mNfse);
+
+end;
+
+procedure TFrm_NS.BitBtn3Click(Sender: TObject);
+var
+  mNfse: tNfse;
+
+begin
+  inherited;
+if trim(Memo1.Lines.Text)<>'' then
+   begin
+   mNfse :=tNfse.create;;
+
+   mNfse.SalvarBase64ParaPDF(Memo1.Lines.Text, edt_nomesaida.Text);
+   fExecutarArquivo(edt_nomesaida.Text);
+   freeandnil(mNfse);
+   end;
+
+end;
+
+procedure TFrm_NS.bbConsNfceClick(Sender: TObject);
+var
+  mResposta: TResposta;
+  mNfse: tNfse;
+  mExecutar: String;
+
+begin
+  inherited;
+ mNfse :=tNfse.create;
+
+mResposta :=  mNfse.fConsultarURL(valint(edt_url_numnfse.text),inttostr(cb_url_amb.itemIndex+1));
+Memo_consnfe.Lines.Clear;
+Memo_consnfe.Lines.add('Codigo retorno: '+ mResposta.codigoResp);
+Memo_consnfe.Lines.add('  ');
+Memo_consnfe.Lines.add('Motivo  ');
+Memo_consnfe.Lines.add('  ');
+
+Memo_consnfe.Lines.add(mResposta.motivoResp);
+mExecutar:=trim(StringReplace(mResposta.motivoResp, 'Url da NFSe encontrado : ','', [rfReplaceAll, rfIgnoreCase]));
+Memo_link.Lines.Clear;
+Memo_link.Lines.add(mExecutar);
+
+// Executa o comando para abrir o link/arquivo
+  ShellExecute(
+    Handle,                    // Handle da janela atual
+    'open',                    // Ação (abrir)
+    PChar(mExecutar ),   // URL ou caminho do arquivo
+    nil,                       // Parâmetros (não necessários aqui)
+    nil,                       // Diretório padrão (não necessário aqui)
+    SW_SHOWNORMAL              // Como a janela deve ser exibida
+  );
+
+//fExecutarArquivo(mExecutar );
+
+end;
+
+procedure TFrm_NS.bbBaixarNfseClick(Sender: TObject);
+begin
+fBaixarNfseDoSite(true);
+
+end;
+
+
+
+
+procedure TFrm_NS.fBaixarNfseDoSite(pMensagem: boolean);
+
+var
+  mResposta: TResposta;
+  mNfse: tNfse;
+  mAmbiente: String;
+  adoQuery_temp: TADOQuery;
+
+begin
+  inherited;
+
+if (not DM1.Tb_Ns.Active) then
+   begin
+   if pMensagem then
+      MessageDlg('Não é uma NFE Válida!',mtWarning,[mbOk],0);
+   exit;
+   end;
+
+if (DM1.Tb_NsNSNFSERV_NUMNF.AsInteger=0) then
+  fAtualizarDadosNFSe(DM1.Tb_NsNSID_NEW.AsInteger);
+
+if (DM1.Tb_NsNSNFSERV_NUMNF.AsInteger=0) then
+   begin
+   if pMensagem then
+      MessageDlg('Não é uma NFE Válida!',mtWarning,[mbOk],0);
+   exit;
+   end;
+
+
+mAmbiente:='1';
+if flfilpad(0,'_NF_SERVICO','NF_TIPO') then
+   begin
+   mAmbiente:=DM4.Tb_FilPad2FPVALOR.AsString;
+   end;
+
+mNfse :=tNfse.create;;
+
+
+mResposta:=mNfse.fConsultarNfse(DM1.Tb_NsNSNFSERV_NUMNF.AsInteger,mAmbiente,false);
+
+
+if (mResposta.xmlCliente<>'') then
+   begin
+   adoQuery_temp:=TADOQuery.Create(nil);
+   adoQuery_temp.Connection:=DM1_ADO.ADOConnection1;
+   adoQuery_temp.Close;
+   adoQuery_temp.SQL.Clear;
+   adoQuery_temp.SQL.Add('Update CADNS set'
+                            +' NSNFE_XML_CLIENTE=:NFE_XML_CLIENTE ');
+   adoQuery_temp.SQL.Add(' where NSID_NEW=:CHAVE ' );
+   adoQuery_temp.Parameters.ParamByName('NFE_XML_CLIENTE').value:=mResposta.xmlCliente;
+   adoQuery_temp.Parameters.ParamByName('CHAVE').Value:=DM1.Tb_NsNSID_NEW.AsInteger;
+   try
+      adoQuery_temp.ExecSQL;
+      fdm1StartCommit;
+   except ON E: Exception do
+      begin
+      ex_erroSql_ado(adoQuery_temp,1668,'_stru'+e.message,'user');
+      end;
+      end;
+   adoQuery_temp.close;
+   FreeAndNil(adoQuery_temp);
+   if pMensagem then
+      MessageDlg('Concluido com Sucesso!',mtInformation,[mbOk],0);
+   end
+else
+   begin
+   if pMensagem then
+      MessageDlg('Nao foi possivel baixar o xml '+mResposta.codigoResp+' - ' + mResposta.motivoResp,mtWarning,[mbOk],0);
+   end;
+
+freeandnil(mNfse);
+
+end;
+
+procedure TFrm_NS.bbVisualiarNFSeClick(Sender: TObject);
+var
+  mResposta: TResposta;
+  mNfse: tNfse;
+  mAmbiente: String;
+  adoQuery_temp: TADOQuery;
+  mExecutar: String;
+begin
+  inherited;
+
+
+if (not DM1.Tb_Ns.Active) then
+   begin
+   MessageDlg('Não é uma NFE Válida!',mtWarning,[mbOk],0);
+   exit;
+   end;
+
+if (DM1.Tb_NsNSNFSERV_NUMNF.AsInteger=0) then
+  fAtualizarDadosNFSe(DM1.Tb_NsNSID_NEW.AsInteger);
+
+if (DM1.Tb_NsNSNFSERV_NUMNF.AsInteger=0) then
+   begin
+   MessageDlg('Não é uma NFE Válida!',mtWarning,[mbOk],0);
+   exit;
+   end;
+
+mAmbiente:='1';
+if flfilpad(0,'_NF_SERVICO','NF_TIPO') then
+   begin
+   mAmbiente:=DM4.Tb_FilPad2FPVALOR.AsString;
+   end;
+
+mNfse :=tNfse.create;;
+
+mResposta :=  mNfse.fConsultarURL(DM1.Tb_NsNSNFSERV_NUMNF.AsInteger,mAmbiente);
+mExecutar:=trim(StringReplace(mResposta.motivoResp, 'Url da NFSe encontrado : ','', [rfReplaceAll, rfIgnoreCase]));
+if (mExecutar)='' then
+   begin
+   MessageDlg('Nao foi possivel Visualizar o DANFE '+mResposta.codigoResp+' - ' + mResposta.motivoResp,mtWarning,[mbOk],0);
+   end
+else
+   begin
+   fExecutarArquivo(mExecutar);
+   end;
+freeandnil(mNfse);
+end;
+
+procedure TFrm_NS.bbSalvarNFSeClick(Sender: TObject);
+var
+  mResposta: TResposta;
+  mNfse: tNfse;
+  mAmbiente: String;
+  adoQuery_temp: TADOQuery;
+  mExecutar: String;
+
+  procedure pFecharTudo;
+  begin
+  if adoQuery_temp<>nil then
+     begin
+     adoQuery_temp.Close;
+     freeandnil(adoQuery_temp);
+     end;
+  if mNfse<>nil then
+     freeandnil(mNfse);
+  end;
+
+   function fLerNota: boolean;
+   begin
+   result:=false;
+   adoQuery_temp.Close;
+   adoQuery_temp.SQL.Clear;
+   adoQuery_temp.SQL.Add('SELECT NSNFE_XML_CLIENTE as xml from CADNS ');
+   adoQuery_temp.SQL.Add(' where NSID_NEWP=:CHAVE AND NSNFE_NOTXML_CLIENTE IS NULL' );
+   adoQuery_temp.Parameters.ParamByName('CHAVE').Value:=DM1.Tb_NsNSID_NEW.AsInteger;
+   try
+     adoQuery_temp.Open;
+     if (not adoQuery_temp.IsEmpty) then
+        result:=true;
+   except ON E: Exception do
+      begin
+      ex_erroSql_ado(adoQuery_temp,2701,'_stru'+e.message,'user');
+      end;
+      end;
+   end;
+
+
+begin
+  inherited;
+
+
+
+if (not DM1.Tb_Ns.Active) then
+   begin
+   MessageDlg('Não é uma NFE Válida!',mtWarning,[mbOk],0);
+   exit;
+   end;
+
+if (DM1.Tb_NsNSNFSERV_NUMNF.AsInteger=0) then
+  fAtualizarDadosNFSe(DM1.Tb_NsNSID_NEW.AsInteger);
+
+if (DM1.Tb_NsNSNFSERV_NUMNF.AsInteger=0) then
+   begin
+   MessageDlg('Não é uma NFE Válida!',mtWarning,[mbOk],0);
+   exit;
+   end;
+
+mAmbiente:='1';
+if flfilpad(0,'_NF_SERVICO','NF_TIPO') then
+   begin
+   mAmbiente:=DM4.Tb_FilPad2FPVALOR.AsString;
+   end;
+
+adoQuery_temp:=TADOQuery.Create(nil);
+adoQuery_temp.Connection:=DM1_ADO.ADOConnection1;
+
+if not flernota then
+   begin
+   fBaixarNfseDoSite(false);
+   if not fLerNota then
+      begin
+      messagedlg('nao foi possivel encontrar o XML do cliente ',mtWarning,[mbOk],0);
+      pFecharTudo;
+      exit;
+
+      end;
+   end;
+
+   
+SaveDialog2.FileName:= mpastadefault+'NFSE'+DM1.Tb_NsNSNFSERV_NUMNF.AsString+'.xml';
+IF SaveDialog2.Execute then
+   begin
+   (adoQuery_temp.fieldbyname('xml')  as TBlobField).SaveToFile(SaveDialog2.FileName);
+   end;
+pFecharTudo;
+
+
+end;
+
+
+
+procedure TFrm_NS.fAtualizarDadosNFSe(pIdNewns: Integer);
+var
+query_qru_nfsens: tquery;
+begin
+
+query_qru_nfsens := tquery.create(nil);
+query_qru_nfsens.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+query_qru_nfsens.sQL.ADD('MERGE INTO CADNS T1 '
+                        +'USING ( SELECT NSID_PED01_NEW,  NSID_NEW '
+                        +',P1DATANF_SERV AS NSNFSERV_DATHORREC '
+                        +', P1NUMNF_SERV as NSNFSERV_NUMNF '
+                        +' FROM CADNS,CADP01 WHERE P1ID_NEW=NSID_PED01_NEW '
+                        +' AND  NSID_NEW='+InttoStr(pIdNewns)+') ss  ON (T1.NSID_NEW = SS.NSID_NEW)'
+                        +' WHEN MATCHED THEN '
+                        +' UPDATE SET '
+                        +'   T1.NSNFSERV_DATHORREC = SS.NSNFSERV_DATHORREC, '
+                        +'  T1.NSNFSERV_NUMNF = SS.NSNFSERV_NUMNF ');
+try
+   query_qru_nfsens.ExecSQL;
+   fdm1StartCommit;
+except on e : exception do
+   ex_erroSql_Novo(query_qru_nfsens,512,'SGE','CADVER');
+   end;
+query_qru_nfsens.close;
+freeandnil(query_qru_nfsens);
+flcadns(9,0,0,dm1.Tb_NsNSID_NEW.AsString,pvazio,'') ;
 
 
 end;

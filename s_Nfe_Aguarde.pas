@@ -53,7 +53,7 @@ type
    msaida_dathorEve: tdatetime;
    msaida_num_protocolo: string;
    msaida_cstat: integer;
-   msaida_cstat_motivo: string;
+   msaida_cstat_motivo: WideString;
    msaida_Num_Recibo: string;
    msaida_xml_Resposta: string;
    marqxml_assinado: string;
@@ -95,6 +95,7 @@ const
 
     NFCe_Autorizacao_assinar = 20;
     NFCe_Autorizacao_enviar = 21;
+    NFCe_consultarNfe = 0;
 
 
 //    Nfe_AssinarEValidar     =22;
@@ -220,7 +221,15 @@ mjsonpar: TArrayParJson;
          end;
       end;
    end;
+
 begin
+
+if trim(mendip_Servidor_nfe_ativo)='' then
+   begin
+   if flfilpad(0,'_principal','SERVNFE') then
+      mendip_Servidor_nfe_ativo :=DM4.Tb_FilPad2FPVALOR.AsString;
+   end;
+
 Memo_evento.Lines.Add('Conectando ao servidor aguarde...');
 murl:='http://'+mendip_Servidor_nfe_ativo+':8139/datasnap/rest/servicenfe/';
 //ShowMessage(murl);

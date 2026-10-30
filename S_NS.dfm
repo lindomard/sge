@@ -77,6 +77,7 @@ inherited Frm_NS: TFrm_NS
     Top = 63
     Width = 1045
     Height = 407
+    ActivePage = tsBaixar
     OnChange = PC1Change
     inherited tsCad: TTabSheet
       object Label2: TLabel
@@ -1045,13 +1046,15 @@ inherited Frm_NS: TFrm_NS
         Items.Strings = (
           'N.Fiscal'
           'Cupom'
-          'NFCe')
+          'NFCe'
+          'NFSe')
         ParentCtl3D = False
         TabOrder = 5
         Values.Strings = (
           '0'
           '1'
-          '2')
+          '2'
+          '3')
       end
       object DBCB_TipoFrete: TRxDBComboBox
         Left = 397
@@ -1272,7 +1275,7 @@ inherited Frm_NS: TFrm_NS
       object GroupBox1: TGroupBox
         Left = 0
         Top = 143
-        Width = 908
+        Width = 1037
         Height = 45
         Align = alTop
         Caption = 'Icms Retido'
@@ -1395,7 +1398,7 @@ inherited Frm_NS: TFrm_NS
       object GroupBox3: TGroupBox
         Left = 0
         Top = 96
-        Width = 908
+        Width = 1037
         Height = 47
         Align = alTop
         Caption = 'Icms Normal do Retido'
@@ -1538,7 +1541,7 @@ inherited Frm_NS: TFrm_NS
       object gb_totpro: TGroupBox
         Left = 0
         Top = 48
-        Width = 908
+        Width = 1037
         Height = 48
         Align = alTop
         Caption = 'Icms Normal'
@@ -1685,7 +1688,7 @@ inherited Frm_NS: TFrm_NS
       object gb_totalpro: TGroupBox
         Left = 0
         Top = 0
-        Width = 908
+        Width = 1037
         Height = 48
         Align = alTop
         Caption = 'Total de Produtos'
@@ -2930,6 +2933,274 @@ inherited Frm_NS: TFrm_NS
           end>
       end
     end
+    object tsConsultas: TTabSheet
+      Caption = 'Consultas'
+      ImageIndex = 7
+      object Label109: TLabel
+        Left = 96
+        Top = 8
+        Width = 75
+        Height = 13
+        Caption = 'Numeo da N:'
+      end
+      object Label110: TLabel
+        Left = 144
+        Top = 200
+        Width = 41
+        Height = 13
+        Caption = 'Evento'
+      end
+      object Label111: TLabel
+        Left = 490
+        Top = 201
+        Width = 44
+        Height = 13
+        Caption = 'chv nfe'
+      end
+      object Label112: TLabel
+        Left = 174
+        Top = 240
+        Width = 43
+        Height = 13
+        Caption = 'Motivo:'
+      end
+      object Label113: TLabel
+        Left = 172
+        Top = 349
+        Width = 41
+        Height = 13
+        Caption = 'Evento'
+      end
+      object BitBtn2: TBitBtn
+        Left = 64
+        Top = 61
+        Width = 143
+        Height = 16
+        Cursor = crHandPoint
+        Hint = 
+          'Click aqui paraEnviar Prefeitura'#13#10'o Xml a Prefeitura do Municipi' +
+          'o'#13#10'da Nota Selecionada'
+        Caption = 'Consultar Nfse'
+        TabOrder = 0
+        OnClick = BitBtn2Click
+        Glyph.Data = {
+          76010000424D7601000000000000760000002800000020000000100000000100
+          04000000000000010000120B0000120B00001000000000000000000000000000
+          800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
+          0003377777777777777308888888888888807F33333333333337088888888888
+          88807FFFFFFFFFFFFFF7000000000000000077777777777777770F8F8F8F8F8F
+          8F807F333333333333F708F8F8F8F8F8F9F07F333333333337370F8F8F8F8F8F
+          8F807FFFFFFFFFFFFFF7000000000000000077777777777777773330FFFFFFFF
+          03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
+          03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
+          33333337F3F37F3733333330F08F0F0333333337F7337F7333333330FFFF0033
+          33333337FFFF7733333333300000033333333337777773333333}
+        NumGlyphs = 2
+      end
+      object Memo1: TMemo
+        Left = 232
+        Top = 56
+        Width = 705
+        Height = 136
+        Lines.Strings = (
+          'Memo1')
+        TabOrder = 1
+      end
+      object edt_numnf: TEdit
+        Left = 184
+        Top = 8
+        Width = 121
+        Height = 21
+        TabOrder = 2
+        Text = '126'
+      end
+      object cb_ambiente: TComboBox
+        Left = 408
+        Top = 8
+        Width = 145
+        Height = 21
+        ItemHeight = 13
+        ItemIndex = 0
+        TabOrder = 3
+        Text = '1 - Produ'#231#227'o'
+        Items.Strings = (
+          '1 - Produ'#231#227'o'
+          '2 - homologa'#231#227'o')
+      end
+      object bbCancelar: TBitBtn
+        Left = 72
+        Top = 262
+        Width = 143
+        Height = 16
+        Cursor = crHandPoint
+        Hint = 
+          'Click aqui paraEnviar Prefeitura'#13#10'o Xml a Prefeitura do Municipi' +
+          'o'#13#10'da Nota Selecionada'
+        Caption = 'Cancelar'
+        TabOrder = 4
+        OnClick = bbCancelarClick
+        Glyph.Data = {
+          76010000424D7601000000000000760000002800000020000000100000000100
+          04000000000000010000120B0000120B00001000000000000000000000000000
+          800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
+          0003377777777777777308888888888888807F33333333333337088888888888
+          88807FFFFFFFFFFFFFF7000000000000000077777777777777770F8F8F8F8F8F
+          8F807F333333333333F708F8F8F8F8F8F9F07F333333333337370F8F8F8F8F8F
+          8F807FFFFFFFFFFFFFF7000000000000000077777777777777773330FFFFFFFF
+          03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
+          03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
+          33333337F3F37F3733333330F08F0F0333333337F7337F7333333330FFFF0033
+          33333337FFFF7733333333300000033333333337777773333333}
+        NumGlyphs = 2
+      end
+      object Memo_cancelar: TMemo
+        Left = 229
+        Top = 261
+        Width = 705
+        Height = 77
+        Lines.Strings = (
+          'Memo1')
+        TabOrder = 5
+      end
+      object edt_evento: TEdit
+        Left = 232
+        Top = 200
+        Width = 209
+        Height = 21
+        TabOrder = 6
+        Text = '101103'
+      end
+      object edt_chNfse: TEdit
+        Left = 544
+        Top = 200
+        Width = 389
+        Height = 21
+        TabOrder = 7
+        Text = '52087071244907041000131000000000012626101793240568'
+      end
+      object edt_xMotivo: TEdit
+        Left = 228
+        Top = 239
+        Width = 704
+        Height = 21
+        TabOrder = 8
+        Text = 'Nota Emitida com erros na descricao dos servicos'
+      end
+      object edt_nomesaida: TEdit
+        Left = 228
+        Top = 346
+        Width = 209
+        Height = 21
+        TabOrder = 9
+        Text = 'c:\sge\nfsepdf.pdf'
+      end
+      object BitBtn3: TBitBtn
+        Left = 72
+        Top = 318
+        Width = 143
+        Height = 16
+        Cursor = crHandPoint
+        Hint = 
+          'Click aqui paraEnviar Prefeitura'#13#10'o Xml a Prefeitura do Municipi' +
+          'o'#13#10'da Nota Selecionada'
+        Caption = 'Transformar em danfe'
+        TabOrder = 10
+        OnClick = BitBtn3Click
+        Glyph.Data = {
+          76010000424D7601000000000000760000002800000020000000100000000100
+          04000000000000010000120B0000120B00001000000000000000000000000000
+          800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
+          0003377777777777777308888888888888807F33333333333337088888888888
+          88807FFFFFFFFFFFFFF7000000000000000077777777777777770F8F8F8F8F8F
+          8F807F333333333333F708F8F8F8F8F8F9F07F333333333337370F8F8F8F8F8F
+          8F807FFFFFFFFFFFFFF7000000000000000077777777777777773330FFFFFFFF
+          03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
+          03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
+          33333337F3F37F3733333330F08F0F0333333337F7337F7333333330FFFF0033
+          33333337FFFF7733333333300000033333333337777773333333}
+        NumGlyphs = 2
+      end
+    end
+    object tsBaixar: TTabSheet
+      Caption = 'Baixar'
+      ImageIndex = 8
+      object Label114: TLabel
+        Left = 96
+        Top = 8
+        Width = 75
+        Height = 13
+        Caption = 'Numeo da N:'
+      end
+      object bbConsNfce: TBitBtn
+        Left = 64
+        Top = 61
+        Width = 143
+        Height = 16
+        Cursor = crHandPoint
+        Hint = 
+          'Click aqui paraEnviar Prefeitura'#13#10'o Xml a Prefeitura do Municipi' +
+          'o'#13#10'da Nota Selecionada'
+        Caption = 'Consultar Nfse'
+        TabOrder = 0
+        OnClick = bbConsNfceClick
+        Glyph.Data = {
+          76010000424D7601000000000000760000002800000020000000100000000100
+          04000000000000010000120B0000120B00001000000000000000000000000000
+          800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
+          0003377777777777777308888888888888807F33333333333337088888888888
+          88807FFFFFFFFFFFFFF7000000000000000077777777777777770F8F8F8F8F8F
+          8F807F333333333333F708F8F8F8F8F8F9F07F333333333337370F8F8F8F8F8F
+          8F807FFFFFFFFFFFFFF7000000000000000077777777777777773330FFFFFFFF
+          03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
+          03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
+          33333337F3F37F3733333330F08F0F0333333337F7337F7333333330FFFF0033
+          33333337FFFF7733333333300000033333333337777773333333}
+        NumGlyphs = 2
+      end
+      object Memo_consnfe: TMemo
+        Left = 232
+        Top = 56
+        Width = 705
+        Height = 136
+        Lines.Strings = (
+          'Memo1')
+        TabOrder = 1
+      end
+      object edt_url_numnfse: TEdit
+        Left = 184
+        Top = 8
+        Width = 121
+        Height = 21
+        TabOrder = 2
+        Text = '126'
+      end
+      object cb_url_amb: TComboBox
+        Left = 408
+        Top = 8
+        Width = 145
+        Height = 21
+        ItemHeight = 13
+        ItemIndex = 0
+        TabOrder = 3
+        Text = '1 - Produ'#231#227'o'
+        Items.Strings = (
+          '1 - Produ'#231#227'o'
+          '2 - homologa'#231#227'o')
+      end
+      object Memo_link: TMemo
+        Left = 229
+        Top = 192
+        Width = 705
+        Height = 136
+        Lines.Strings = (
+          'Memo1')
+        TabOrder = 4
+      end
+    end
   end
   inherited MANUT: TGroupBox
     Top = 0
@@ -3402,6 +3673,78 @@ inherited Frm_NS: TFrm_NS
         33337F773777777333330FFFF0FF033333337F3FF7F3733333330F08F0F03333
         33337F7737F7333333330FFFF003333333337FFFF77333333333000000333333
         3333777777333333333333333333333333333333333333333333}
+      NumGlyphs = 2
+    end
+    object bbBaixarNfse: TBitBtn
+      Left = 483
+      Top = 45
+      Width = 174
+      Height = 20
+      Cursor = crHandPoint
+      Caption = 'Baixar do Site XML NFSe'
+      TabOrder = 15
+      OnClick = bbBaixarNfseClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
+        0003377777777777777308888888888888807F33333333333337088888888888
+        88807FFFFFFFFFFFFFF7000000000000000077777777777777770F8F8F8F8F8F
+        8F807F333333333333F708F8F8F8F8F8F9F07F333333333337370F8F8F8F8F8F
+        8F807FFFFFFFFFFFFFF7000000000000000077777777777777773330FFFFFFFF
+        03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
+        03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
+        33333337F3F37F3733333330F08F0F0333333337F7337F7333333330FFFF0033
+        33333337FFFF7733333333300000033333333337777773333333}
+      NumGlyphs = 2
+    end
+    object bbVisualiarNFSe: TBitBtn
+      Left = 658
+      Top = 45
+      Width = 174
+      Height = 20
+      Cursor = crHandPoint
+      Caption = 'Visualizar NFSe(DANFE)'
+      TabOrder = 16
+      OnClick = bbVisualiarNFSeClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
+        0003377777777777777308888888888888807F33333333333337088888888888
+        88807FFFFFFFFFFFFFF7000000000000000077777777777777770F8F8F8F8F8F
+        8F807F333333333333F708F8F8F8F8F8F9F07F333333333337370F8F8F8F8F8F
+        8F807FFFFFFFFFFFFFF7000000000000000077777777777777773330FFFFFFFF
+        03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
+        03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
+        33333337F3F37F3733333330F08F0F0333333337F7337F7333333330FFFF0033
+        33333337FFFF7733333333300000033333333337777773333333}
+      NumGlyphs = 2
+    end
+    object bbSalvarNFSe: TBitBtn
+      Left = 832
+      Top = 45
+      Width = 174
+      Height = 20
+      Cursor = crHandPoint
+      Caption = 'Salvar XML NFSe'
+      TabOrder = 17
+      OnClick = bbSalvarNFSeClick
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
+        0003377777777777777308888888888888807F33333333333337088888888888
+        88807FFFFFFFFFFFFFF7000000000000000077777777777777770F8F8F8F8F8F
+        8F807F333333333333F708F8F8F8F8F8F9F07F333333333337370F8F8F8F8F8F
+        8F807FFFFFFFFFFFFFF7000000000000000077777777777777773330FFFFFFFF
+        03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
+        03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
+        33333337F3F37F3733333330F08F0F0333333337F7337F7333333330FFFF0033
+        33333337FFFF7733333333300000033333333337777773333333}
       NumGlyphs = 2
     end
   end

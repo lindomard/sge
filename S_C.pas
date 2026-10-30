@@ -232,6 +232,7 @@ if CAMPO.ItemIndex=-1 then
    CAMPO.ItemIndex:=0;
 if mtipo<>1 then
    BBnAtu.Click;
+Edit1.SetFocus;
 end;
 
 end.

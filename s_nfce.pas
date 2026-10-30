@@ -318,7 +318,7 @@ mPadraoNFCE_DARUMA = 'DARUMA';
 
 uses S_DM4, lerarq, S_DM1, func_excecoes, Func2, s_Nfe_Aguarde,
   S_Sintegra_Advert, s_NFCE_Duplicada, S_DM1_ADO, s_impressora_escolher,
-  s_NFCE_Impressao;
+  s_NFCE_Impressao, s_nfse;
 
 {
 const tipofp_igestao :array[0..18] of string = (
@@ -2450,68 +2450,6 @@ result:=mnova_chave_acesso;
 end;
 
 
-procedure tNfce.fAtualizarCadp01(pDadosNFCEChvAcesso: TDadosNFCEChvAcesso);
-var
-query_ped01: TQuery;
-begin
-query_ped01:=TQuery.create(nil);
-query_ped01.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-query_ped01.SQL.add('Update cadp01 set '
-                    +' P1NFCE_TPEMIS = :P1NFCE_TPEMIS '
-                    +',P1NFCE_TPIMP = :P1NFCE_TPIMP '
-                    +',P1NFCE_TPAMB = :P1NFCE_TPAMB '
-                    +',P1NFCE_VERSAOXML = :P1NFCE_VERSAOXML '
-                    +',P1NFCE_CNF = :P1NFCE_CNF '
-                    +',P1NFCE_DATA = :P1NFCE_DATA '
-                    +',P1DATDOC = :P1DATDOC '
-                    +',P1NFCE_NUMERO = :P1NFCE_NUMERO '
-                    +',P1NFCE_SERIE = :P1NFCE_SERIE '
-                    +',P1NFCE_MODELO = :P1NFCE_MODELO '
-                    +',P1NFCE_CHV_ACESSO = :P1NFCE_CHV_ACESSO ');
-//if trim(pDadosNFCEChvAcesso.pContigencia_xJust)<>'' then
-   begin
-   Query_ped01.SQL.add(',P1NFCE_CONTIGENCIA_XJUST = :P1NFCE_CONTIGENCIA_XJUST ');
-   Query_ped01.SQL.add(',P1NFCE_CONTIGENCIA_DH = :P1NFCE_CONTIGENCIA_DH ');
-   query_ped01.ParamByName('P1NFCE_CONTIGENCIA_XJUST').AsString:=pDadosNFCEChvAcesso.pContigencia_xJust;
-   query_ped01.ParamByName('P1NFCE_CONTIGENCIA_DH').AsDateTime :=pDadosNFCEChvAcesso.pContigencia_DH;
-   end;
-if pDadosNFCEChvAcesso.p1Cupom>-1 then
-   Query_ped01.SQL.add(',P1CUPOM = '+inttostr(pDadosNFCEChvAcesso.p1Cupom));
-if pDadosNFCEChvAcesso.pStatusPed>-1 then
-   Query_ped01.SQL.add(',P1STATUS = '+inttostr(pDadosNFCEChvAcesso.pStatusPed));
-if pDadosNFCEChvAcesso.P1codcai>-1 then
-   Query_ped01.SQL.add(',P1CX_CODCAI = '+inttostr(pDadosNFCEChvAcesso.P1codcai));
-
-Query_ped01.SQL.add(',P1EMIDOC = 1 ');
-
-query_ped01.SQL.add(' where P1CODEMP=:CODEMP '
-                    +' and P1CHAVE=:CHAVE '
-                    +' and P1LOTSEQ=:LOTSEQ');
-query_ped01.ParamByName('P1NFCE_TPEMIS').AsInteger := pDadosNFCEChvAcesso.pTpEmis;
-query_ped01.ParamByName('P1NFCE_TPIMP').AsInteger  := 4;
-query_ped01.ParamByName('P1NFCE_TPAMB').AsInteger  := pDadosNFCEChvAcesso.pTpAmb;
-query_ped01.ParamByName('P1NFCE_VERSAOXML').AsString  := DM4.Tb_ParGer02PG2VERSAOXML.AsString;
-query_ped01.ParamByName('P1NFCE_CNF').AsString        := pDadosNFCEChvAcesso.pCNF;
-query_ped01.ParamByName('P1NFCE_DATA').AsDateTime     := pDadosNFCEChvAcesso.pDataDoc;
-query_ped01.ParamByName('P1DATDOC').AsDateTime        := pDadosNFCEChvAcesso.pDataDoc;
-query_ped01.ParamByName('P1NFCE_NUMERO').AsInteger    := pDadosNFCEChvAcesso.pNumdoc;
-query_ped01.ParamByName('P1NFCE_SERIE').AsString      := pDadosNFCEChvAcesso.pSerieDoc;
-query_ped01.ParamByName('P1NFCE_MODELO').AsInteger    := valint(pDadosNFCEChvAcesso.pModeloDoc);
-query_ped01.ParamByName('P1NFCE_CHV_ACESSO').AsString := pDadosNFCEChvAcesso.pchv_acesso;
-query_ped01.ParamByName('CODEMP').AsInteger           := pDadosNFCEChvAcesso.pCodEmp;
-query_ped01.ParamByName('CHAVE').AsInteger            := pDadosNFCEChvAcesso.pChave;
-query_ped01.ParamByName('LOTSEQ').AsInteger           := pDadosNFCEChvAcesso.pChaveAno;
-
-try
-   query_ped01.ExecSQL;
-   fdm1StartCommit;
-except on e : exception do
-  ex_erroSql_Novo(query_ped01,35,'func Erro:'+e.Message ,'CADEST');
-  end;
-query_ped01.close;
-freeandnil(query_ped01);
-
-end;
 
 
 
@@ -2706,7 +2644,43 @@ mmensagem: string;
 peletronica: boolean;
 x_tent: integer;
 
+
+
+   function fSetarNovoNumeroNfse(pChave: String; pNovoNumero: integer): boolean;
+   var
+   query_atu: tQuery;
+
+
+
+   begin
+   query_atu :=tQuery.create(nil);
+   query_atu.DatabaseName :=DM1.SG_ASSOC.DatabaseName;
+
+   query_atu.Close;
+   query_atu.SQl.Clear;
+   query_atu.SQl.add('Update CADPAR_NF set PNF_NUMNF=:PNF_NUMNF where PNF_CODEMP=:CODEMP '
+                  +' AND PNF_CHAVE=:CHAVE ');
+   query_atu.ParamByName('CODEMP').Value   :=codEmp;
+   query_atu.ParamByName('CHAVE').Value    :=pChave;
+   query_atu.ParamByName('PNF_NUMNF').Value:=pNovoNumero;
+   Try
+      query_atu.ExecSQL;
+      fdm1StartCommit;
+      result:=true;
+   except ON E: Exception do
+      begin
+      ex_erroSql_NOVO(query_atu,2389,'_stru'+e.message,'user');
+      result:= false;
+      exit;
+      end;
+      end;
+   query_atu.close;
+   freeandNil(query_atu);
+   end;
+
+
    function fVerificaNovoNumero: boolean;
+
    var
    mNovo_Numero: Integer;
    mNovo_serie : Integer;
@@ -2746,7 +2720,7 @@ x_tent: integer;
       pDadosNFCEChvAcesso.pchv_acesso          := fGerarChavedeAcesso(pDadosNFCEChvAcesso);
       pDadosNFCEChvAcesso.pContigencia_xJust   :='';
 
-      fSetarNovoNumeroNFce(formatfloat('000',valint(pDadosNFCEChvAcesso.pSerieDoc))+Inttostr(pDadosNFCEChvAcesso.pTpAmb),mNovo_Numero+1) ;
+      fSetarNovoNumeroNFse(formatfloat('000',valint(pDadosNFCEChvAcesso.pSerieDoc))+Inttostr(pDadosNFCEChvAcesso.pTpAmb),mNovo_Numero+1) ;
 
       fAtualizarCadp01(pDadosNFCEChvAcesso);
 
@@ -3718,5 +3692,57 @@ pfechartudo;
 
 
 end;
+
+
+
+procedure tNfce.fAtualizarCadp01(pDadosNFCEChvAcesso: TDadosNFCEChvAcesso);
+var
+query_ped01: TQuery;
+begin
+query_ped01:=TQuery.create(nil);
+query_ped01.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+query_ped01.SQL.add('Update cadp01 set '
+                    +' P1TPAMB_SERV = :P1TPAMB_SERV '
+                    +',P1SERV_VERSAOXML = :P1SERV_VERSAOXML '
+                    +',P1DATANF_SERV = :P1DATANF_SERV '
+                    +',P1DATDOC = :P1DATDOC '
+                    +',P1NUMNF_SERV = :P1NUMNF_SERV '
+                    +',P1NUMNF_SERV_NFSE = :P1NUMNF_SERV_NFSE '
+                    +',P1SERIE_SERV = :P1SERIE_SERV '
+                    +',P1MODELO_SERV = :P1MODELO_SERV ');
+
+if pDadosNFCEChvAcesso.pStatusPed>-1 then
+   Query_ped01.SQL.add(',P1STATUS = '+inttostr(pDadosNFCEChvAcesso.pStatusPed));
+if pDadosNFCEChvAcesso.P1codcai>-1 then
+   Query_ped01.SQL.add(',P1CX_CODCAI = '+inttostr(pDadosNFCEChvAcesso.P1codcai));
+
+Query_ped01.SQL.add(',P1EMIDOC = 1 ');
+
+query_ped01.SQL.add(' where P1CODEMP=:CODEMP '
+                    +' and P1CHAVE=:CHAVE '
+                    +' and P1LOTSEQ=:LOTSEQ');
+query_ped01.ParamByName('P1TPAMB_SERV').AsInteger       := pDadosNFCEChvAcesso.pTpAmb;
+query_ped01.ParamByName('P1SERV_VERSAOXML').AsString    := DM4.Tb_ParGer02PG2VERSAOXML.AsString;
+query_ped01.ParamByName('P1DATANF_SERV').AsDateTime     := pDadosNFCEChvAcesso.pDataDoc;
+query_ped01.ParamByName('P1DATDOC').AsDateTime          := pDadosNFCEChvAcesso.pDataDoc;
+query_ped01.ParamByName('P1NUMNF_SERV').AsInteger       := pDadosNFCEChvAcesso.pNumdoc;
+query_ped01.ParamByName('P1NUMNF_SERV_NFSE').AsInteger  := pDadosNFCEChvAcesso.pNumdoc;
+query_ped01.ParamByName('P1SERIE_SERV').AsString        := pDadosNFCEChvAcesso.pSerieDoc;
+query_ped01.ParamByName('P1MODELO_SERV').AsInteger      := valint(pDadosNFCEChvAcesso.pModeloDoc);
+query_ped01.ParamByName('CODEMP').AsInteger             := pDadosNFCEChvAcesso.pCodEmp;
+query_ped01.ParamByName('CHAVE').AsInteger              := pDadosNFCEChvAcesso.pChave;
+query_ped01.ParamByName('LOTSEQ').AsInteger             := pDadosNFCEChvAcesso.pChaveAno;
+
+try
+   query_ped01.ExecSQL;
+   fdm1StartCommit;
+except on e : exception do
+  ex_erroSql_Novo(query_ped01,35,'func Erro:'+e.Message ,'CADEST');
+  end;
+query_ped01.close;
+freeandnil(query_ped01);
+
+end;
+
 
 end.

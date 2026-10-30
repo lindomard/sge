@@ -7,7 +7,7 @@ interface
 
 uses Forms, SysUtils, Dialogs, Mask, DB, DBTables, Messages, Windows ,Classes,
      Graphics, Controls, StdCtrls, ExtCtrls, checklst, func,  S_DM1,dateutils,
-     lerarq, xmldom, XMLIntf, msxmldom, XMLDoc,RlPrinters,printers, DBClient;
+     lerarq, xmldom, XMLIntf, msxmldom, XMLDoc,RlPrinters,printers, DBClient, s_nfce,ShellAPI;
 
 
 type
@@ -27,6 +27,7 @@ type
   pTotall: real;
   pCodcli: Real;
   pCompleto: boolean;
+  pNumNfse: Integer;
   end;
 type
   tRetornoNfce = record
@@ -46,19 +47,24 @@ function fValida_Pedido(ParametrosNfce: tParametrosNfce): tRetornoNfce;
 
 
 function fImprimirNotadeServico(ParametrosNfce: tParametrosNfce): tRetornoNfce;
+function fImprimirNotadeServicoV02(ParametrosNfce: tParametrosNfce): tRetornoNfce;
+function fImprimirNotadeServicoV03(ParametrosNfce: tParametrosNfce): tRetornoNfce;
+
+
 
 function fGerarXmlNotadeServico(ParametrosNfce: tParametrosNfce): tRetornoNfce;
 
 
 function fSoGerarXmlNFCE(ParametrosNfce: tParametrosNfce): tRetornoNfce;
 
-function fEmitirBoletoBancario(ParametrosNfce: tParametrosNfce): tRetornoNfce;
-function fGerarOutrasOpcoesDePagamentos(ParametrosNfce: tParametrosNfce;cds_prazos: TClientDataSet): tRetornoNfce;
 
 function fPedidoEstaBloqueado(ParametrosNfce: tParametrosNfce): tRetornoNfce;
 
 function fDesfazeremissaoNfse(ParametrosNfce: tParametrosNfce): tRetornoNfce;
 
+procedure fAtualizarCadp01(pDadosNFCEChvAcesso: TDadosNFCEChvAcesso);
+
+procedure fVoltarPedidoComoPendente(pDadosNFCEChvAcesso: TDadosNFCEChvAcesso);
 
 //procedure fEmitirDocOnline(ParametrosNfce: tParametrosNfce): tRetornoNfce;
 
@@ -68,7 +74,7 @@ implementation
 
 uses S_Ocorrencias, S_DM4, Func2, func_excecoes, s_Nfe_Aguarde,
   S_Sintegra_Advert, S_NFE_Impressao, S_Pedido_Fortes, S_EBol, SR_Dup,
-  S_DM2;
+  S_DM2, s_NFCE_Duplicada, s_nfse;
 
 
 
@@ -290,6 +296,52 @@ end;
 
 
 
+function fImprimirNotadeServicoV02(ParametrosNfce: tParametrosNfce): tRetornoNfce;
+
+
+var
+form_nfe_impressao: tfrm_nfe_impressao;
+mmensagem: string;
+begin
+Application.createform(TFrm_NFE_Impressao, form_nfe_impressao);
+form_nfe_impressao.fLerdadosNFSE(ParametrosNfce.pSalvarPDFPara,ParametrosNfce.pSalvarXmlPara,
+ParametrosNfce.pNomeArq,ParametrosNfce.pChave,ParametrosNfce.pChave_ano,ParametrosNfce.pcodemp,false,mmensagem);
+result.pMensagem:=mmensagem;
+freeandnil(form_nfe_impressao);
+
+end;
+
+
+function fImprimirNotadeServicoV03(ParametrosNfce: tParametrosNfce): tRetornoNfce;
+
+
+var
+  mResposta: TResposta;
+  mNfse: tNfse;
+  mExecutar: String;
+
+begin
+ mNfse :=tNfse.create;
+
+mResposta :=  mNfse.fConsultarURL(ParametrosNfce.pNumNfse,inttostr(ParametrosNfce.pAmbiente));
+
+mExecutar:=trim(StringReplace(mResposta.motivoResp, 'Url da NFSe encontrado : ','', [rfReplaceAll, rfIgnoreCase]));
+fExecutarArquivo(mExecutar);
+
+{
+  ShellExecute(
+    Handle,                    // Handle da janela atual
+    'open',                    // Ação (abrir)
+    PChar(mExecutar ),   // URL ou caminho do arquivo
+    nil,                       // Parâmetros (não necessários aqui)
+    nil,                       // Diretório padrão (não necessário aqui)
+    SW_SHOWNORMAL              // Como a janela deve ser exibida
+  );
+
+ }
+end;
+
+
 function fEmitirNotadeServico(ParametrosNfce: tParametrosNfce): tRetornoNfce;
 
 
@@ -453,7 +505,8 @@ if not query_Cons.Fieldbyname('NSNFE_XML_CLIENTE').IsNull then
     ,query_Cons.FieldByName('P1DATANF_SERV').Asdatetime);
  }
 
-   if not fImprimirNotadeServico(ParametrosNfce).pOk then
+   ParametrosNfce.pNumNfse := query_Cons.FieldByName('P1NUMNF_SERV').asinteger;
+   if not fImprimirNotadeServicoV03(ParametrosNfce).pOk then
       begin
       Result.pMensagem:=Result.pMensagem+mmensagem+#13;
       result.pok:=false;
@@ -475,16 +528,6 @@ if trim(result.pmensagem)<>'' then
    exit;
    end;
 
-{
-if (query_nfe.fieldbyname('P1STATUS').AsInteger=2) and
-   (query_nfe.fieldbyname('P1NUMNF_SERV').AsInteger>0) then
-   begin
-   query_nfe.close;
-   freeandnil(query_nfe);
-   result.pok:=true;
-   exit;
-   end;
-}
 
 
 // termino
@@ -602,12 +645,6 @@ else
    mDadosPedido.pSerie     :=query_nfe.fieldbyname('P1SERIE_SERV').Asstring;
    mDadosPedido.pModNF     :=query_nfe.fieldbyname('P1MODELO_SERV').Asstring;
    end;
-{
-if (query_nfe.fieldbyname('P1STATUS').AsInteger=2) and
-   (query_nfe.fieldbyname('P1NUMNF_SERV').AsInteger>0) then
-   begin
-   end
-}
 
 mDadosPedido.pNumNF     :=pNumnf;
 
@@ -1318,6 +1355,8 @@ var
   mTotBcCOFINS: Real;
   mTotCOFINS: Real;
 
+  x_tent         :integer;
+
   mTotBcPIS: Real;
   mTotPIS: Real;
 
@@ -1341,6 +1380,7 @@ var
 
 
 
+  pDadosNFCEChvAcesso: tDadosNFCEChvAcesso;
 
 const
 
@@ -1422,7 +1462,7 @@ const
    freeandnil(query_atuns);
 
     end;
-
+{
     procedure fGerarModeloTradicional;
     begin
 
@@ -1709,7 +1749,7 @@ const
 
 
     end;
-
+ }
 // ****************************************** modelo novo ambiente nacional ****************************************************
 
 
@@ -2029,6 +2069,52 @@ const
 
 //******************************************* modelo novo ambiente nacional termino *******************************************
 
+
+   function fVerificaNovoNumero: boolean;
+   var
+   mNovo_Numero: Integer;
+   mNovo_serie : Integer;
+
+   mMensagem: String;
+   begin
+
+   Application.CreateForm(TFrm_NFCE_Duplicada,Frm_NFCE_Duplicada);
+   Frm_NFCE_Duplicada.Memo_motivo.Lines.Clear;
+   Frm_NFCE_Duplicada.Memo_motivo.Lines.Add('Status '+inttostr(form_nfe_aguarde.mNFEretorno.msaida_cstat));
+   Frm_NFCE_Duplicada.Memo_motivo.Lines.Add('Motivo '+form_nfe_aguarde.mNFEretorno.msaida_cstat_motivo);
+   Frm_NFCE_Duplicada.edt_numnf_ant.Text:=inttostr(pDadosNFCEChvAcesso.pNumdoc);
+   Frm_NFCE_Duplicada.edt_numnf_novo.Text:=inttostr(pDadosNFCEChvAcesso.pNumdoc+1);;
+   Frm_NFCE_Duplicada.edt_cnf_ant.Text  :=pDadosNFCEChvAcesso.pCNF;
+   Frm_NFCE_Duplicada.edt_serie_ant.Text:=pDadosNFCEChvAcesso.pSerieDoc;
+
+   Frm_NFCE_Duplicada.ShowModal;
+   if Frm_NFCE_Duplicada.mAtualizarNFE=true then
+      begin
+      mNovo_Numero:=valint(Frm_NFCE_Duplicada.edt_numnf_novo.Text);
+      mNovo_serie :=Frm_NFCE_Duplicada.edt_serie_nova.Value;
+
+      pDadosNFCEChvAcesso.pSerieDoc            := inttostr(mNovo_serie);
+      pDadosNFCEChvAcesso.pNumdoc              := mNovo_Numero;
+      pDadosNFCEChvAcesso.pContigencia_xJust   :='';
+
+      fSetarNovoNumeroNFce(formatfloat('000',valint(pDadosNFCEChvAcesso.pSerieDoc))+Inttostr(pDadosNFCEChvAcesso.pTpAmb),mNovo_Numero+1) ;
+
+      fAtualizarCadp01(pDadosNFCEChvAcesso);
+
+
+      fGerarModeloAmbienteNacional;
+
+
+//       mDadosPedido.pChave,mDadosPedido.pLotSeq,mDadosPedido.pCodEmp,mNFCE,mMensagem);
+//      pDadosNFCEChvAcesso.pXml:=mXml_servico;
+//      FreeAndNil(mNFCE);
+      result:=true;
+      end
+   else
+      result:=false;
+   end;
+
+
 begin
 mXml_servico:=TStringList.Create;
 
@@ -2121,6 +2207,8 @@ query_serv.SQL.Add(' Select P2SQTD,P2SITEM '
                     +',CFONE01,CEMAIL'
                     +',CASE WHEN LENGTH( P2SDESC_COMP)>2 THEN  P2SDESC_COMP ELSE PDNOME END AS DESCRICAO '
                     +' ,PDCODIGO_CNAE,P2SCODTRIB_MUN,P2SCODTRIB_NAC,P1SERVICO_OBS_CORPO,P1SERVICO_OBS_INF_ADIC '
+                    +', P2SCODCNAE '
+
                     +' from CADP01 '+iif(la_tabelas='','',',')+la_tabelas
                     +'       '+la_Join
                     +'       where '+iif(la_Empresas='','',la_Empresas+' and ')
@@ -2151,15 +2239,16 @@ query_dados_emp.SQL.Add('SELECT RAZAO,FANTASIA, LNOME,LUF '
                        +',EMP_CNAE'
                        +',EMP_OPTSIMPLES'
                        +',EMP_INC_CULTURAL '
-                       +',EMP_REG_AP_TRIB_SN'
-                       +',EMP_REG_ESP_TRIB'
-                       +',EMP_IBS_CBS_TP_OPER'
-                       +',EMP_IBS_CBS_TP_ENTE_GOV'
-                       +',EMP_IBS_CBS_IND_DEST'
-                       +',EMP_TP_RET_PIS_COFINS '                          
-                       +',EMP_IBS_CBS_FIN_NFSE'
-                       +',EMP_INDFINAL '
-                       +' FROM CADEMP,CADLOC '
+                       +',ECNAE_REG_AP_TRIB_SN AS EMP_REG_AP_TRIB_SN '
+                       +',ECNAE_REG_ESP_TRIB AS EMP_REG_ESP_TRIB '
+                       +',ECNAE_TP_OPER AS EMP_IBS_CBS_TP_OPER '
+                       +',ECNAE_IBS_CBS_TP_ENTE_GOV AS EMP_IBS_CBS_TP_ENTE_GOV '
+                       +',ECNAE_IBS_CBS_IND_DEST AS EMP_IBS_CBS_IND_DEST '
+                       +',ECNAE_TP_RET_PIS_COFINS AS EMP_TP_RET_PIS_COFINS '
+                       +',ECNAE_FIN_NFSE AS EMP_IBS_CBS_FIN_NFSE '
+                       +',ECNAE_IND_FINAL AS EMP_INDFINAL '
+                       +' FROM CADEMP LEFT JOIN CADEMP_CNAE ON (ECNAE_ID_EMP=CODEMP AND ECNAE_ID_CNAE='+quotedstr(query_serv.fieldbyname('P2SCODCNAE').asstring)+') '
+                       +',CADLOC '
                        +' WHERE  LCODLOC=CODLOC '
                        +' AND CODEMP=:CODEMP ');
 query_dados_emp.ParamByName('CODEMP').AsInteger:=codemp;
@@ -2214,7 +2303,7 @@ mTotDescIncond :=0;
 mTotDescCond   :=0;
 mTotDeducoes   :=0;
 
-
+x_tent         :=0;
 
 
 
@@ -2242,63 +2331,146 @@ mItem:=0;
 
 //GerarModeloTradicional;
 
-fGerarModeloAmbienteNacional;
-
-
-//mXml_servico.SaveToFile('c:\sge\nfse'+query_serv.fieldbyname('P1NUMNF_SERV').AsString+'.xml');
-
-// ShowMessage('sAVO COMO '+'c:\sge\nfse'+query_serv.fieldbyname('P1NUMNF_SERV').AsString+'.xml');
-if (ParametrosNfce.pSoSalvar) then
-   begin
-   mXml_servico.SaveToFile(ParametrosNfce.pNomeSaida);
-   query_dados_emp.Close;
-   query_serv.close;
-   query_vcto.Close;
-   freeandnil(query_serv);
-   freeandnil(query_dados_emp);
-   freeandnil(query_vcto);
-   freeandnil(mXml_servico);
-
-   result.pok:=true;
-   exit;
-   end;
 
 
 Application.createform(TFrm_Nfe_Aguarde, Form_Nfe_Aguarde);
-form_nfe_aguarde.mNFEretorno.mentra_operacao:=Nfse_Autorizacao;
-form_nfe_aguarde.mNFEretorno.mentra_evento  :=Nfse_Autorizacao;
-
-form_nfe_aguarde.mNFEretorno.mentra_chave   :=ParametrosNfce.pChave;
-form_nfe_aguarde.mNFEretorno.mentra_codemp  :=ParametrosNfce.pcodemp;
-form_nfe_aguarde.mNFEretorno.mentra_lotseq  :=ParametrosNfce.pChave_ano;
-form_nfe_aguarde.mNFEretorno.mentra_numnf   := query_serv.fieldbyname('P1NUMNF_SERV').AsInteger;
-form_nfe_aguarde.mNFEretorno.mentra_serie   := query_serv.fieldbyname('P1SERIE_SERV').AsString;
-form_nfe_aguarde.mNFEretorno.mentra_cnpj_emitente    :=DM1.Tb_Empcnpj_masc.AsString;
-form_nfe_aguarde.mNFEretorno.mentra_modelo        :=query_serv.fieldbyname('P1MODELO_SERV').AsString;
-form_nfe_aguarde.mNFEretorno.mentra_chave_acesso  :=query_serv.fieldbyname('P1NFS_CHACESSO').AsString;
-form_nfe_aguarde.mNFEretorno.mentra_xml           :=mXml_servico.Text;
-form_nfe_aguarde.Timer_processar.Enabled := true;
-Form_Nfe_Aguarde.ShowModal;
-if (form_nfe_aguarde.mNFEretorno.msaida_cstat=0) or (form_nfe_aguarde.mNFEretorno.msaida_cstat=999) then
+for x_tent:=1 to 20 do
    begin
-   result.pMensagem:=result.pMensagem+form_nfe_aguarde.mNFEretorno.msaida_xml_Resposta+#13 +
-   form_nfe_aguarde.mNFEretorno.msaida_cstat_motivo+#13;
-   if ParametrosNfce.pAceitaMensagem then
+
+   fGerarModeloAmbienteNacional;
+
+
+   //mXml_servico.SaveToFile('c:\sge\nfse'+query_serv.fieldbyname('P1NUMNF_SERV').AsString+'.xml');
+
+   // ShowMessage('sAVO COMO '+'c:\sge\nfse'+query_serv.fieldbyname('P1NUMNF_SERV').AsString+'.xml');
+   if (ParametrosNfce.pSoSalvar) then
       begin
+      mXml_servico.SaveToFile(ParametrosNfce.pNomeSaida);
+      query_dados_emp.Close;
+      query_serv.close;
+      query_vcto.Close;
+      freeandnil(query_serv);
+      freeandnil(query_dados_emp);
+      freeandnil(query_vcto);
+      freeandnil(mXml_servico);
+
+      result.pok:=true;
+      exit;
+      end;
+
+
+
+   form_nfe_aguarde.mNFEretorno.mentra_operacao:=Nfse_Autorizacao;
+   form_nfe_aguarde.mNFEretorno.mentra_evento  :=Nfse_Autorizacao;
+
+   form_nfe_aguarde.mNFEretorno.mentra_chave   :=ParametrosNfce.pChave;
+   form_nfe_aguarde.mNFEretorno.mentra_codemp  :=ParametrosNfce.pcodemp;
+   form_nfe_aguarde.mNFEretorno.mentra_lotseq  :=ParametrosNfce.pChave_ano;
+   form_nfe_aguarde.mNFEretorno.mentra_numnf   := query_serv.fieldbyname('P1NUMNF_SERV').AsInteger;
+   form_nfe_aguarde.mNFEretorno.mentra_serie   := query_serv.fieldbyname('P1SERIE_SERV').AsString;
+   form_nfe_aguarde.mNFEretorno.mentra_cnpj_emitente    :=DM1.Tb_Empcnpj_masc.AsString;
+   form_nfe_aguarde.mNFEretorno.mentra_modelo        :=query_serv.fieldbyname('P1MODELO_SERV').AsString;
+   form_nfe_aguarde.mNFEretorno.mentra_chave_acesso  :=query_serv.fieldbyname('P1NFS_CHACESSO').AsString;
+   form_nfe_aguarde.mNFEretorno.mentra_xml           :=mXml_servico.Text;
+   form_nfe_aguarde.Timer_processar.Enabled := true;
+   Form_Nfe_Aguarde.ShowModal;
+
+
+
+   if (form_nfe_aguarde.mNFEretorno.msaida_cstat=539) then
+      begin
+      if not fVerificaNovoNumero then
+         break
+      else
+         continue;
+      end
+   else if  (((form_nfe_aguarde.mNFEretorno.msaida_cstat=0)
+             or (form_nfe_aguarde.mNFEretorno.msaida_num_protocolo='') )       )
+        or (form_nfe_aguarde.mNFEretorno.msaida_cstat=999)
+          then
+      begin
+
+
+      fVoltarPedidoComoPendente(pDadosNFCEChvAcesso);
+
+
       Application.CreateForm(TFrm_Sintegra_Advert, Frm_Sintegra_Advert);
       Frm_Sintegra_Advert.Memo_NFSNaoEnc.Lines.Clear;
-      Frm_Sintegra_Advert.Memo_NFSNaoEnc.Lines.Add(form_nfe_aguarde.mNFEretorno.msaida_ret_observacao
-      +#13 +   form_nfe_aguarde.mNFEretorno.msaida_cstat_motivo+#13);
+      Frm_Sintegra_Advert.Memo_NFSNaoEnc.Lines.Add('Servico Solicitado '+inttostr(pDadosNFCEChvAcesso.pServico));
+
+      Frm_Sintegra_Advert.Memo_NFSNaoEnc.Lines.Add(form_nfe_aguarde.mNFEretorno.msaida_ret_observacao+#13+form_nfe_aguarde.mNFEretorno.msaida_cstat_motivo);
+
       Frm_Sintegra_Advert.Memo_xml.Lines.Clear;
       Frm_Sintegra_Advert.Memo_xml.Lines.Add(mXml_servico.Text);
       Frm_Sintegra_Advert.tsXml.TabVisible:=true;
       Frm_Sintegra_Advert.TabSheet1.TabVisible:=true;
       Frm_Sintegra_Advert.Memo_xmlRet.Lines.Text:=form_nfe_aguarde.mNFEretorno.msaida_xml_Resposta;
+
+      pDadosNFCEChvAcesso.pRetObs:=form_nfe_aguarde.mNFEretorno.msaida_ret_observacao;
+      pDadosNFCEChvAcesso.pcStat :=form_nfe_aguarde.mNFEretorno.msaida_cstat;
+      pDadosNFCEChvAcesso.pStatMotivo :=form_nfe_aguarde.mNFEretorno.msaida_cstat_motivo;
+      pDadosNFCEChvAcesso.pXml_Cliente :='';
+      pDadosNFCEChvAcesso.pDatHorEvento :=form_nfe_aguarde.mNFEretorno.msaida_dathorEve;
+      pDadosNFCEChvAcesso.pNumProt :=form_nfe_aguarde.mNFEretorno.msaida_num_protocolo;
+      pDadosNFCEChvAcesso.pNumRecibo :=form_nfe_aguarde.mNFEretorno.msaida_Num_Recibo;
+      pDadosNFCEChvAcesso.seqeve :=form_nfe_aguarde.mNFEretorno.mentra_Evento;
+
       Frm_Sintegra_Advert.ShowModal;
+
+      break;
+      end
+   else
+      begin
+      mnfe_Num_Protolo      :=form_nfe_aguarde.mNFEretorno.msaida_num_protocolo;
+      mnfe_mensagem_retorno :=form_nfe_aguarde.mNFEretorno.msaida_ret_observacao;
+      mnfe_dh_valcertificado:=form_nfe_aguarde.mNFEretorno.msaida_ret_certdigital_venc_dathor;
+      mNfe_dathorEve        :=form_nfe_aguarde.mNFEretorno.msaida_dathorEve;
+      mnfe_stat_Prot        :=inttostr(form_nfe_aguarde.mNFEretorno.msaida_cstat);
+      mnfe_stat_Prot_Desc   :=form_nfe_aguarde.mNFEretorno.msaida_cstat_motivo;
+
+
+      mnfe_stat_Prot_Desc   :=form_nfe_aguarde.mNFEretorno.msaida_xml_Resposta;
+      mnfe_stat_Prot_Desc   :=form_nfe_aguarde.mNFEretorno.msaida_xml_protocolado;
+
+      mnfe_stat_Prot_Desc   :=form_nfe_aguarde.mNFEretorno.msaida_xml_protocolado;
+
+      pDadosNFCEChvAcesso.pRetObs:=form_nfe_aguarde.mNFEretorno.msaida_ret_observacao;
+      pDadosNFCEChvAcesso.pcStat :=form_nfe_aguarde.mNFEretorno.msaida_cstat;
+      pDadosNFCEChvAcesso.pStatMotivo :=form_nfe_aguarde.mNFEretorno.msaida_cstat_motivo;
+      pDadosNFCEChvAcesso.pXml_Cliente :=form_nfe_aguarde.mNFEretorno.msaida_xml_protocolado;
+      pDadosNFCEChvAcesso.pDatHorEvento :=form_nfe_aguarde.mNFEretorno.msaida_dathorEve;
+      pDadosNFCEChvAcesso.pNumProt :=form_nfe_aguarde.mNFEretorno.msaida_num_protocolo;
+      pDadosNFCEChvAcesso.pNumRecibo :=form_nfe_aguarde.mNFEretorno.msaida_Num_Recibo;
+      pDadosNFCEChvAcesso.seqeve :=form_nfe_aguarde.mNFEretorno.mentra_Evento;
+
+      break;
       end;
-   result.pok:=false;
-   exit;
-   end;
+
+
+
+
+
+// TERMINO
+   if (form_nfe_aguarde.mNFEretorno.msaida_cstat=0) or (form_nfe_aguarde.mNFEretorno.msaida_cstat=999) then
+      begin
+      result.pMensagem:=result.pMensagem+form_nfe_aguarde.mNFEretorno.msaida_xml_Resposta+#13 +
+      form_nfe_aguarde.mNFEretorno.msaida_cstat_motivo+#13;
+      if ParametrosNfce.pAceitaMensagem then
+         begin
+         Application.CreateForm(TFrm_Sintegra_Advert, Frm_Sintegra_Advert);
+         Frm_Sintegra_Advert.Memo_NFSNaoEnc.Lines.Clear;
+         Frm_Sintegra_Advert.Memo_NFSNaoEnc.Lines.Add(form_nfe_aguarde.mNFEretorno.msaida_ret_observacao
+         +#13 +   form_nfe_aguarde.mNFEretorno.msaida_cstat_motivo+#13);
+         Frm_Sintegra_Advert.Memo_xml.Lines.Clear;
+         Frm_Sintegra_Advert.Memo_xml.Lines.Add(mXml_servico.Text);
+         Frm_Sintegra_Advert.tsXml.TabVisible:=true;
+         Frm_Sintegra_Advert.TabSheet1.TabVisible:=true;
+         Frm_Sintegra_Advert.Memo_xmlRet.Lines.Text:=form_nfe_aguarde.mNFEretorno.msaida_xml_Resposta;
+         Frm_Sintegra_Advert.ShowModal;
+         end;
+      result.pok:=false;
+      exit;
+      end;
 
 fAtualizarCadns();
 
@@ -2317,364 +2489,8 @@ freeandnil(mXml_servico);
 result.pok:=true;
 
 end;
-
-
-function fEmitirBoletoBancario(ParametrosNfce: tParametrosNfce): tRetornoNfce;
-
-var
-form_ebol_func2: tFrm_ebol;
-query_ped: TQuery;
-query_exe: TQuery;
-
-mnomebol: string;
-x: integer;
-minstrucao01: string;
-begin
-result.pok:=true;
-result.pMensagem:='';
-query_exe:=TQuery.create(nil);
-
-query_exe.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-
-query_ped:=TQuery.create(nil);
-query_ped.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-
-query_ped.close;
-query_ped.sql.clear;
-query_ped.sql.add('select P1BANCO,P1CODCLI from CADP01 where '
-                 +' P1CHAVE=:CHAVE '
-                 +' AND P1LOTSEQ=:LOTSEQ '
-                 +' AND P1CODEMP=:CODEMP ');
-query_ped.ParamByName('CHAVE').AsInteger:=ParametrosNfce.pChave;
-query_ped.ParamByName('LOTSEQ').AsInteger:=ParametrosNfce.pChave_ano;
-query_ped.ParamByName('CODEMP').AsInteger:=ParametrosNfce.pcodemp;
-try
-   query_ped.open;
-except on e : exception do
-   begin
-   ex_erroSql_Novo(query_ped,1039,'func2 '+e.Message,'CADEMP');
-   result.pok:=false;
-   exit;
-   end;
-   end;
-Application.CreateForm(Tfrm_ebol, form_ebol_func2);
-
-While not query_ped.Eof do
-   begin
-   if flcadbco(1,ParametrosNfce.pcodemp,0,query_ped.fieldbyname('P1BANCO').AsString) then
-      begin
-      form_ebol_func2.cb_boleto.Checked:=True;
-      form_ebol_func2.Tb_Dup.Close;
-      form_ebol_func2.Tb_Dup.Sql.Clear;
-      form_ebol_func2.Tb_Dup.SQl.Add('Select CRCODEMP,CRDTVCTO,CRDTEMIS,CRNUMERO,CRDESD,CRDUP,CRNOSNUM, '
-                                    +'       CRDNOSNUM,CRCODDIG,CRCODBAR,CRACEITE,CRESPECIE, '
-                                    +'       CRINST01,CRINST02,CRINST03,CRINST04,CRCODBCO, '
-                                    +'       CRVALOR,CRDESCF,CRDTDESCF,CRJURD,CRDESCD,'
-                                    +'       CRNFACUM,CRCODCLI,CRCODVEN,CRTABPV,CRCODPV '
-                                    +' ,CRMULTA,CRQTDDM, CRCODFPGTO,CRID_NEW '
-                                    +' ,CRQTDPARC,CRNUMPARC,CRCOMPETENCIA_DTINICIO '
-                                   +' from caddar, cadfp where CRSTATUS<>9 and fpcodigo=crcodfpgto and fpvinculo=16 '
-                                   );
-      form_ebol_func2.Tb_Dup.SQl.add(' and  CRCODEMP=0'+Inttostr(ParametrosNfce.pcodemp));
-      form_ebol_func2.Tb_Dup.SQL.Add(' and CRNPED=:CHAVE AND CRLOTSEQ_CP=:LOTSEQ '
-                                  +' and NVL(CREMIBLQ,0)=0');
-      form_ebol_func2.Tb_Dup.SQL.Add(' ORDER BY CRQTDPARC,CRNUMPARC ');
-
-      form_ebol_func2.Tb_Dup.ParamByName('CHAVE').AsInteger:=ParametrosNfce.pChave;
-      form_ebol_func2.Tb_Dup.ParamByName('LOTSEQ').AsInteger:=ParametrosNfce.pChave_ano;
-
-      try
-         form_ebol_func2.Tb_Dup.Open;
-      except on e : exception do
-         begin
-         ex_erroSql_Novo(form_ebol_func2.Tb_Dup,1068,'func2 '+e.Message,'CADDAR');
-         result.pok:=false;
-         exit;
-         end;
-         end;
-      if form_ebol_func2.Tb_Dup.IsEmpty then
-         begin
-         result.pMensagem:=result.pMensagem+'Não encontrado titulo para a chave '+inttostr(ParametrosNfce.pChave)+'/'+inttostr(ParametrosNfce.pChave_ano);
-         end
-      else
-         begin
-         minstrucao01:='REFERENTE AO MES DE '+NMes(form_ebol_func2.Tb_DupCRCOMPETENCIA_DTINICIO.AsDateTime)+'/'+formatdatetime('YYYY',form_ebol_func2.Tb_DupCRCOMPETENCIA_DTINICIO.AsDateTime);
-
-         if DM4.Tb_Par01PBOL_PADRAO.Value=0 then
-            begin
-            form_ebol_func2.fAtualizaNosNum(1, // nao calcula codigo barras
-                  0,
-                  DM1.Tb_BcoBCIMPPVREP.AsInteger,
-                  minstrucao01,
-                  DM1.Tb_BcoBCINST02.Value,
-                  DM1.Tb_BcoBCINST03.Value,
-                  DM1.Tb_BcoBCINST04.Value,
-                  0);
-            end
-         else
-            begin
-            form_ebol_func2.fAtualizaNosNum(0,
-               0,
-               DM1.Tb_BcoBCIMPPVREP.AsInteger,
-               minstrucao01,
-               DM1.Tb_BcoBCINST02.Value,
-               DM1.Tb_BcoBCINST03.Value,
-               DM1.Tb_BcoBCINST04.Value,
-               0);
-            end;
-         form_ebol_func2.Tb_Dup.First;
-         if not form_ebol_func2.Tb_Dup.Eof then
-            begin
-            if DM4.Tb_Par01PBOL_PADRAO.Value=0 then
-               begin
-               DM1.Query1.Close;
-               DM1.Query1.SQL.Clear;
-               DM1.Query1.SQL.Add(' select * from CADFP ');
-               DM1.Query1.SQL.Add(' where FPCODIGO='+form_ebol_func2.Tb_DupCRCODFPGTO.AsString);
-               DM1.Query1.Open;
-               if DM1.Query1.FieldByName('FPVINCULO').AsInteger=16 then
-                 begin
-
-                 form_ebol_func2.mDadosBoleto.pTipo  :=1;
-                 form_ebol_func2.mDadosBoleto.pcodemp:=DM1.Tb_Ped01P1CODEMP.AsInteger;
-                 form_ebol_func2.mDadosBoleto.pCodBco:=DM1.Tb_Ped01P1BANCO.AsInteger;
-                 form_ebol_func2.mDadosBoleto.pNumIni:=form_ebol_func2.Tb_DupCRNUMERO.AsInteger;
-                 form_ebol_func2.mDadosBoleto.pNumFin:=form_ebol_func2.Tb_DupCRNUMERO.AsInteger;
-                 form_ebol_func2.mDadosBoleto.pDtIni :=pdatanula;
-                 form_ebol_func2.mDadosBoleto.pDtFin :=pdatanula;
-                 form_ebol_func2.mDadosBoleto.pParc  :=form_ebol_func2.Tb_DupCRDESD.AsString;
-                 form_ebol_func2.mDadosBoleto.pPend  :=true;
-                 form_ebol_func2.mDadosBoleto.pChavePed  :=0;
-                 form_ebol_func2.mDadosBoleto.pLotSeqPed :=0;
-
-                  form_ebol_func2.femibol(form_ebol_func2.mDadosBoleto);
-                  end;
-               end
-            else
-               begin
-               if FileExists('\SGE\LOGBAN.JPG') then
-                  DeleteFile('\SGE\LOGBAN.JPG');
-               form_ebol_func2.Tb_Dup.First;
-               if DM4.Tb_Par01PBOL_PADRAO.Value=2 then
-                  begin
-                  if not (DM1.Tb_BcoBCLOGO.IsNull) and (DM1.Tb_BcoBCLOGO.Value<>'') then
-                     begin
-                     DM1.Tb_BcoBCLOGO.SaveToFile('C:\SGE\LOGBAN.JPG');
-                     form_ebol_func2.rlLogo01.Picture.LoadFromFile('\SGE\LOGBAN.JPG');
-                     form_ebol_func2.rlLogo02.Picture.LoadFromFile('\SGE\LOGBAN.JPG');
-                     form_ebol_func2.rlLogo03.Picture.LoadFromFile('\SGE\LOGBAN.JPG');
-                     end;
-                  if trim(ParametrosNfce.pSalvarPdfPara)<>'' then
-                     begin
-                     if form_ebol_func2.Tb_Dup.fieldbyname('CRNUMPARC').AsInteger>1 then
-                        mnomebol:=fRetiraExtensao(ParametrosNfce.pSalvarPdfPara)+'_'+trim(form_ebol_func2.Tb_DupCRDESD.AsString)+ExtractFileExt(ParametrosNfce.pSalvarPdfPara)
-                     else
-                        mnomebol:=ParametrosNfce.pSalvarPdfPara;
-                     form_ebol_func2.fCarregardadosboletos(1);
-{                     Form_EBol_func2.RL_BOLETAS.Prepare;
-                     Form_EBol_func2.RL_BOLETAS.PreviewModal;
-}
-                     Form_EBol_func2.RL_BOLETAS.SaveToFile(mnomebol);
-                     end
-                  else
-                     begin
-                     if flcadimp_sys(1,DM1.Tb_Ped01P1CODEMP.AsInteger,0,'BOLETAS_LA') then
-                        begin
-                        for x:=0 to Printer.printers.Count-1 do
-                           begin
-                           if DM4.Tb_Imp_SysCIPORTA.Value=printer.Printers[x] then
-                              begin
-                              RLPrinter.PrinterIndex:=x;
-                              break;
-                              end
-                           end;
-                        end;
-                     try
-                        fTravaTeclado(0); // trava o teclado
-                        form_ebol_func2.RL_BOLETAS.PrintDialog:=false;
-                        form_ebol_func2.RL_BOLETAS.Print;
-                        form_ebol_func2.RL_BOLETAS.PrintDialog:=true;
-                        fTravaTeclado(1); // trava o teclado
-                     except
-                        fTravaTeclado(1); // trava o teclado
-                        fmensagem('Erro ao Tentar Imprimir a Boleta Grande!',0,['0'],0);
-                        end;
-                     end
-                  end
-               else
-                  begin
-                  if not (DM1.Tb_BcoBCLOGO.IsNull) and (DM1.Tb_BcoBCLOGO.Value<>'') then
-                     begin
-                     DM1.Tb_BcoBCLOGO.SaveToFile('C:\SGE\LOGBAN.JPG');
-                     form_ebol_func2.rlLogo01.Picture.LoadFromFile('\SGE\LOGBAN.JPG');
-                     form_ebol_func2.rlLogo02.Picture.LoadFromFile('\SGE\LOGBAN.JPG');
-                     form_ebol_func2.rlLogo03.Picture.LoadFromFile('\SGE\LOGBAN.JPG');
-                     end;
-                  if trim(ParametrosNfce.pSalvarPdfPara)<>'' then
-                     begin
-                     if form_ebol_func2.Tb_Dup.fieldbyname('CRNUMPARC').AsInteger>1 then
-                        mnomebol:=fRetiraExtensao(ParametrosNfce.pSalvarPdfPara)+'_'+trim(form_ebol_func2.Tb_DupCRDESD.AsString)+ExtractFileExt(ParametrosNfce.pSalvarPdfPara)
-                     else
-                        mnomebol:=ParametrosNfce.pSalvarPdfPara;
-                     form_ebol_func2.fCarregardadosboletos(1);
-
-{                     Form_EBol_func2.RL_BOLETAS.Prepare;
-                     Form_EBol_func2.RL_BOLETAS.PreviewModal;
-}
-                     Form_EBol_func2.RL_BOLETAS.SaveToFile(mnomebol);
-
-                     end
-                  else  if flcadimp_sys(1,DM1.Tb_Ped01P1CODEMP.AsInteger,0,'BOLETAS_LA') then
-                     begin
-                     for x:=0 to Printer.printers.Count-1 do
-                        begin
-                        if DM4.Tb_Imp_SysCIPORTA.Value=printer.Printers[x] then
-                           begin
-                           RLPrinter.PrinterIndex:=x;
-                           break;
-                           end
-                        end;
-                     end;
-                  try
-                     fTravaTeclado(0); // trava o teclado
-                     form_ebol_func2.RL_BOLETAS.PrintDialog:=false;
-                     form_ebol_func2.RL_BOLETAS.Print;
-                     form_ebol_func2.RL_BOLETAS.PrintDialog:=true;
-                     fTravaTeclado(1); // trava o teclado
-                  except
-                     fTravaTeclado(1); // trava o teclado
-                     fmensagem('Erro ao Tentar Imprimir a Boleta Bancaria!',0,['0'],0);
-                     end;
-                  end;
-               end;
-            end;
-         end;
-      query_exe.Close;
-      query_exe.SQL.Clear;
-
-      query_exe.SQL.Add('Update CADDAR set ');
-      query_exe.SQL.Add(' CREMIBLQ=1 ');
-      if not DM1.Qr_TID.Locate('TINOME','CADDAR',[]) then
-         begin
-         query_exe.SQL.Add(' where CRCODEMP=:CRCODEMP and CRNUMERO=:CRNUMERO  ');
-         end
-      else
-         query_exe.SQL.Add(' where CRNUMERO=:CRNUMERO ');
-      query_exe.SQL.Add(' and CRDESD=:CRDESD ');
-      query_exe.SQL.Add(' and CRDUP =:CRDUP ');
-      query_exe.SQL.Add(' and CRDTEMIS=:CRDTEMIS ');
-      query_exe.SQL.Add(' and CREMIBLQ<>1');
-      form_ebol_func2.Tb_Dup.First;
-      While not form_ebol_func2.Tb_Dup.Eof do
-         begin
-         if not DM1.Qr_TID.Locate('TINOME','CADDAR',[]) then
-            query_exe.ParamByName('CRCODEMP').AsFloat:=form_ebol_func2.Tb_DupCRCODEMP.AsFloat;
-         query_exe.ParamByName('CRNUMERO').AsFloat   :=form_ebol_func2.Tb_DupCRNUMERO.AsFloat;
-         query_exe.ParamByName('CRDESD').AsString    :=form_ebol_func2.Tb_DupCRDESD.AsString;
-         query_exe.ParamByName('CRDUP').AsFloat      :=form_ebol_func2.Tb_DupCRDUP.AsFloat;
-         query_exe.ParamByName('CRDTEMIS').AsDateTime:=form_ebol_func2.Tb_DupCRDTEMIS.AsDateTime;
-         try
-            query_exe.ExecSQL;
-            fdm1StartCommit;
-         except
-            query_exe.Sql.sAvetofile(mpastatemp +'sql.TXT');
-            end;
-         form_ebol_func2.Tb_Dup.Next;
-         end;
-      end;
-   query_ped.Next;
-   end;
-
-query_exe.close;
-freeandnil(query_exe);
-
-query_ped.close;
-freeandnil(query_ped);
-
-freeandnil(form_ebol_func2);
-if trim(result.pMensagem)='' then
-   result.pok:=true
-else
-   result.pok:=false;
 end;
 
-
-function fGerarOutrasOpcoesDePagamentos(ParametrosNfce: tParametrosNfce;cds_prazos: TClientDataSet): tRetornoNfce;
-
-
-var
-query_prazos: TQuery;
-begin
-if cds_prazos.active=false then
-   begin
-   cds_prazos.createdataSet;
-   cds_prazos.open;
-   end;
-cds_prazos.EmptyDataSet;
-
-query_prazos:=TQuery.Create(nil);
-query_prazos.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-
-query_prazos.SQL.clear;
-query_prazos.sql.add('SELECT P1CHAVE,P1LOTSEQ,P1CODEMP,P1TOTALL,P1CODPV,P1TABPV, PVCODPV,PVCODTIP,PVACTD '
-                    +', ROUND(( '
-                    +'SUM( '
-                    +' ( '
-                    +'    (  ( ROUND( (P2PCOTAB*(100+PVACTD)/100 ),2)  *P2QTD)-P2VALDES) '
-                    +' *  ROUND( ((100-P1DESC01)/100),2) '
-                    +' * ROUND( ((100-P1DESC02)/100),2) '
-                    +' * ROUND( ((100-P2DESC1)/100),2) '
-                    +' * ROUND( ((100-P2DESC2)/100),2) '
-                    +' * ROUND( ((100-P2DESC3)/100),2) '
-                    +'))-P1VLRDES),2) AS TOTLIQ '
-                    +',(SELECT COUNT(*) FROM CADPV2 WHERE PV2CODPV=PVCODPV AND PV2CODTIP=PVCODTIP) AS QTDPRAZOS '
-                    +',PVNOME '
-                    +'FROM CADP02,CADP01,CADPV WHERE '
-                    +'P1CHAVE=P2CHAVE AND P1LOTSEQ=P2LOTSEQ AND P1CODEMP=P2CODEMP '
-                    +'AND PVPERCOPERADORA>0 '
-                    +'AND P2CHAVE='+inttostr(ParametrosNfce.pChave)
-                    +' and P2LOTSEQ='+inttostr(ParametrosNfce.pChave_ano)
-                    +' and P2CODEMP='+InttoStr(ParametrosNfce.pCodemp)
-                    +' GROUP BY PVCODPV,PVCODTIP '
-                    +' ,P1CHAVE,P1LOTSEQ,P1CODEMP,P1TOTALL,P1CODPV,P1TABPV,PVACTD,P1VLRDES,PVNOME '
-                    +' ORDER BY QTDPRAZOS,PVNOME ');
-try
-   query_prazos.open;
-except on e : exception do
-   begin
-   ex_erroSql_Novo(query_prazos,1384,'SGE','CADP01');
-   end;
-   end;
-try
-    While not query_prazos.Eof do
-       begin
-       cds_prazos.Append;
-       cds_prazos.fieldbyname('NOMEPLANO').asstring  := query_prazos.fieldbyname('PVNOME').AsString;
-       cds_prazos.fieldbyname('TABPV').asstring      := query_prazos.fieldbyname('PVCODTIP').AsString;
-       cds_prazos.fieldbyname('CODPV').AsInteger     := query_prazos.fieldbyname('PVCODPV').AsInteger;
-       cds_prazos.fieldbyname('P1TABPV').asstring      := query_prazos.fieldbyname('P1TABPV').AsString;
-       cds_prazos.fieldbyname('P1CODPV').AsInteger     := query_prazos.fieldbyname('P1CODPV').AsInteger;
-
-       cds_prazos.fieldbyname('TOTALPED').AsFloat    := query_prazos.fieldbyname('P1TOTALL').AsFloat;
-       cds_prazos.fieldbyname('TOTLIQ').AsFloat      := query_prazos.fieldbyname('TOTLIQ').AsFloat;
-       cds_prazos.fieldbyname('QTDPRAZOS').AsFloat   := query_prazos.fieldbyname('QTDPRAZOS').AsFloat;
-       cds_prazos.fieldbyname('VALPARC').AsFloat     := arredonda( (query_prazos.fieldbyname('TOTLIQ').AsFloat /
-           iif(query_prazos.fieldbyname('QTDPRAZOS').AsInteger<1,1,query_prazos.fieldbyname('QTDPRAZOS').AsInteger)
-              ),2);
-       cds_prazos.fieldbyname('PERCACRES').AsFloat   := query_prazos.fieldbyname('PVACTD').AsFloat;
-       cds_prazos.post;
-       query_prazos.next;
-       end;
-   result.pok:=true;
-except
-   result.pok:=false;
-   end;
-query_prazos.close;
-freeandnil(query_prazos);
-   
-
-
-end;
 
 
 // inicio
@@ -3240,6 +3056,164 @@ if flfilpad(0,'_NF_SERVICO','NF_TIPO') then
 end;
 
 
+procedure fAtualizarCadp01(pDadosNFCEChvAcesso: TDadosNFCEChvAcesso);
+var
+query_ped01: TQuery;
+begin
+query_ped01:=TQuery.create(nil);
+query_ped01.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+query_ped01.SQL.add('Update cadp01 set '
+                    +' P1TPAMB_SERV = :P1TPAMB_SERV '
+                    +',P1SERV_VERSAOXML = :P1SERV_VERSAOXML '
+                    +',P1DATANF_SERV = :P1DATANF_SERV '
+                    +',P1DATDOC = :P1DATDOC '
+                    +',P1NUMNF_SERV = :P1NUMNF_SERV '
+                    +',P1NUMNF_SERV_NFSE = :P1NUMNF_SERV_NFSE '
+                    +',P1SERIE_SERV = :P1SERIE_SERV '
+                    +',P1MODELO_SERV = :P1MODELO_SERV ');
+
+if pDadosNFCEChvAcesso.pStatusPed>-1 then
+   Query_ped01.SQL.add(',P1STATUS = '+inttostr(pDadosNFCEChvAcesso.pStatusPed));
+if pDadosNFCEChvAcesso.P1codcai>-1 then
+   Query_ped01.SQL.add(',P1CX_CODCAI = '+inttostr(pDadosNFCEChvAcesso.P1codcai));
+
+Query_ped01.SQL.add(',P1EMIDOC = 1 ');
+
+query_ped01.SQL.add(' where P1CODEMP=:CODEMP '
+                    +' and P1CHAVE=:CHAVE '
+                    +' and P1LOTSEQ=:LOTSEQ');
+query_ped01.ParamByName('P1TPAMB_SERV').AsInteger       := pDadosNFCEChvAcesso.pTpAmb;
+query_ped01.ParamByName('P1SERV_VERSAOXML').AsString    := DM4.Tb_ParGer02PG2VERSAOXML.AsString;
+query_ped01.ParamByName('P1DATANF_SERV').AsDateTime     := pDadosNFCEChvAcesso.pDataDoc;
+query_ped01.ParamByName('P1DATDOC').AsDateTime          := pDadosNFCEChvAcesso.pDataDoc;
+query_ped01.ParamByName('P1NUMNF_SERV').AsInteger       := pDadosNFCEChvAcesso.pNumdoc;
+query_ped01.ParamByName('P1NUMNF_SERV_NFSE').AsInteger  := pDadosNFCEChvAcesso.pNumdoc;
+query_ped01.ParamByName('P1SERIE_SERV').AsString        := pDadosNFCEChvAcesso.pSerieDoc;
+query_ped01.ParamByName('P1MODELO_SERV').AsInteger      := valint(pDadosNFCEChvAcesso.pModeloDoc);
+query_ped01.ParamByName('CODEMP').AsInteger             := pDadosNFCEChvAcesso.pCodEmp;
+query_ped01.ParamByName('CHAVE').AsInteger              := pDadosNFCEChvAcesso.pChave;
+query_ped01.ParamByName('LOTSEQ').AsInteger             := pDadosNFCEChvAcesso.pChaveAno;
+
+try
+   query_ped01.ExecSQL;
+   fdm1StartCommit;
+except on e : exception do
+  ex_erroSql_Novo(query_ped01,35,'func Erro:'+e.Message ,'CADEST');
+  end;
+query_ped01.close;
+freeandnil(query_ped01);
+
+end;
+
+
+
+procedure fVoltarPedidoComoPendente(pDadosNFCEChvAcesso: TDadosNFCEChvAcesso);
+var
+query_ped01: TQuery;
+
+    function fVoltarNumeroCasoNaoTenhaSidoUsado(pSerie, ptpAmb: Integer; pNumdoc: integer): integer;
+    var
+    Query_SeqNfce: tQuery;
+    mchavepad: string;
+    begin
+    mChavePad:=formatfloat('000', pSerie);
+    mChavePad:=mChavePad+formatfloat('0', ptpAmb);
+    Query_SeqNfce:=TQuery.Create(nil);
+    Query_SeqNfce.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+    Query_SeqNfce.SQL.add('select PID from BUSCARETESTARID where PTABELA=:PTABELA');
+    Query_SeqNfce.ParamByName('PTABELA').AsString:='nfce_'+mchavepad;
+    try
+       Query_SeqNfce.Open;
+       if Query_SeqNfce.IsEmpty then
+          result:=1
+       else
+          begin
+          if Query_SeqNfce.fields[0].AsInteger=pNumdoc then
+             begin
+             Query_SeqNfce.close;
+             Query_SeqNfce.SQL.clear;
+             Query_SeqNfce.SQL.add('update BUSCARETESTARID set PID=PID-1  where PTABELA=:PTABELA');
+             Query_SeqNfce.ParamByName('PTABELA').AsString:='nfce_'+mchavepad;
+             try
+                Query_SeqNfce.ExecSQL;
+             except ON E: Exception do
+                begin
+                ex_erroSql_Novo(Query_SeqNfce,2551,'_nfce','BUSCARETESTARID');
+                Query_SeqNfce.Close;
+                FreeAndNil(Query_SeqNfce);
+                exit
+                end;
+                end;
+             end;
+          end;
+   except ON E: Exception do
+      begin
+      ex_erroSql_Novo(Query_SeqNfce,2524,'_nfce','BUSCARETESTARID');
+      Query_SeqNfce.Close;
+      FreeAndNil(Query_SeqNfce);
+      exit
+      end;
+      end;
+
+
+//    result:=fBuscareTestarID('nfce_'+mchavepad);
+    end;
+
+
+
+begin
+
+
+
+
+fVoltarNumeroCasoNaoTenhaSidoUsado(valint(pDadosNFCEChvAcesso.pSerieDoc),pDadosNFCEChvAcesso.pTpAmb,pDadosNFCEChvAcesso.pNumdoc );
+
+
+
+query_ped01:=TQuery.create(nil);
+query_ped01.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+query_ped01.SQL.add('Update cadp01 set '
+                    +' P1NFCE_DATA = :P1NFCE_DATA '
+                    +',P1DATDOC = :P1DATDOC '
+                    +',P1NFCE_NUMERO = :P1NFCE_NUMERO '
+                    +',P1NFCE_CHV_ACESSO = :P1NFCE_CHV_ACESSO '
+                    +',P1NFCE_TPEMIS = 0 ');
+Query_ped01.SQL.add(',P1CUPOM = 0');
+Query_ped01.SQL.add(',P1STATUS = 0');
+Query_ped01.SQL.add(',P1NFCE_CONTIGENCIA_XJUST = '+QuotedStr(''));
+Query_ped01.SQL.add(',P1NFCE_CONTIGENCIA_DH = null');
+
+
+
+Query_ped01.SQL.add(',P1EMIDOC = 0 ');
+
+query_ped01.SQL.add(' where P1CODEMP=:CODEMP '
+                    +' and P1CHAVE=:CHAVE '
+                    +' and P1LOTSEQ=:LOTSEQ');
+query_ped01.ParamByName('P1NFCE_DATA').AsDateTime     := pdatanula;
+query_ped01.ParamByName('P1DATDOC').AsDateTime        := pdatanula;
+query_ped01.ParamByName('P1NFCE_NUMERO').AsInteger    := 0;
+query_ped01.ParamByName('P1NFCE_CHV_ACESSO').AsString := '';
+query_ped01.ParamByName('CODEMP').AsInteger           := pDadosNFCEChvAcesso.pCodEmp;
+query_ped01.ParamByName('CHAVE').AsInteger            := pDadosNFCEChvAcesso.pChave;
+query_ped01.ParamByName('LOTSEQ').AsInteger           := pDadosNFCEChvAcesso.pChaveAno;
+
+try
+   query_ped01.ExecSQL;
+   fdm1StartCommit;
+except on e : exception do
+  ex_erroSql_Novo(query_ped01,35,'func Erro:'+e.Message ,'CADEST');
+  end;
+query_ped01.close;
+freeandnil(query_ped01);
+
+end;
+
+
+
 end.
+
+
+
 
 

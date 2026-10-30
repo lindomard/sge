@@ -1054,6 +1054,7 @@ type
     Tb_ped02S_preP2SPCOFINS: TFloatField;
     Tb_ped02S_preP2SCODTRIB_MUN: TStringField;
     Tb_ped02S_preP2SCODTRIB_NAC: TStringField;
+    Tb_ped02S_preP2SCODCNAE: TStringField;
     procedure sbnIncluirClick(Sender: TObject);
     procedure edt_codcliExit(Sender: TObject);
     procedure edt_codcliKeyPress(Sender: TObject; var Key: Char);
@@ -2153,17 +2154,15 @@ type
 
 
    function fTestarCoRelacionadosNFse: boolean;
-   function fExisteCodTributo(pCodTrib: String): boolean;
 
-   function fExisteCodNbs(pCodigo: String): boolean;
-   function fExisteCodCbsCst(pCodigo: String): boolean;
 
-   function fExisteCadClassTrib(pCodigo: String): boolean;
+   procedure fCarregarCadEmpCnae;
 
-   function fExisteCadcstPis(pCodigo: String): boolean;
 
-   function fExisteCadIndOpIbsCbs(pCodigo: String): boolean;
 
+
+
+   procedure fCarregarDadosCnae(pCodCnae: String);
 
 
 
@@ -2219,6 +2218,8 @@ type
 
   end;
 const
+mcol_codcnae=4;
+
 mcol_item=0;
 mcol_codpro=1;
 mcol_nome=2;
@@ -2530,7 +2531,11 @@ tb_Imagem:=tAdoQuery.create(nil);
 if mPrestacao_servico=false then
    begin
    sbnNFS.Visible:=false;
-   tsServicos.TabVisible:=false;
+   tsServicos.TabVisible:=false
+   end
+else
+   begin
+   fCarregarCadEmpCnae;
 {   end
 
 else
@@ -4412,6 +4417,7 @@ Tb_Ped02S_Pre.SQL.Add(
                      +',max(P2SINDOP_IBSCBS) as P2SINDOP_IBSCBS           '
 
                      +',max(P2SCODNBS) as P2SCODNBS           '
+                     +',max(P2SCODCNAE) as P2SCODCNAE           '
                      +',max(P2SCODTRIB_MUN) as P2SCODTRIB_MUN           '
                      +',max(P2SCODTRIB_NAC) as P2SCODTRIB_NAC           '
 
@@ -7188,6 +7194,7 @@ end;
 procedure TFrm_Venda_Pre.DBGrid_servicosColExit(Sender: TObject);
 var
 mTabIcm,mCst: String;
+mNome: String;
 begin
 
 
@@ -7211,9 +7218,23 @@ if sbnGravar.Enabled then
          abort;
          end
       end
+   else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCODCNAE then
+      begin
+      if not fExisteCadcnae(Tb_ped02S_preP2SCODCNAE.AsString,true,mNome) then
+         begin
+         DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SCODCNAE;
+         if Sbngravar.enabled then
+            DBGrid_servicos.SetFocus;
+         abort;
+         end
+
+      else
+         fCarregarDadosCnae(Tb_ped02S_preP2SCODCNAE.AsString);
+      end
+
    else if DBGrid_servicos.SelectedField=tb_ped02s_preP2SCODTRIB_NAC then
       begin
-      if not fExisteCodTributo(tb_ped02s_preP2SCODTRIB_NAC.AsString) then
+      if not fExisteCodTributo(tb_ped02s_preP2SCODTRIB_NAC.AsString,true, mNome) then
          begin
          DBGrid_servicos.SelectedField:=tb_ped02s_preP2SCODTRIB_NAC;
          if Sbngravar.enabled then
@@ -7224,7 +7245,7 @@ if sbnGravar.Enabled then
 
    else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCBS_CST then
       begin
-      if not fExisteCodCbsCst(Tb_ped02S_preP2SCBS_CST.AsString) then
+      if not fExisteCodCbsCst(Tb_ped02S_preP2SCBS_CST.AsString,true,mNome) then
          begin
          DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SCBS_CST;
          if Sbngravar.enabled then
@@ -7235,7 +7256,7 @@ if sbnGravar.Enabled then
 
    else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCODNBS then
       begin
-      if not fExisteCodNbs(Tb_ped02S_preP2SCODNBS.AsString) then
+      if not fExisteCodNbs(Tb_ped02S_preP2SCODNBS.AsString,true,mnome) then
          begin
          DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SCODNBS;
          if Sbngravar.enabled then
@@ -7246,7 +7267,7 @@ if sbnGravar.Enabled then
 
    else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCODCLASSTRIB then
       begin
-      if not fExisteCadClassTrib(Tb_ped02S_preP2SCODCLASSTRIB.AsString) then
+      if not fExisteCadClassTrib(Tb_ped02S_preP2SCODCLASSTRIB.AsString,true,mNome) then
          begin
          DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SCODCLASSTRIB;
          if Sbngravar.enabled then
@@ -7257,7 +7278,7 @@ if sbnGravar.Enabled then
 
    else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SCST_PIS then
       begin
-      if not fExisteCadcstPis(Tb_ped02S_preP2SCST_PIS.AsString) then
+      if not fExisteCadcstPis(Tb_ped02S_preP2SCST_PIS.AsString,true,mNome) then
          begin
          DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SCST_PIS;
          if Sbngravar.enabled then
@@ -7268,7 +7289,7 @@ if sbnGravar.Enabled then
 
    else if DBGrid_servicos.SelectedField=Tb_ped02S_preP2SINDOP_IBSCBS then
       begin
-      if not fExisteCadIndOpIbsCbs(Tb_ped02S_preP2SINDOP_IBSCBS.AsString) then
+      if not fExisteCadIndOpIbsCbs(Tb_ped02S_preP2SINDOP_IBSCBS.AsString,true,mNome) then
          begin
          DBGrid_servicos.SelectedField:=Tb_ped02S_preP2SINDOP_IBSCBS;
          if Sbngravar.enabled then
@@ -10940,6 +10961,8 @@ Tb_Ped02S_Pre.SQL.Add(
 
                      +',max(P2SCODNBS) as P2SCODNBS           '
                      +',max(P2SPCOFINS) as P2SPCOFINS           '
+                     +',max(P2SCODCNAE) as P2SCODCNAE           '
+
                      +',max(P2SPCSLL) as P2SPCSLL           '
                      +',max(P2SPISSQN) as P2SPISSQN           '
                      +',max(P2SPIR) as P2SPIR           '
@@ -14090,10 +14113,13 @@ begin
        end
     else
         Tb_Ped02S_preP2SID_NEW_101.AsFloat:=fBuscarProximoId('CADP02S_SEQ');
+if (DBGrid_servicos.Columns[mcol_codcnae].PickList.Count>0) then
+   begin
+   Tb_ped02S_preP2SCODCNAE.Value:=DBGrid_servicos.Columns[mcol_codcnae].PickList[0];
+   end;
 
-
-Tb_ped02S_preP2SCODTRIB_MUN.AsString:=DM1.Tb_EmpEMP_CODTRIB_MUN.AsString;
-Tb_ped02S_preP2SCODTRIB_NAC.AsString:=DM1.Tb_EmpEMP_CODTRIB_NAC.AsString;
+//Tb_ped02S_preP2SCODTRIB_MUN.AsString:=DM1.Tb_EmpEMP_CODTRIB_MUN.AsString;
+//Tb_ped02S_preP2SCODTRIB_NAC.AsString:=DM1.Tb_EmpEMP_CODTRIB_NAC.AsString;
 
 
 end;
@@ -15977,6 +16003,8 @@ Query_Ped02S_Temp.SQL.Add(',max(P2SDESC1) AS P2SDESC_PERC01 '
 
                      +',max(P2SCODTRIB_NAC) as P2SCODTRIB_NAC           '
                      +',max(P2SCODNBS) as P2SCODNBS           '
+                     +',max(P2SCODCNAE) as P2SCODCNAE           '
+
                      +',max(P2SPCOFINS) as P2SPCOFINS           '
 
                      +',max(P2SPCSLL) as P2SPCSLL           '
@@ -36774,178 +36802,81 @@ pfechartudo;
 
 end;
 
-function TFrm_Venda_Pre.fExisteCodTributo(pCodTrib: String): boolean;
+
+
+
+procedure TFrm_Venda_Pre.fCarregarCadEmpCnae;
 var
-query_tributo: tQuery;
+query_cadempCnae: tQuery;
 begin
-result:=true;
-if trim(pCodTrib)<>'' then
-   begin
-   query_tributo:=tQuery.create(nil);
-   query_tributo.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-   query_tributo.sql.add('select count(*) from CADTRIB_MUN where TM_CODIGO=:CODIGO ');
-   query_tributo.parambyname('CODIGO').AsString:=pCodTrib;
-   try
-      query_tributo.Open;
-      if query_tributo.fields[0].AsInteger<1 then
-         begin
-         MessageDlg('Código do Tributo '+pCodTrib+' não Cadastrado!',mtWarning,[mbOk],0);
-         result:=false;
-         end;
-   except ON E: Exception do
+
+query_cadempCnae:=tQuery.create(nil);
+query_cadempCnae.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+query_cadempCnae.sql.add('select ECNAE_ID_CNAE from cademp_CNAE ORDER BY ECNAE_ID_CNAE');
+try
+   query_cadempCnae.open;
+   DBGrid_servicos.Columns[mcol_codcnae].PickList.Clear;
+   While not query_cadempCnae.eof do
       begin
-      ex_erroSql_Novo(query_tributo,36638,'_stru '+e.message,'user');
+      DBGrid_servicos.Columns[mcol_codcnae].PickList.add(query_cadempCnae.Fields[0].AsString);
+      query_cadempCnae.next;
       end;
-      end;
-   query_tributo.close;
-   freeandnil(query_tributo);
+except on e : exception do
+   begin
+   ex_erroSql_Novo(dm1.QUERY1,1793,'func Erro:'+e.Message ,'CADEST');
    end;
+   end;
+query_cadempCnae.close;
+freeandnil(query_cadempCnae);
+
 end;
 
-
-function TFrm_Venda_Pre.fExisteCodCbsCst(pCodigo: String): boolean;
+procedure TFrm_Venda_Pre.fCarregarDadosCnae(pCodCnae: String);
 var
-query_cbs: tQuery;
+Tb_EmpCnae: tquery;
 begin
-result:=true;
-if trim(pCodigo)<>'' then
-   begin
-   query_cbs:=tQuery.create(nil);
-   query_cbs.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-   query_cbs.sql.add('select count(*) from CADCBS_CST where CBS_CODIGO=:CODIGO ');
-   query_cbs.parambyname('CODIGO').AsString:=pCodigo;
-   try
-      query_cbs.Open;
-      if query_cbs.fields[0].AsInteger<1 then
-         begin
-         MessageDlg('Código do CST/CBS '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
-         result:=false;
-         end;
-   except ON E: Exception do
+Tb_EmpCnae := tquery.Create(nil);
+Tb_EmpCnae.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
+Tb_EmpCnae.close;
+Tb_EmpCnae.sql.Clear;
+Tb_EmpCnae.sql.Add('sELECT T1.*,CNAE_NOME AS nomecnae '
+                  +',TM_NOME AS nome_lc_116 '
+                  +', CIOP_NOME AS nome_ind_op '
+                  +', NBS_NOME AS  nome_nbs '
+                  +',CSTC_NOME AS nome_cst_pis_cofins '
+                  +',CBS_NOME AS nome_cst_ibs_cbs '
+                  +',CT_NOME AS nome_class_trib '
+                  +',TM_NOME AS nome_trib_nac '
+                  +' FROM cademp_cnae t1 left join CADCNAE on (CNAE_CODCNAE = ECNAE_ID_CNAE) '
+                  +' left join CADTRIB_MUN on (TM_CODIGO = ECNAE_CODLC_SERV) '
+                  +' left join CADINDOP_IBSCBS on (CIOP_CODIGO = ECNAE_IND_OP) '
+                  +' left join CADNBS on (NBS_CODIGO = ECNAE_CODNBS) '
+                  +' left join CADCST_PISCOFINS on (CSTC_CODIGO = ECNAE_CST_PIS_COFINS) '
+                  +' left join CADCBS_CST on (CBS_CODIGO = ECNAE_CST_IBS_CBS) '
+                  +' left join CADCLASSTRIB on (CT_CODIGO = ECNAE_CADCLASSTRIB) '
+                  +' where  ECNAE_ID_CNAE='+QuotedStr(pCodCnae));
+try
+   Tb_EmpCnae.open;
+   if (not Tb_EmpCnae.IsEmpty) then
       begin
-      ex_erroSql_Novo(query_cbs,36638,'_stru '+e.message,'user');
-      end;
-      end;
-   query_cbs.close;
-   freeandnil(query_cbs);
-   end;
-end;
+      Tb_ped02S_preP2SCODTRIB_MUN.Value   := Tb_EmpCnae.fieldbyName('ECNAE_COD_ATIV').AsString;
+      Tb_ped02S_preP2SCODTRIB_NAC.Value   := Tb_EmpCnae.fieldbyName('ecnae_trib_nac').AsString;
 
-function TFrm_Venda_Pre.fExisteCodNbs(pCodigo: String): boolean;
-var
-query_nbs: tQuery;
-begin
-result:=true;
-if trim(pCodigo)<>'' then
+      Tb_ped02S_preP2SCODNBS.Value        := Tb_EmpCnae.fieldbyName('ECNAE_CODNBS').AsString;
+      Tb_ped02S_preP2SCBS_CST.Value       := Tb_EmpCnae.fieldbyName('ECNAE_CST_IBS_CBS').AsString;
+      Tb_ped02S_preP2SCST_PIS.Value       := Tb_EmpCnae.fieldbyName('ECNAE_CST_PIS_COFINS').AsString;
+      Tb_ped02S_preP2SCODCLASSTRIB.Value  := Tb_EmpCnae.fieldbyName('ECNAE_CADCLASSTRIB').AsString;
+      Tb_ped02S_preP2SINDOP_IBSCBS.Value  := Tb_EmpCnae.fieldbyName('ECNAE_IND_OP').AsString;
+      Tb_ped02S_preP2SALIQISSQN.Value     := Tb_EmpCnae.fieldbyName('ECNAE_PISSQN').AsFloat;
+      end;
+except on e : exception do
    begin
-   query_nbs:=tQuery.create(nil);
-   query_nbs.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-   query_nbs.sql.add('select count(*) from CADNBS where NBS_CODIGO=:CODIGO ');
-   query_nbs.parambyname('CODIGO').AsString:=pCodigo;
-   try
-      query_nbs.Open;
-      if query_nbs.fields[0].AsInteger<1 then
-         begin
-         MessageDlg('Código do nbs '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
-         result:=false;
-         end;
-   except ON E: Exception do
-      begin
-      ex_erroSql_Novo(query_nbs,36638,'_stru '+e.message,'user');
-      end;
-      end;
-   query_nbs.close;
-   freeandnil(query_nbs);
+   ex_erroSql_Novo(Tb_EmpCnae,2045,'SGE','CADEMP_CNAE');
    end;
-end;
-
-
-function TFrm_Venda_Pre.fExisteCadClassTrib(pCodigo: String): boolean;
-var
-query_classtrib: tQuery;
-begin
-result:=true;
-if trim(pCodigo)<>'' then
-   begin
-   query_classtrib:=tQuery.create(nil);
-   query_classtrib.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-   query_classtrib.sql.add('select count(*) from CADCLASSTRIB where CT_CODIGO=:CODIGO ');
-   query_classtrib.parambyname('CODIGO').AsString:=pCodigo;
-   try
-      query_classtrib.Open;
-      if query_classtrib.fields[0].AsInteger<1 then
-         begin
-         MessageDlg('Código do classe tributaria '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
-         result:=false;
-         end;
-   except ON E: Exception do
-      begin
-      ex_erroSql_Novo(query_classtrib,36638,'_stru '+e.message,'user');
-      end;
-      end;
-   query_classtrib.close;
-   freeandnil(query_classtrib);
    end;
-end;
+Tb_EmpCnae.close;
+freeandnil(Tb_EmpCnae);
 
-
-
-function TFrm_Venda_Pre.fExisteCadcstPis(pCodigo: String): boolean;
-var
-query_cstpis: tQuery;
-begin
-result:=true;
-if trim(pCodigo)<>'' then
-   begin
-   query_cstpis:=tQuery.create(nil);
-   query_cstpis.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-   query_cstpis.sql.add('select count(*) from Cadcst_Piscofins where CSTC_CODIGO=:CODIGO ');
-   query_cstpis.parambyname('CODIGO').AsString:=pCodigo;
-   try
-      query_cstpis.Open;
-      if query_cstpis.fields[0].AsInteger<1 then
-         begin
-         MessageDlg('Código do cst pis '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
-         result:=false;
-         end;
-   except ON E: Exception do
-      begin
-      ex_erroSql_Novo(query_cstpis,36638,'_stru '+e.message,'user');
-      end;
-      end;
-   query_cstpis.close;
-   freeandnil(query_cstpis);
-   end;
-end;
-
-
-
-function TFrm_Venda_Pre.fExisteCadIndOpIbsCbs(pCodigo: String): boolean;
-var
-query_indOpIbsCbs: tQuery;
-begin
-result:=true;
-if trim(pCodigo)<>'' then
-   begin
-   query_indOpIbsCbs:=tQuery.create(nil);
-   query_indOpIbsCbs.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-   query_indOpIbsCbs.sql.add('select count(*) from CADINDOP_IBSCBS where CIOP_CODIGO=:CODIGO ');
-   query_indOpIbsCbs.parambyname('CODIGO').AsString:=pCodigo;
-   try
-      query_indOpIbsCbs.Open;
-      if query_indOpIbsCbs.fields[0].AsInteger<1 then
-         begin
-         MessageDlg('Código do cst pis '+pCodigo+' não Cadastrado!',mtWarning,[mbOk],0);
-         result:=false;
-         end;
-   except ON E: Exception do
-      begin
-      ex_erroSql_Novo(query_indOpIbsCbs,36638,'_stru '+e.message,'user');
-      end;
-      end;
-   query_indOpIbsCbs.close;
-   freeandnil(query_indOpIbsCbs);
-   end;
 end;
 
 end.

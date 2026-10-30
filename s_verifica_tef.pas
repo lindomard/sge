@@ -807,7 +807,7 @@ mDadosNFCEChvAcesso.pServico:=NFe_Autorizacao;
 
 
 mDadosNFCEChvAcesso:=mNfceVT.fEnviarXMLNFCE(mDadosNFCEChvAcesso);
-
+// LINDOMAR
 
 if TRIM(mDadosNFCEChvAcesso.pXml_Cliente)='' then
    begin

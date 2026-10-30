@@ -7077,6 +7077,13 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
             end
             item
               Expanded = False
+              FieldName = 'P2SCODCNAE'
+              Title.Alignment = taCenter
+              Width = 97
+              Visible = True
+            end
+            item
+              Expanded = False
               FieldName = 'P2SCODTRIB_MUN'
               Title.Alignment = taCenter
               Width = 116
@@ -10356,6 +10363,10 @@ object Frm_Venda_Pre: TFrm_Venda_Pre
     object Tb_ped02S_preP2SCODTRIB_NAC: TStringField
       DisplayLabel = 'C'#243'd Trib Nac'
       FieldName = 'P2SCODTRIB_NAC'
+    end
+    object Tb_ped02S_preP2SCODCNAE: TStringField
+      DisplayLabel = 'C'#243'digo Cnae'
+      FieldName = 'P2SCODCNAE'
     end
   end
   object U_ped02S_pre: TUpdateSQL

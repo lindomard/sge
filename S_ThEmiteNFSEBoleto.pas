@@ -213,13 +213,14 @@ While not query_temp.eof do
       ParametrosNfce.pCodemp := query_temp.fieldbyname('DP_CODEMP').asinteger;
       ParametrosNfce.pSalvarPDFPara := mArqGerar;
 
+{
       if fEmitirBoletoBancario(ParametrosNfce).pOk then
          begin
          fConfirmarEmissaoDcoumento('DP_ANEXO_BOL',mArqGerar);
          end
       else
          fErroEmissaoDcoumento('DP_RESULTADO_BOL',mmensagem);
-
+ }
       end;
 
 

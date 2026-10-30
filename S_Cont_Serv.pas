@@ -429,7 +429,7 @@ tb_ped02s_pre.Post;
 
 mVenda_GP.fGravarItemCDS(1 // produto
                     ,0
-                    ,2 // Tipo de Movimento do Estoque 0-Saida 1-Entrada 2-Não Movimenta p2Estoque
+                    ,2 // Tipo de Movimento do Estoque 0-Saida 1-Entrada 2-N?o Movimenta p2Estoque
                     ,mVenda_GP.mPed1_CodFP
                     ,0 //apenas calcular  tipo do evento 0-inclusao 1-alteracao 2-exclusao 3-calcular
                     ,0 //pSituacao: Integer;
@@ -549,7 +549,7 @@ if Trim(CODCLI.Text)<>'' then
    begin
    if not flcadcli(1,0,CODCLI.Text) then
       begin
-      fMensagem('Cliente não Cadastrado!',0,['0'],0);
+      fMensagem('Cliente n?o Cadastrado!',0,['0'],0);
       CODCLI.Text := '';
       CODCLI.SetFocus;
       end
@@ -762,14 +762,14 @@ While not Tb_CServ01.Eof do
 
    if trim(Tb_CServ01CEMAIL.AsString)='' then
       begin
-      Form_Ocorrencias.adicionaItemListView('Cliente '+Tb_CServ01CRAZAO.AsString+' - ' +Tb_CServ01CS_CODCLI.AsString+' não possui email!');
+      Form_Ocorrencias.adicionaItemListView('Cliente '+Tb_CServ01CRAZAO.AsString+' - ' +Tb_CServ01CS_CODCLI.AsString+' n?o possui email!');
       Form_Ocorrencias.mErros:=true;
       end;
    if NOT fLerGenerico_query('CADCLI,CADLOC','CRAZAO,CDENOM,CCNPJ,CCPF,CEMAIL,CLOG,CCODLOC,LNOME,LUF,LCODMUN_PREF,CENDERC,CBAIRROC,CCIDADEC'
                             +',CUFC,CCEPC','CCODCLI='+Tb_CServ01CS_CODCLI.AsString+' AND LCODLOC(+)=CCODLOC' ,query_consulta) then
       begin
 
-      Form_Ocorrencias.adicionaItemListView('Cliente '+Tb_CServ01CRAZAO.AsString+' - ' +Tb_CServ01CS_CODCLI.AsString+' não encontrado!');
+      Form_Ocorrencias.adicionaItemListView('Cliente '+Tb_CServ01CRAZAO.AsString+' - ' +Tb_CServ01CS_CODCLI.AsString+' n?o encontrado!');
 
       Form_Ocorrencias.mErros:=true;
       end;
@@ -786,7 +786,7 @@ While not Tb_CServ01.Eof do
 
    if (length(trim(query_consulta.fieldbyname('CENDERC').AsString))<2) then
       begin
-      Form_Ocorrencias.adicionaItemListView('Cliente '+Tb_CServ01CRAZAO.AsString+' - ' +Tb_CServ01CS_CODCLI.AsString+' Falta o Endereço de Cobranca!'
+      Form_Ocorrencias.adicionaItemListView('Cliente '+Tb_CServ01CRAZAO.AsString+' - ' +Tb_CServ01CS_CODCLI.AsString+' Falta o Endere?o de Cobranca!'
                                            +' '+query_consulta.fieldbyname('LNOME').asstring+' - '+query_consulta.fieldbyname('LUF').asstring   );
       Form_Ocorrencias.mErros:=true;
       end;
@@ -852,7 +852,7 @@ While not Tb_CServ01.Eof do
                begin
                Form_Ocorrencias.adicionaItemListView('Cliente '+Tb_CServ01CRAZAO.AsString+' - '
                          +Tb_CServ01CS_CODCLI.AsString+' o Servico '+query_consulta.Fieldbyname('PDCODPRO').asstring+' - '+query_consulta.fieldbyname('PDNOME').asstring
-                         +' não possui o Codigo CNAE !');
+                         +' n?o possui o Codigo CNAE !');
                Form_Ocorrencias.mErros:=true;
                end;
 
@@ -860,7 +860,7 @@ While not Tb_CServ01.Eof do
                begin
                Form_Ocorrencias.adicionaItemListView('Cliente '+Tb_CServ01CRAZAO.AsString+' - '
                          +Tb_CServ01CS_CODCLI.AsString+' o Servico '+query_consulta.Fieldbyname('PDCODPRO').asstring+' - '+query_consulta.fieldbyname('PDNOME').asstring
-                         +' não possui o Codigo do SERVICO !');
+                         +' n?o possui o Codigo do SERVICO !');
                Form_Ocorrencias.mErros:=true;
                end;
 
@@ -868,7 +868,7 @@ While not Tb_CServ01.Eof do
                begin
                Form_Ocorrencias.adicionaItemListView('Cliente '+Tb_CServ01CRAZAO.AsString+' - '
                          +Tb_CServ01CS_CODCLI.AsString+' o Servico '+query_consulta.Fieldbyname('PDNIVEL').asstring+' - '+query_consulta.fieldbyname('PDNOME').asstring
-                         +' não esta definido como serviço !');
+                         +' n?o esta definido como servi?o !');
                Form_Ocorrencias.mErros:=true;
                end;
 
@@ -906,7 +906,7 @@ if mmenor_codemp then
 
 if not fTestarServidor_NFE(codemp,'SERVICO',mmensagem, peletronica) then
    begin
-   Form_Ocorrencias.adicionaItemListView('Servidor de Nota Fiscal Eletronica Não esta Ativa!');
+   Form_Ocorrencias.adicionaItemListView('Servidor de Nota Fiscal Eletronica N?o esta Ativa!');
    end;
 
 
@@ -961,7 +961,7 @@ mdathor_fin: tdatetime;
 begin
 if not (Tb_CServ01.Active) or (Tb_CServ01.IsEmpty) then
    begin
-   fMensagem('Favor Aplicar uma Seleção!',0,['0'],0);
+   fMensagem('Favor Aplicar uma Sele??o!',0,['0'],0);
    bbSelecionar.SetFocus;;
    exit;
    end;
@@ -1039,7 +1039,7 @@ verteclado(0);
 mdathor_fin:=now();
 
 lbl_tempo.Caption:=lbl_tempo.Caption+' Concluido em '+formatdatetime(fdt2, mdathor_ini)+' as '+FormatDateTime(fhr, mdathor_ini)
-                  +' duração '+IntToStr(MinutesBetween(mdathor_ini,mdathor_fin))+' minutos ';    ;
+                  +' dura??o '+IntToStr(MinutesBetween(mdathor_ini,mdathor_fin))+' minutos ';    ;
 verteclado(0);
 
 fValidarEnviou;
@@ -1118,7 +1118,7 @@ if Trim(CODCOB.Text)<>'' then
    begin
    if not flqr1('BCBANCO','BC','CADBCO','N','BCCODBCO',CODCOB.Text) then
       begin
-      fmensagem('Banco de Cobranca não cadastrada!',0,['0'],0);
+      fmensagem('Banco de Cobranca n?o cadastrada!',0,['0'],0);
       CODCOB.SetFocus;
       end
    else
@@ -1290,8 +1290,6 @@ query_bol: TQuery;
 mmensagem: string;
 mArqGerar: string;
 query_atu_comp: TQuery;
-ParametrosNfce :  tParametrosNfce;
-
 
 
       function fEmitiuDcoumento(pDocumento: string): boolean;
@@ -1436,16 +1434,12 @@ While not query_temp.eof do
       mArqGerar:=query_temp.fieldbyname('DP_PASTA_DEST').AsString+'NF_CHDPED_'
                               +query_temp.fieldbyname('DP_CHAVE_PED').AsString+'_'+query_temp.fieldbyname('DP_CODEMP').asstring+'.pdf';
 
-      ParametrosNfce.pChave     :=  query_temp.fieldbyname('DP_CHAVE_PED').asinteger;
-      ParametrosNfce.pChave_ano := query_temp.fieldbyname('DP_CHAVE_PED_ANO').asinteger;
-      ParametrosNfce.pCodemp    := query_temp.fieldbyname('DP_CODEMP').asinteger;
-      parametrosNfce.pAmbiente := iif(DM4.Tb_ParGer02PG2USANFE.AsInteger<2,2,1);
-
-
-      if fEmitirNotadeServico(ParametrosNfce).pOk then
+{
+      if fEmitirNotadeServico(false,mArqGerar
+                             ,'','',query_temp.fieldbyname('DP_CHAVE_PED').asinteger,query_temp.fieldbyname('DP_CHAVE_PED_ANO').asinteger
+                             ,query_temp.fieldbyname('DP_CODEMP').asinteger ,false,mmensagem) then
          begin
-         fConfirmarEmissaoDcoumento('DP_ANEXO_NF','');
-//         fConfirmarEmissaoDcoumento('DP_ANEXO_NF',mArqGerar);
+         fConfirmarEmissaoDcoumento('DP_ANEXO_NF',mArqGerar);
 
          // atualizar data da competencia
          query_atu_comp.Close;
@@ -1475,6 +1469,7 @@ While not query_temp.eof do
          end
       else
          fErroEmissaoDcoumento('DP_RESULTADO_NF',mmensagem);
+         }
 
       end;
    if (not fEmitiuDcoumento('DP_ANEXO_BOL'))  and (fEmitiuDcoumento('DP_ANEXO_NF')) then
@@ -1483,19 +1478,16 @@ While not query_temp.eof do
       mArqGerar:=query_temp.fieldbyname('DP_PASTA_DEST').AsString+'BOL_CHDPED_'
                               +query_temp.fieldbyname('DP_CHAVE_PED').AsString+'_'+query_temp.fieldbyname('DP_CODEMP').asstring+'.pdf';
 
-
-      ParametrosNfce.pChave     :=  query_temp.fieldbyname('DP_CHAVE_PED').asinteger;
-      ParametrosNfce.pChave_ano := query_temp.fieldbyname('DP_CHAVE_PED_ANO').asinteger;
-      ParametrosNfce.pCodemp    := query_temp.fieldbyname('DP_CODEMP').asinteger;
-
-
-      if fEmitirBoletoBancario(ParametrosNfce).pOk then
+{
+      if fEmitirBoletoBancario(mArqGerar,query_temp.fieldbyname('DP_CODEMP').asinteger
+                                 ,query_temp.fieldbyname('DP_CHAVE_PED').asinteger
+                                 ,query_temp.fieldbyname('DP_CHAVE_PED_ANO').asinteger,mmensagem) then
          begin
          fConfirmarEmissaoDcoumento('DP_ANEXO_BOL',mArqGerar);
          end
       else
          fErroEmissaoDcoumento('DP_RESULTADO_BOL',mmensagem);
-
+ }
       end;
 
 

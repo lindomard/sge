@@ -908,7 +908,8 @@ uses
   s_IndOpIbsCbs in 's_IndOpIbsCbs.pas' {Frm_IndOpIbsCbs},
   s_CstPisCofins in 's_CstPisCofins.pas' {frm_CstPisCofins},
   s_nbs in 's_nbs.pas' {frm_nbs},
-  s_CorrelatoNfse in 's_CorrelatoNfse.pas' {frm_CorrelatoNfse};
+  s_CorrelatoNfse in 's_CorrelatoNfse.pas' {frm_CorrelatoNfse},
+  s_nfse in 's_nfse.pas';
 
 //  S_RelNsCliXNcm in 'S_RelNsCliXNcm.pas' {Frm_RelNsCliXNcm};
 

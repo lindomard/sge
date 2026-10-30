@@ -5766,101 +5766,6 @@ if (marqsol='') or (marqatual=marqsol) then
    Frm_Stru.STG1.Cells[5,mlinha]:='whatsapp Automatico numero ';
 
 
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_CODTRIB_MUN';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='10';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Código do Tributo no Municipiow';
-
-
-    mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_CODTRIB_NAC';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='10';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Código do Tributo no Nacional';
-
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_REG_AP_TRIB_SN';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='1';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Regime de Apuração Tributária pelo Simples Nacional. ';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_REG_ESP_TRIB';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='1';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Tipos de Regimes Especiais de Tributação Municipal: ';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_IBS_CBS_TP_OPER';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='1';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Tipos de Operação Junto ao IBS CBS';
-
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_IBS_CBS_TP_ENTE_GOV';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='1';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Tipo de ente governamental';
-
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_IBS_CBS_IND_DEST';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='1';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='A respeito do Destinatário dos serviços: ';
-
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_TP_RET_PIS_COFINS';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='1';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Tipo de retenção PIS/COFINS e CSLL: ';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_IBS_CBS_FIN_NFSE';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='1';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='Indicador da finalidade da emissão de NFS-e  ';
-
-   mlinha:=mlinha+1;
-   Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='EMP_INDFINAL';
-   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='1';
-   Frm_Stru.STG1.Cells[3,mlinha]:='';
-   Frm_Stru.STG1.Cells[4,mlinha]:='';
-   Frm_Stru.STG1.Cells[5,mlinha]:='ndicador da finalidade da emissão de NFS-e   ';
-
 
 
 
@@ -9300,6 +9205,26 @@ if (marqsol='') or (marqatual=marqsol) then
    Frm_Stru.STG1.Cells[3,mlinha]:='';
    Frm_Stru.STG1.Cells[4,mlinha]:='';
    Frm_Stru.STG1.Cells[5,mlinha]:='Série da Nota fiscal de servico';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P1SERV_VERSAOXML';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='05';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('1.01');
+   Frm_Stru.STG1.Cells[5,mlinha]:='versao do xml';
+
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P1TPAMB_SERV';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcInteger;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Ambiente da nfse';
+
 
    mlinha:=mlinha+1;
    Frm_Stru.STG1.RowCount:=mlinha+1;
@@ -73566,6 +73491,15 @@ if (marqsol='') or (marqatual=marqsol) then
 
    mlinha:=mlinha+1;
    Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2T_CODCNAE';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='20';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Código do cnae';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
    Frm_Stru.STG1.Cells[0,mlinha]:='P2T_CODTRIB_MUN';
    Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
    Frm_Stru.STG1.Cells[2,mlinha]:='15';
@@ -79719,6 +79653,15 @@ if (marqsol='') or (marqatual=marqsol) then
    Frm_Stru.STG1.Cells[3,mlinha]:='';
    Frm_Stru.STG1.Cells[4,mlinha]:='';
    Frm_Stru.STG1.Cells[5,mlinha]:='Descricao Complementar';
+
+   mlinha:=mlinha+1;
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='P2SCODCNAE';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='20';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='Codigo do CNAE';
 
 
    mlinha:=mlinha+1;
@@ -145195,7 +145138,7 @@ if (marqsol='') or (marqatual=marqsol) then
    Frm_Stru.STG1.RowCount:=mlinha+1;
    Frm_Stru.STG1.Cells[0,mlinha]:='ts_local_incid_cbs';
    Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
-   Frm_Stru.STG1.Cells[2,mlinha]:='500';
+   Frm_Stru.STG1.Cells[2,mlinha]:='254';
    Frm_Stru.STG1.Cells[3,mlinha]:='';
    Frm_Stru.STG1.Cells[4,mlinha]:='default '+quotedstr('_')+' not null ';
    Frm_Stru.STG1.Cells[5,mlinha]:='ts_local_incid_cbs';
@@ -145849,7 +145792,7 @@ if (marqsol='') or (marqatual=marqsol) then
 
    mlinha:=mlinha+1;
    Frm_Stru.STG1.RowCount:=mlinha+1;
-   Frm_Stru.STG1.Cells[0,mlinha]:='ecnae_p_ente_gov';
+   Frm_Stru.STG1.Cells[0,mlinha]:='ECNAE_IBS_CBS_TP_ENTE_GOV';
    Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
    Frm_Stru.STG1.Cells[2,mlinha]:='10';
    Frm_Stru.STG1.Cells[3,mlinha]:='';
@@ -145864,6 +145807,18 @@ if (marqsol='') or (marqatual=marqsol) then
    Frm_Stru.STG1.Cells[3,mlinha]:='';
    Frm_Stru.STG1.Cells[4,mlinha]:='';
    Frm_Stru.STG1.Cells[5,mlinha]:='ecnae_tp_ret_pis_cofins';
+
+
+   mlinha:=mlinha+1;
+
+   Frm_Stru.STG1.RowCount:=mlinha+1;
+   Frm_Stru.STG1.Cells[0,mlinha]:='ECNAE_IBS_CBS_IND_DEST';
+   Frm_Stru.STG1.Cells[1,mlinha]:=pcString;
+   Frm_Stru.STG1.Cells[2,mlinha]:='1';
+   Frm_Stru.STG1.Cells[3,mlinha]:='';
+   Frm_Stru.STG1.Cells[4,mlinha]:='';
+   Frm_Stru.STG1.Cells[5,mlinha]:='A respeito do Destinatário dos serviços: ';
+
 
    mlinha:=mlinha+1;
    Frm_Stru.STG1.RowCount:=mlinha+1;

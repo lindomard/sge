@@ -268,7 +268,7 @@ object Frm_Agde: TFrm_Agde
   object DM_MYSQL: TTimer
     Interval = 3000
     OnTimer = DM_MYSQLTimer
-    Left = 120
+    Left = 128
     Top = 176
   end
 end

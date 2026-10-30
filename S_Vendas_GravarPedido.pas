@@ -2159,6 +2159,7 @@ if mger_estanarede then
                              +',P2T_CODTRIB_MUN '
                              +',P2T_CODTRIB_NAC '
                              +',P2T_CODNBS '
+                             +',P2T_CODCNAE '
                              +',P2T_PCOFINS '
                              +',P2T_PCSLL '
                              +',P2T_PISSQN '
@@ -2328,6 +2329,7 @@ if mger_estanarede then
 
 
                              +',:P2T_CODNBS '
+                             +',:P2T_CODCNAE '
                              +',:P2T_PCOFINS '
                              +',:P2T_PCSLL '
                              +',:P2T_PISSQN '
@@ -2592,6 +2594,7 @@ if mger_estanarede then
       Query_Exe.ParamByName('P2T_CODTRIB_MUN').AsString                     :='';
       Query_Exe.ParamByName('P2T_CODTRIB_NAC').AsString                     :='';
       Query_Exe.ParamByName('P2T_CODNBS').AsString                     :='';
+      Query_Exe.ParamByName('P2T_CODCNAE').AsString                     :='';
       query_exe.ParamByName('P2T_PCOFINS').AsFloat                     :=0;
       query_exe.ParamByName('P2T_PCSLL').AsFloat                       :=0;
       query_exe.ParamByName('P2T_PISSQN').AsFloat                      :=0;
@@ -2754,6 +2757,7 @@ if mger_estanarede then
                              +',P2T_CODTRIB_NAC '
 
                              +',P2T_CODNBS '
+                             +',P2T_CODCNAE '
                              +',P2T_PCOFINS '
                              +',P2T_PCSLL '
                              +',P2T_PISSQN '
@@ -2904,6 +2908,7 @@ if mger_estanarede then
                              +',:P2T_CODTRIB_NAC '
 
                              +',:P2T_CODNBS '
+                             +',:P2T_CODCNAE '
                              +',:P2T_PCOFINS '
                              +',:P2T_PCSLL '
                              +',:P2T_PISSQN '
@@ -3061,6 +3066,7 @@ if mger_estanarede then
 
 
       Query_Exe.ParamByName('P2T_CODNBS').AsString                    :=pTabela.FieldByName('P2SCODNBS').AsString;
+      Query_Exe.ParamByName('P2T_CODCNAE').AsString                    :=pTabela.FieldByName('P2SCODCNAE').AsString;
       Query_Exe.ParamByName('P2T_CODTRIB_MUN').AsString                    :=pTabela.FieldByName('P2SCODTRIB_MUN').AsString;
       Query_Exe.ParamByName('P2T_CODTRIB_NAC').AsString                    :=pTabela.FieldByName('P2SCODTRIB_NAC').AsString;
       query_exe.ParamByName('P2T_PCOFINS').AsFloat                :=pTabela.FieldByName('P2SPCOFINS').AsFloat;
@@ -3574,6 +3580,7 @@ try
                              +',P2T_CODTRIB_NAC '
 
                              +',P2T_CODNBS '
+                             +',P2T_CODCNAE '
                              +',P2T_PCOFINS '
                              +',P2T_PCSLL '
                              +',P2T_PISSQN '
@@ -3715,6 +3722,7 @@ try
                              +',:P2T_CODTRIB_MUN '
                              +',:P2T_CODTRIB_NAC '
                              +',:P2T_CODNBS '
+                             +',:P2T_CODNAE '
                              +',:P2T_PCOFINS '
                              +',:P2T_PCSLL '
                              +',:P2T_PISSQN '
@@ -3943,6 +3951,7 @@ try
       Query_Exe.ParamByName('P2T_CODTRIB_NAC').AsString                     :='';
 
       Query_Exe.ParamByName('P2T_CODNBS').AsString                    :='';
+      Query_Exe.ParamByName('P2T_CODCNAE').AsString                    :='';
       query_exe.ParamByName('P2T_PCOFINS').AsFloat                :=0;
       query_exe.ParamByName('P2T_PCSLL').AsFloat                :=0;
       query_exe.ParamByName('P2T_PISSQN').AsFloat                :=0;
@@ -4090,6 +4099,7 @@ try
                              +',P2T_CODTRIB_MUN '
                              +',P2T_CODTRIB_NAC '
                              +',P2T_CODNBS '
+                             +',P2T_CODCNAE '
                              +',P2T_PCOFINS '
                              +',P2T_PCSLL '
                              +',P2T_PISSQN '
@@ -4229,6 +4239,7 @@ try
                              +',:P2T_CODTRIB_NAC '
 
                              +',:P2T_CODNBS '
+                             +',:P2T_CODCNAE '
                              +',:P2T_PCOFINS '
                              +',:P2T_PCSLL '
                              +',:P2T_PISSQN '
@@ -4457,6 +4468,7 @@ try
       Query_Exe.ParamByName('P2T_CODTRIB_NAC').AsString                     :='';
 
       Query_Exe.ParamByName('P2T_CODNBS').AsString                    :='';
+      Query_Exe.ParamByName('P2T_CODCNAE').AsString                    :='';
       query_exe.ParamByName('P2T_PCOFINS').AsFloat                :=0;
       query_exe.ParamByName('P2T_PCSLL').AsFloat                :=0;
       query_exe.ParamByName('P2T_PISSQN').AsFloat                :=0;

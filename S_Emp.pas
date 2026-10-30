@@ -11,7 +11,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, S_C, DBCtrls, StdCtrls, Grids, DBGrids, ComCtrls, Mask, Buttons,
   ExtCtrls,db,dbtables,func,s_DM1,S_DM2,S_CodEmp,S_SI,lerarq,S_DM4,func2,
-  RxDBComb,funcoes_especificas,IdCoderMIME;
+  RxDBComb,funcoes_especificas,IdCoderMIME, dbcgrids;
 
 type
   TFrm_Emp = class(TFrm_C)
@@ -158,27 +158,6 @@ type
     Label62: TLabel;
     edtTextToNr: TEdit;
     lblNumber: TLabel;
-    TsNfse: TTabSheet;
-    Label61: TLabel;
-    DBE_EMP_CODTRIB_MUN: TDBEdit;
-    Label63: TLabel;
-    DBE_EMP_CODTRIB_NAC: TDBEdit;
-    Label64: TLabel;
-    RxDBCB_EMP_REG_AP_TRIB_SN: TRxDBComboBox;
-    Label65: TLabel;
-    RxDBCb_EMP_REG_ESP_TRIB: TRxDBComboBox;
-    Label66: TLabel;
-    RxDBCb_EMP_IBS_CBS_TP_OPER: TRxDBComboBox;
-    Label67: TLabel;
-    RxDBCB_EMP_IBS_CBS_TP_ENTE_GOV: TRxDBComboBox;
-    Label68: TLabel;
-    RxDBCB_EMP_IBS_CBS_IND_DEST: TRxDBComboBox;
-    Label69: TLabel;
-    RxDBCB_EMP_TP_RET_PIS_COFINS: TRxDBComboBox;
-    Label70: TLabel;
-    RxDBCB_EMP_IBS_CBS_FIN_NFSE: TRxDBComboBox;
-    Label71: TLabel;
-    RxDBCB_EMP_INDFINAL: TRxDBComboBox;
     tsCadcnae: TTabSheet;
     Src_EmpCnae: TDataSource;
     U_EmpCnae: TUpdateSQL;
@@ -207,11 +186,81 @@ type
     Tb_EmpCnaeECNAE_REG_AP_TRIB_SN: TStringField;
     Tb_EmpCnaeECNAE_REG_ESP_TRIB: TStringField;
     Tb_EmpCnaeECNAE_TP_OPER: TStringField;
-    Tb_EmpCnaeECNAE_P_ENTE_GOV: TStringField;
     Tb_EmpCnaeECNAE_TP_RET_PIS_COFINS: TStringField;
     Tb_EmpCnaeECNAE_IND_DEST: TStringField;
     Tb_EmpCnaeECNAE_FIN_NFSE: TStringField;
     Tb_EmpCnaeECNAE_IND_FINAL: TStringField;
+    DBCtrlGrid1: TDBCtrlGrid;
+    Label72: TLabel;
+    DBE_ECNAE_ID_CNAE_01: TDBEdit;
+    Tb_EmpCnaenomecnae: TStringField;
+    DBe_nomecnae_02: TDBEdit;
+    DBCb_ECNAE_PRINCIPAL_03: TDBCheckBox;
+    Label73: TLabel;
+    DBE_ECNAE_CODLC_SERV_07: TDBEdit;
+    Tb_EmpCnaenome_lc_116: TStringField;
+    DBE_nome_lc_116_08: TDBEdit;
+    Label74: TLabel;
+    DBE_ECNAE_IND_OP_21: TDBEdit;
+    Tb_EmpCnaenome_ind_op: TStringField;
+    DBE_nome_ind_op_22: TDBEdit;
+    Tb_EmpCnaenome_nbs: TStringField;
+    Label75: TLabel;
+    DBE_ECNAE_CODNBS_09: TDBEdit;
+    DBE_nome_nbs: TDBEdit;
+    Label77: TLabel;
+    DBE_ECNAE_CST_PIS_COFINS_13: TDBEdit;
+    Tb_EmpCnaenome_cst_pis_cofins: TStringField;
+    DBE_nome_cst_pis_cofins_14: TDBEdit;
+    Label78: TLabel;
+    DBE_ECNAE_CST_IBS_CBS_11: TDBEdit;
+    Tb_EmpCnaenome_cst_ibs_cbs: TStringField;
+    DBE_nome_cst_ibs_cbs_12: TDBEdit;
+    Label76: TLabel;
+    DBE_ECNAE_PINSS_15: TDBEdit;
+    Label79: TLabel;
+    DBE_ECNAE_PCOFINS_10: TDBEdit;
+    Label80: TLabel;
+    DBE_ECNAE_PPIS_17: TDBEdit;
+    Label81: TLabel;
+    DBE_ECNAE_PCLSS_16: TDBEdit;
+    Label82: TLabel;
+    DBE_ECNAE_PIR_23: TDBEdit;
+    Label83: TLabel;
+    DBE_ECNAE_PISSQN_18: TDBEdit;
+    Label84: TLabel;
+    DBE_ECNAE_CADCLASSTRIB_19: TDBEdit;
+    Tb_EmpCnaenome_class_trib: TStringField;
+    DBE_nome_class_trib_20: TDBEdit;
+    Label85: TLabel;
+    DBE_ECNAE_COD_ATIV_04: TDBEdit;
+    Label86: TLabel;
+    DBE_ECNAE_TRIB_NAC_05: TDBEdit;
+    Tb_EmpCnaenome_trib_nac: TStringField;
+    RxDBComboBox1_24: TRxDBComboBox;
+    Label87: TLabel;
+    DBE_nome_trib_nac_06: TDBEdit;
+    Label88: TLabel;
+    RxDBB_ECNAE_TP_OPER: TRxDBComboBox;
+    Label89: TLabel;
+    RxDBComboBox3_26: TRxDBComboBox;
+    Label90: TLabel;
+    RxDBComboBox4_27: TRxDBComboBox;
+    Label91: TLabel;
+    RxDBComboBox5_28: TRxDBComboBox;
+    Label92: TLabel;
+    RxDBComboBox6_29: TRxDBComboBox;
+    Label93: TLabel;
+    RxDBComboBox7_30: TRxDBComboBox;
+    bbGravarCnae: TBitBtn;
+    src_emp: TDataSource;
+    bbIncluirCnae: TBitBtn;
+    bbExcluirCnae: TBitBtn;
+    Tb_EmpCnaeECNAE_IBS_CBS_IND_DEST: TStringField;
+    Tb_EmpCnaeECNAE_IBS_CBS_TP_ENTE_GOV: TStringField;
+    DBNavigator_cnae: TDBNavigator;
+    Label94: TLabel;
+    RxDBComboBox1: TRxDBComboBox;
     procedure BBnAtuClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure INCLUIRClick(Sender: TObject);
@@ -249,11 +298,47 @@ type
     procedure BitBtn2Click(Sender: TObject);
     procedure btnTextToNrClick(Sender: TObject);
     procedure DBE_EMP_CODTRIB_NACKeyPress(Sender: TObject; var Key: Char);
-    procedure DBE_EMP_CODTRIB_NACExit(Sender: TObject);
+    procedure Tb_EmpCnaeBeforePost(DataSet: TDataSet);
+    procedure DBE_ECNAE_CST_PIS_COFINS_13KeyPress(Sender: TObject;
+      var Key: Char);
+    procedure DBE_ECNAE_CST_PIS_COFINS_13Exit(Sender: TObject);
+    procedure DBE_ECNAE_ID_CNAE_01KeyPress(Sender: TObject; var Key: Char);
+    procedure DBE_ECNAE_ID_CNAE_01Exit(Sender: TObject);
+    procedure DBE_ECNAE_CODNBS_09Exit(Sender: TObject);
+    procedure DBE_ECNAE_CODNBS_09KeyPress(Sender: TObject; var Key: Char);
+    procedure DBE_ECNAE_TRIB_NAC_05KeyPress(Sender: TObject; var Key: Char);
+    procedure DBE_ECNAE_TRIB_NAC_05Exit(Sender: TObject);
+    procedure DBE_ECNAE_CODLC_SERV_07Exit(Sender: TObject);
+    procedure DBE_ECNAE_CODLC_SERV_07KeyPress(Sender: TObject; var Key: Char);
+    procedure DBE_ECNAE_IND_OP_21KeyPress(Sender: TObject; var Key: Char);
+    procedure DBE_ECNAE_CST_IBS_CBS_11KeyPress(Sender: TObject;
+      var Key: Char);
+    procedure DBE_ECNAE_CADCLASSTRIB_19Exit(Sender: TObject);
+    procedure DBE_ECNAE_CADCLASSTRIB_19KeyPress(Sender: TObject;
+      var Key: Char);
+    procedure bbGravarCnaeClick(Sender: TObject);
+    procedure Tb_EmpCnaeAfterInsert(DataSet: TDataSet);
+    procedure Tb_EmpCnaeAfterPost(DataSet: TDataSet);
+    procedure src_empDataChange(Sender: TObject; Field: TField);
+    procedure bbIncluirCnaeClick(Sender: TObject);
+    procedure bbExcluirCnaeClick(Sender: TObject);
+    procedure DBE_ECNAE_COD_ATIV_04KeyPress(Sender: TObject; var Key: Char);
+    procedure DBE_ECNAE_CST_IBS_CBS_11Exit(Sender: TObject);
+    procedure Tb_EmpCnaeBeforeDelete(DataSet: TDataSet);
+    procedure DBE_ECNAE_IND_OP_21Exit(Sender: TObject);
+    procedure Tb_EmpCnaeAfterEdit(DataSet: TDataSet);
   private
     { Private declarations }
 
-         function fExisteCodTributo(pCodTrib: String): boolean;
+    memp_lida: integer;
+         mFiltrosExtras: String;
+
+
+         procedure fLerCadempCnae(pCodEmp: integer);
+
+
+         procedure fVerificaEdicao;
+
 
   public
     { Public declarations }
@@ -281,7 +366,7 @@ end;
 procedure TFrm_Emp.FormCreate(Sender: TObject);
 begin
   inherited;
-
+    memp_lida:=-1;
 if codusr<>1111 then
    TabSheet1.TabVisible:=false;
 
@@ -349,6 +434,7 @@ begin
   inherited;
 tsContador.Enabled:=true;
 TsNfse.Enabled:=true;
+tsCadcnae.Enabled:=true;
 DM2.Tb_Emp.Append;
 DM2.Tb_EmpDATACAD.Value:=pdatasis;
 DBEdit1.Enabled:=True;
@@ -375,6 +461,7 @@ PC1.ActivePageIndex:=0;
 tsContador.Enabled:=true;
 
 TsNfse.Enabled:=true;
+tsCadcnae.Enabled:=true;
 DM2.Tb_Emp.Edit;
 DM2.Tb_EmpDATAALT.Value:=pdatasis;
 DBEdit1.Enabled:=False;
@@ -404,12 +491,15 @@ if DM4.Tb_ParGer02PG2USANFE.AsInteger>0 then
 {   if DM2.Tb_EmpEMP_OPTSIMPLES.AsInteger=2 then
       DM2.Tb_EmpEMP_OPTSIMPLES.AsInteger:=1;}
    end;
+if Tb_EmpCnae.state in [dsEdit,dsInsert] then
+   Tb_EmpCnae.post;   
 dm2.tB_Emp.Post;
 if emp_oper=0 then
    bbCriarParam.Click;
    
 tsContador.Enabled:=false;
 TsNfse.Enabled    :=false;
+tsCadcnae.Enabled:=false;
 cancelar.Click;
 end;
 
@@ -1054,6 +1144,7 @@ begin
 DM2.Tb_Emp.Cancel;
 tsContador.Enabled:=false;
 TsNfse.Enabled    :=false;
+tsCadcnae.Enabled:=false;
 emp_oper:=0;
 end;
 
@@ -1624,58 +1715,519 @@ if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%')) then
      begin
      dm2.Tb_EmpEMP_CODTRIB_NAC.AsString:=fChamaPesqTribNac(0,'_venda',key);
      key:=#0;
-     if (dm2.Tb_EmpEMP_CODTRIB_NAC.AsString)<>'' then
-        begin
-        keybd_event(VK_RETURN,0,0,0);
-        end;
      end;
   end
 
 end;
 
-procedure TFrm_Emp.DBE_EMP_CODTRIB_NACExit(Sender: TObject);
+procedure TFrm_Emp.Tb_EmpCnaeBeforePost(DataSet: TDataSet);
 begin
   inherited;
- if not fExisteCodTributo(DM2.Tb_EmpEMP_CODTRIB_NAC.AsString) then
-    begin
-    MessageDlg('Codigo do Tribudo '+ DM2.Tb_EmpEMP_CODTRIB_NAC.AsString ,mtWarning,[mbOk],0);
-    DBE_EMP_CODTRIB_NAC.SetFocus;
-    end;
+  IF (Tb_EmpCnaeECNAE_ID_CNAE.IsNull) then
+     begin
+     Tb_EmpCnae.Cancel;
+     abort;
+     end;
 
+  if Tb_EmpCnaeECNAE_ID_EMP.AsInteger=0 then
+     Tb_EmpCnaeECNAE_ID_EMP.AsInteger:=DM2.Tb_EmpCODEMP.AsInteger;
+
+  if Tb_EmpCnaeECNAE_ID.AsInteger=0 then
+     begin
+     Tb_EmpCnaeECNAE_ID.AsInteger:=fBuscarProximoId('CADEMP_CNAE_SEQ');
+
+     FAtualizaBanco(0,'CADEMP_CNAE','',''
+               ,['ECNAE_ID'],[Tb_EmpCnaeECNAE_ID.AsString]
+                  ,Tb_EmpCnae);
+
+
+     end
+  else
+     begin
+     FAtualizaBanco(1,'CADEMP_CNAE','',''
+               ,['ECNAE_ID'],[Tb_EmpCnaeECNAE_ID.AsString]
+                  ,Tb_EmpCnae);
+     end;
+
+
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_CST_PIS_COFINS_13KeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+
+if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%')) then
+   begin
+   fVerificaEdicao;
+   Tb_EmpCnaeECNAE_CST_PIS_COFINS.value:=fChamaPesqCstPis(0,'_venda',key);
+   DBE_ECNAE_CST_PIS_COFINS_13Exit(self);
+   key:=#0;
+
+
+   end;
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_CST_PIS_COFINS_13Exit(Sender: TObject);
+var
+mNomeCst: String;
+begin
+  inherited;
+if not fExisteCadcstPis(Tb_EmpCnaeECNAE_CST_PIS_COFINS.AsString,true,mNomeCst) then
+   begin
+   DBE_ECNAE_CST_PIS_COFINS_13.SetFocus;
+   end
+else
+   begin
+   Tb_EmpCnaenome_cst_pis_cofins.value:=mNomeCst;
+   fVerificaEdicao;
+   end;
+   
+
+end;
+
+
+
+procedure TFrm_Emp.DBE_ECNAE_ID_CNAE_01KeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+
+if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%')) then
+   begin
+   fVerificaEdicao;
+   Tb_EmpCnaeECNAE_ID_CNAE.value:=fChamaCnae(0,'_venda',key);
+   DBE_ECNAE_ID_CNAE_01Exit(self);
+   key:=#0;
+
+
+
+   end;
+
+end;
+procedure TFrm_Emp.fVerificaEdicao;
+begin
+if not (Tb_EmpCnae.State in [dsEdit,dsInsert]) then
+   begin
+   if Tb_EmpCnaeECNAE_ID.AsInteger>0 then
+      Tb_EmpCnae.edit
+   else
+      Tb_EmpCnae.insert;
+   end;
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_ID_CNAE_01Exit(Sender: TObject);
+var
+mNomeCnae: String;
+
+begin
+  inherited;
+  if not fExisteCadcnae(Tb_EmpCnaeECNAE_ID_CNAE.AsString,true,mNomeCnae) then
+   begin
+   DBE_ECNAE_ID_CNAE_01.SetFocus;
+   end
+else
+   begin
+   Tb_EmpCnaenomecnae.value:=mNomeCnae;
+   fVerificaEdicao;
+   end;
+
+
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_CODNBS_09Exit(Sender: TObject);
+var
+mNomeNbs: String;
+
+begin
+  inherited;
+  if not fExisteCodnbs(Tb_EmpCnaeECNAE_CODNBS.AsString,true,mNomeNbs) then
+   begin
+   DBE_ECNAE_CODNBS_09.SetFocus;
+   end
+else
+   begin
+   Tb_EmpCnaenome_nbs.value:=mNomeNbs;
+   fVerificaEdicao;
+   end;
+   
+
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_CODNBS_09KeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%')) then
+  begin
+
+     begin
+     mFiltrosExtras := '';
+     if trim(Tb_EmpCnaeECNAE_TRIB_NAC.AsString)<>'' then
+        begin
+        mFiltrosExtras := ' exists (select TC_C_NBS FROM CADCORRELATO_DADOS_NFSE WHERE TC_C_TRIB_NAC='+quotedstr(Tb_EmpCnaeECNAE_TRIB_NAC.AsString)+' AND TC_C_NBS=NBS_CODIGO) ';
+        end;
+     Tb_EmpCnaeECNAE_CODNBS.AsString:=fChamaNbs(0,'_venda',key,mFiltrosExtras );
+     key:=#0;
+     end;
+  end
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_TRIB_NAC_05KeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%')) then
+  begin
+  fVerificaEdicao;
+  Tb_EmpCnaeECNAE_TRIB_NAC.AsString:=fChamaPesqTribNac(0,'_venda',key);
+  key:=#0;
+  end;
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_TRIB_NAC_05Exit(Sender: TObject);
+var
+mNome: string;
+begin
+  inherited;
+if not fExisteCodTributo(Tb_EmpCnaeECNAE_TRIB_NAC.AsString,true,mNome) then
+   begin
+   DBE_ECNAE_TRIB_NAC_05.SetFocus;
+   end
+else
+   begin
+   Tb_EmpCnaenome_trib_nac.Value:=mNome;
+   fVerificaEdicao;
+   end;
+
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_CODLC_SERV_07Exit(Sender: TObject);
+var
+mNome: String;
+begin
+  inherited;
+if not fExisteCodTributo(Tb_EmpCnaeECNAE_CODLC_SERV.AsString,true,mNome) then
+   begin
+   DBE_ECNAE_CODLC_SERV_07.SetFocus;
+   end
+else
+   begin
+   Tb_EmpCnaenome_lc_116.Value:=mNome;
+   fVerificaEdicao;
+   end;
+   
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_CODLC_SERV_07KeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%')) then
+  begin
+  fVerificaEdicao;
+  Tb_EmpCnaeECNAE_CODLC_SERV.AsString:=fChamaPesqTribNac(0,'_venda',key);
+  key:=#0;
+  end
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_IND_OP_21KeyPress(Sender: TObject;
+  var Key: Char);
+  var
+  mNome: string;
+begin
+  inherited;
+if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%')) then
+   begin
+   mFiltrosExtras := '';
+   if (trim(Tb_EmpCnaeECNAE_TRIB_NAC.AsString)<>'') and
+      (trim(Tb_EmpCnaeECNAE_CODNBS.AsString)<>'') and
+      (trim(Tb_EmpCnaeECNAE_CST_IBS_CBS.AsString)<>'')     AND
+      (trim(Tb_EmpCnaeECNAE_CADCLASSTRIB.AsString)<>'')     then
+      begin
+      mFiltrosExtras := ' exists (select TC_C_NBS FROM CADCORRELATO_DADOS_NFSE WHERE TC_C_TRIB_NAC='+quotedstr(Tb_EmpCnaeECNAE_CADCLASSTRIB.AsString)
+      +' AND TC_C_NBS = '+quotedstr(Tb_EmpCnaeECNAE_CODNBS.AsString)
+      +' AND TC_C_ST_IBS_CBS = '+quotedstr(Tb_EmpCnaeECNAE_CST_IBS_CBS.AsString)
+      +' AND TC_C_CLASSTRIB= '+quotedstr(Tb_EmpCnaeECNAE_CADCLASSTRIB.AsString)
+      +' AND TC_C_IND_OP=CIOP_CODIGO) ';
+      end;
+   Tb_EmpCnaeECNAE_IND_OP.AsString:=fChamaIndOpIbsCbs(0,'_venda',key,mFiltrosExtras);
+   key:=#0;
+   end;
+
+
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_CST_IBS_CBS_11KeyPress(Sender: TObject;
+  var Key: Char);
+
+var
+
+mNome: String;
+begin
+  inherited;
+
+
+if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%')) then
+   begin
+   mFiltrosExtras := '';
+   if (trim(Tb_EmpCnaeECNAE_TRIB_NAC.AsString)<>'') and
+      (trim(Tb_EmpCnaeECNAE_CODNBS.AsString)<>'') then
+       begin
+       mFiltrosExtras := ' exists (select TC_C_NBS FROM CADCORRELATO_DADOS_NFSE WHERE TC_C_TRIB_NAC='+quotedstr(Tb_EmpCnaeECNAE_TRIB_NAC.AsString)
+       +' AND TC_C_NBS = '+quotedstr(Tb_EmpCnaeECNAE_CODNBS.AsString)
+       +' AND TC_C_ST_IBS_CBS=CBS_CODIGO) ';
+       end;
+
+   Tb_EmpCnaeECNAE_CST_IBS_CBS.AsString:=fChamaCbsCst(0,'_venda',key,mfiltrosExtras);
+   key:=#0;
+   end;
 
 end;
 
 
 
 
-function TFrm_Emp.fExisteCodTributo(pCodTrib: String): boolean;
+
+procedure TFrm_Emp.DBE_ECNAE_CADCLASSTRIB_19Exit(Sender: TObject);
 var
-query_tributo: tQuery;
+mNome: String;
 begin
-result:=true;
-if trim(pCodTrib)<>'' then
+  inherited;
+
+
+if not fExisteCadClassTrib(Tb_EmpCnaeECNAE_CADCLASSTRIB.AsString,true,mNome) then
    begin
-   query_tributo:=tQuery.create(nil);
-   query_tributo.DatabaseName:=DM1.SG_ASSOC.DatabaseName;
-   query_tributo.sql.add('select count(*) from CADTRIB_MUN where TM_CODIGO=:CODIGO ');
-   query_tributo.parambyname('CODIGO').AsString:=pCodTrib;
-   try
-      query_tributo.Open;
-      if query_tributo.fields[0].AsInteger<1 then
-         begin
-         MessageDlg('Código do Tributo '+pCodTrib+' não Cadastrado!',mtWarning,[mbOk],0);
-         result:=false;
-         end;
-   except ON E: Exception do
-      begin
-      ex_erroSql_Novo(query_tributo,36638,'_stru '+e.message,'user');
-      end;
-      end;
-   query_tributo.close;
-   freeandnil(query_tributo);
+   DBE_ECNAE_CADCLASSTRIB_19.SetFocus;
+   end
+else
+   begin
+   Tb_EmpCnaenome_class_trib.Value:=mNome;
+   fVerificaEdicao;
+   end;
+      
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_CADCLASSTRIB_19KeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+if ((key in ['A'..'Z']) or (key in ['a'..'z']) or (key='%')) then
+   begin
+   mFiltrosExtras := '';
+   if (trim(Tb_EmpCnaeECNAE_TRIB_NAC.AsString)<>'') and
+        (trim(Tb_EmpCnaeECNAE_CODNBS.AsString)<>'') and
+        (trim(Tb_EmpCnaeECNAE_CST_IBS_CBS.AsString)<>'')     then
+        begin
+        mFiltrosExtras := ' exists (select TC_C_NBS FROM CADCORRELATO_DADOS_NFSE WHERE TC_C_TRIB_NAC='
+        +quotedstr(Tb_EmpCnaeECNAE_TRIB_NAC.AsString)
+        +' AND TC_C_NBS = '+quotedstr(Tb_EmpCnaeECNAE_CODNBS.AsString)
+        +' AND TC_C_ST_IBS_CBS = '+quotedstr(Tb_EmpCnaeECNAE_CST_IBS_CBS.AsString)
+        +' AND TC_C_CLASSTRIB=CT_CODIGO) ';
+
+        end;
+  fVerificaEdicao;
+   Tb_EmpCnaeECNAE_CADCLASSTRIB.AsString:=fChamaclasstrib(0,'_venda',key,mfiltrosExtras);
+   key:=#0;
    end;
 end;
 
 
-end.
+procedure TFrm_Emp.bbGravarCnaeClick(Sender: TObject);
+begin
+  inherited;
+Tb_EmpCnae.Post;
+end;
 
+procedure TFrm_Emp.Tb_EmpCnaeAfterInsert(DataSet: TDataSet);
+begin
+  inherited;
+
+Tb_EmpCnaeECNAE_PRINCIPAL.value:=0;
+
+
+Tb_EmpCnaeECNAE_PINSS.value:=0;
+Tb_EmpCnaeECNAE_PCOFINS.value:=0;
+Tb_EmpCnaeECNAE_PPIS.value:=0;
+Tb_EmpCnaeECNAE_PCLSS.value:=0;
+Tb_EmpCnaeECNAE_PIR.value:=0;
+Tb_EmpCnaeECNAE_PISSQN.value:=0;
+Tb_EmpCnaeECNAE_REG_AP_TRIB_SN.value:=' ';
+Tb_EmpCnaeECNAE_REG_ESP_TRIB.value:=' ';
+Tb_EmpCnaeECNAE_TP_OPER.value:=' ';
+Tb_EmpCnaeECNAE_IBS_CBS_TP_ENTE_GOV.value:='0';
+Tb_EmpCnaeECNAE_TP_RET_PIS_COFINS.value:=' ';
+Tb_EmpCnaeECNAE_IND_DEST.value:=' ';
+Tb_EmpCnaeECNAE_FIN_NFSE.value:=' ';
+Tb_EmpCnaeECNAE_IND_FINAL.value:=' ';
+Tb_EmpCnaeECNAE_IBS_CBS_IND_DEST.value:=' ';
+
+
+
+bbGravarCnae.Enabled:=true;
+bbIncluirCnae.Enabled:=false;
+bbExcluirCnae.Enabled:=false;
+DBCtrlGrid1.setfocus;
+
+end;
+
+procedure TFrm_Emp.Tb_EmpCnaeAfterPost(DataSet: TDataSet);
+begin
+  inherited;
+bbGravarCnae.Enabled:=false;
+bbIncluirCnae.Enabled:=true;
+bbExcluirCnae.Enabled:=Tb_EmpCnae.IsEmpty=false;
+
+
+{
+Try
+  DM1.SG_ASSOC.ApplyUpdates([DataSet as TQuery]);
+  If not DM1.SG_ASSOC.InTransaction then
+    DM1.SG_ASSOC.StartTransaction;
+  DM1.SG_ASSOC.Commit;
+Except
+  fmensagem('Ja Existe um Registro igual a Este Click em Cancelar!',0,['0'],0);
+  end;
+
+}
+end;
+
+procedure TFrm_Emp.src_empDataChange(Sender: TObject; Field: TField);
+begin
+  inherited;
+if  memp_lida<>DM2.Tb_EmpCODEMP.AsInteger then
+   fLerCadempCnae(DM2.Tb_EmpCODEMP.AsInteger);
+
+end;
+
+
+procedure TFrm_Emp.fLerCadempCnae(pCodEmp: integer);
+begin
+memp_lida:=pCodemp;
+Tb_EmpCnae.close;
+Tb_EmpCnae.sql.Clear;
+Tb_EmpCnae.sql.Add('sELECT T1.*,CNAE_NOME AS nomecnae '
+                  +',TM_NOME AS nome_lc_116 '
+                  +', CIOP_NOME AS nome_ind_op '
+                  +', NBS_NOME AS  nome_nbs '
+                  +',CSTC_NOME AS nome_cst_pis_cofins '
+                  +',CBS_NOME AS nome_cst_ibs_cbs '
+                  +',CT_NOME AS nome_class_trib '
+                  +',TM_NOME AS nome_trib_nac '
+                  +' FROM cademp_cnae t1 left join CADCNAE on (CNAE_CODCNAE = ECNAE_ID_CNAE) '
+                  +' left join CADTRIB_MUN on (TM_CODIGO = ECNAE_CODLC_SERV) '
+                  +' left join CADINDOP_IBSCBS on (CIOP_CODIGO = ECNAE_IND_OP) '
+                  +' left join CADNBS on (NBS_CODIGO = ECNAE_CODNBS) '
+                  +' left join CADCST_PISCOFINS on (CSTC_CODIGO = ECNAE_CST_PIS_COFINS) '
+                  +' left join CADCBS_CST on (CBS_CODIGO = ECNAE_CST_IBS_CBS) '
+                  +' left join CADCLASSTRIB on (CT_CODIGO = ECNAE_CADCLASSTRIB) '
+                  +' where  ECNAE_ID_EMP='+IntToStr(pCodEmp));
+try
+   Tb_EmpCnae.open;
+except on e : exception do
+   begin
+   ex_erroSql_Novo(Tb_EmpCnae,2045,'SGE','CADEMP_CNAE');
+   end;
+   end;
+end;
+procedure TFrm_Emp.bbIncluirCnaeClick(Sender: TObject);
+begin
+  inherited;
+Tb_EmpCnae.Insert;
+DBCtrlGrid1.setfocus;
+end;
+
+procedure TFrm_Emp.bbExcluirCnaeClick(Sender: TObject);
+begin
+  inherited;
+if application.MessageBox(pchar('Quer realmente Excluir este cnae '+Tb_EmpCnaeECNAE_ID_CNAE.AsString) ,'Confirmação',MB_YESNO+MB_DEFBUTTON2)<>mrYes then
+  exit;
+Tb_EmpCnae.delete;
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_COD_ATIV_04KeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+  fVerificaEdicao;
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_CST_IBS_CBS_11Exit(Sender: TObject);
+var
+mNomeCstCbs: String;
+begin
+  inherited;
+
+if not fExisteCodCbsCst(Tb_EmpCnaeECNAE_CST_IBS_CBS.AsString,true,mNomeCstCbs) then
+   begin
+   DBE_ECNAE_CST_IBS_CBS_11.SetFocus;
+   end
+else
+   begin
+   Tb_EmpCnaenome_cst_ibs_cbs.value:=mNomeCstCbs;
+   fVerificaEdicao;
+   end;
+   
+
+end;
+
+procedure TFrm_Emp.Tb_EmpCnaeBeforeDelete(DataSet: TDataSet);
+begin
+  inherited;
+if application.MessageBox(pchar('Quer realmente Excluir este cnae '+Tb_EmpCnaeECNAE_ID_CNAE.AsString) ,'Confirmação',MB_YESNO+MB_DEFBUTTON2)<>mrYes then
+  begin
+  abort;
+  Tb_EmpCnae.Cancel;
+  exit;
+  end
+else
+  FAtualizaBanco(2,'CADEMP_CNAE','',''
+               ,['ECNAE_ID'],[Tb_EmpCnaeECNAE_ID.AsString]
+                  ,Tb_EmpCnae);
+
+
+end;
+
+procedure TFrm_Emp.DBE_ECNAE_IND_OP_21Exit(Sender: TObject);
+var
+mNome: string;
+begin
+  inherited;
+
+if not fExisteCadIndOpIbsCbs(Tb_EmpCnaeECNAE_IND_OP.AsString,true,mNome) then
+   begin
+   DBE_ECNAE_IND_OP_21.SetFocus;
+   end
+else
+   begin
+   Tb_EmpCnaenome_ind_op.value:=mNome;
+   fVerificaEdicao;
+   end;
+   
+end;
+
+
+
+procedure TFrm_Emp.Tb_EmpCnaeAfterEdit(DataSet: TDataSet);
+begin
+  inherited;
+bbGravarCnae.Enabled:=true;
+bbIncluirCnae.Enabled:=false;
+bbExcluirCnae.Enabled:=false;
+DBCtrlGrid1.setfocus;
+
+end;
+
+end.

@@ -56,6 +56,7 @@ inherited Frm_For: TFrm_For
     Top = 64
     Width = 777
     Height = 401
+    ActivePage = tsImagens
     TabStop = True
     OnChange = PC1Change
     OnChanging = PC1Changing
